@@ -1,0 +1,7 @@
+node_modules/
+temporary screenshots/
+.env
+credentials.json
+token.json
+.tmp/
+website/
