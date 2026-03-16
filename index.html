@@ -4,36 +4,57 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vienna Imperials — Austria's Premier Foam Dodgeball Club</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  <meta name="description" content="Vienna Imperials – Wiens erstes Dodgeball-Team. Jetzt mitspielen! Vienna's first competitive dodgeball club. Join the league." />
+  <link rel="canonical" href="https://imperialsdodgeball.com" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://imperialsdodgeball.com" />
+  <meta property="og:title" content="Vienna Imperials — Austria's Premier Foam Dodgeball Club" />
+  <meta property="og:description" content="Vienna Imperials – Wiens erstes Dodgeball-Team. Jetzt mitspielen! Vienna's first competitive dodgeball club. Join the league." />
+  <meta property="og:image" content="https://imperialsdodgeball.com/cropped-Vienna-Imperials-03-1.png" />
+  <meta property="og:locale" content="de_AT" />
+  <meta property="og:locale:alternate" content="en_GB" />
+  <meta property="og:site_name" content="Vienna Imperials" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Vienna Imperials — Austria's Premier Foam Dodgeball Club" />
+  <meta name="twitter:description" content="Vienna Imperials – Wiens erstes Dodgeball-Team. Vienna's first competitive dodgeball club." />
+  <meta name="twitter:image" content="https://imperialsdodgeball.com/cropped-Vienna-Imperials-03-1.png" />
+
+  <!-- Schema.org SportsClub -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SportsClub",
+    "name": "Vienna Imperials",
+    "description": "Austria's first and premier foam dodgeball club, based in Vienna.",
+    "url": "https://imperialsdodgeball.com",
+    "logo": "https://imperialsdodgeball.com/cropped-Vienna-Imperials-03-1.png",
+    "image": "https://imperialsdodgeball.com/cropped-Vienna-Imperials-03-1.png",
+    "sport": "Dodgeball",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Vienna",
+      "addressCountry": "AT"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "hello@viennaimperials.at",
+      "contactType": "customer support"
+    },
+    "sameAs": ["https://www.instagram.com/imperialsdodgeball/"]
+  }
+  </script>
+
+  <link rel="stylesheet" href="/tailwind.min.css" />
+  <!-- SheetJS loaded on demand when import modal opens -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            'royal':   '#1A3D8F',
-            'deep':    '#0C1B3A',
-            'navy':    '#0F2150',
-            'mid':     '#3567C0',
-            'gold':    '#D4961A',
-            'gold-lt': '#F0B830',
-            'brass':   '#8B7847',
-            'red':     '#E8193C',
-            'cloud':   '#F4F7FF',
-          },
-          fontFamily: {
-            display: ['"Bebas Neue"', 'sans-serif'],
-            heading: ['"Barlow Condensed"', 'sans-serif'],
-            body:    ['"Inter"', 'sans-serif'],
-          },
-        }
-      }
-    }
-  </script>
+  <!-- Tailwind config is now in tailwind.config.js; built CSS at /tailwind.min.css -->
 
   <style>
     /* ── Reset & base ── */
@@ -942,6 +963,54 @@
       #about, #how, #league, #why, #cta { padding: 5rem 1.75rem; }
       #rankings { padding: 5rem 1.75rem; }
     }
+    /* ── Admin nav item hidden by default, revealed via /#admin-access ── */
+    #adminNavLoginItem { display: none; }
+
+    /* ── Nav mobile open state ── */
+    body.nav-open .nav-links {
+      display: flex !important;
+      flex-direction: column;
+      position: fixed;
+      top: 72px; left: 0; right: 0;
+      background: rgba(12,27,58,0.97);
+      backdrop-filter: blur(16px);
+      padding: 1.5rem 2rem 2rem;
+      gap: 1.25rem;
+      border-bottom: 1px solid rgba(212,150,26,0.15);
+      z-index: 99;
+    }
+    body.nav-open .nav-toggle span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    body.nav-open .nav-toggle span:nth-child(2) { opacity: 0; }
+    body.nav-open .nav-toggle span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+    .nav-toggle span { transition: transform 0.25s ease, opacity 0.2s ease; }
+
+    /* ── FAQ ── */
+    .faq-list { display: flex; flex-direction: column; gap: 0; }
+    .faq-item { border-bottom: 1px solid rgba(53,103,192,0.2); }
+    .faq-item:first-child { border-top: 1px solid rgba(53,103,192,0.2); }
+    .faq-question {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700; font-size: 1.1rem; letter-spacing: 0.04em;
+      color: var(--cloud); padding: 1.25rem 0; cursor: pointer; list-style: none;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .faq-question::after { content: '+'; font-size: 1.4rem; color: var(--gold); transition: transform 0.2s ease; flex-shrink: 0; }
+    details[open] .faq-question::after { transform: rotate(45deg); }
+    .faq-answer { font-size: 0.95rem; line-height: 1.7; color: rgba(244,247,255,0.65); padding-bottom: 1.25rem; }
+    .faq-category { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); padding: 1.5rem 0 0.5rem; opacity: 0.75; }
+
+    /* ── Signup form ── */
+    .signup-form { width: 100%; max-width: 600px; margin: 0 auto; }
+    .signup-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+    .signup-field { display: flex; flex-direction: column; gap: 0.4rem; }
+    .signup-label { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(244,247,255,0.5); }
+    .signup-input { background: rgba(26,61,143,0.2); border: 1px solid rgba(53,103,192,0.3); border-radius: 6px; padding: 10px 14px; color: var(--cloud); font-family: 'Inter', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s ease; width: 100%; }
+    .signup-input:focus { border-color: rgba(212,150,26,0.5); }
+    .signup-input option { background: #0F2150; }
+    .signup-submit { width: 100%; }
+    .signup-success { margin-top: 1rem; padding: 12px 20px; background: rgba(26,61,143,0.3); border: 1px solid rgba(212,150,26,0.3); border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 1rem; color: var(--gold-lt); text-align: center; }
+    @media (max-width: 580px) { .signup-form-grid { grid-template-columns: 1fr; } }
+
     @media (max-width: 680px) {
       /* Nav */
       .nav-links { display: none; }
@@ -1314,14 +1383,28 @@
   </style>
 </head>
 <body>
+  <a href="#main" style="position:absolute;top:-40px;left:0;background:var(--gold);color:var(--deep);padding:8px 16px;z-index:10000;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-decoration:none;transition:top 0.2s ease;" onfocus="this.style.top='0'" onblur="this.style.top='-40px'">Skip to content / Zum Inhalt springen</a>
+
+  <!-- ══ COOKIE CONSENT BANNER ══ -->
+  <div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(12,27,58,0.98);backdrop-filter:blur(16px);border-top:1px solid rgba(212,150,26,0.2);padding:1rem 2rem;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+    <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.95rem;color:rgba(244,247,255,0.8);margin:0;flex:1;min-width:200px;">
+      Diese Website verwendet Google Fonts und ein CDN-Framework. /
+      This site uses Google Fonts and a CDN framework. By continuing you agree to their use.
+      <a href="/datenschutz.html" style="color:#D4961A;text-decoration:underline;margin-left:0.5rem;">Datenschutz / Privacy</a>
+    </p>
+    <div style="display:flex;gap:0.75rem;flex-shrink:0;">
+      <button onclick="acceptCookies()" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.08em;text-transform:uppercase;padding:8px 20px;border-radius:4px;background:linear-gradient(135deg,#D4961A,#F0B830);color:#0C1B3A;border:none;cursor:pointer;">Akzeptieren / Accept</button>
+      <button onclick="declineCookies()" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.08em;text-transform:uppercase;padding:8px 20px;border-radius:4px;background:transparent;color:rgba(244,247,255,0.7);border:1px solid rgba(244,247,255,0.2);cursor:pointer;">Ablehnen / Decline</button>
+    </div>
+  </div>
 
   <!-- Progress bar -->
   <div id="progress-bar" style="width:0%"></div>
 
   <!-- ══ NAVIGATION ══ -->
-  <nav id="navbar">
+  <nav id="navbar" role="navigation" aria-label="Main navigation">
     <a href="#hero" class="nav-logo">
-      <img src="cropped-Vienna-Imperials-03-1.png" alt="Vienna Imperials Logo" />
+      <img src="cropped-Vienna-Imperials-03-1.png" alt="Vienna Imperials Logo" width="44" height="44" />
       <span>Vienna Imperials</span>
     </a>
     <ul class="nav-links">
@@ -1329,7 +1412,9 @@
       <li><a href="#how">How It Works</a></li>
       <li><a href="#league">League</a></li>
       <li><a href="#why">Why Join</a></li>
+      <li><a href="#faq">FAQ</a></li>
       <li><a href="#rankings">Rankings</a></li>
+      <li><a href="/member">Member Login</a></li>
       <li id="adminNavLoginItem">
         <button onclick="openAdminLoginModal()" class="admin-nav-lock" title="Admin Login">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -1348,10 +1433,11 @@
       <span></span><span></span><span></span>
     </button>
     <a href="https://www.askoe.at" target="_blank" rel="noopener" class="nav-asko" aria-label="ASKÖ">
-      <img src="askoelogogross.jpg" alt="ASKÖ" />
+      <img src="askoelogogross.jpg" alt="ASKÖ" loading="lazy" width="32" height="32" />
     </a>
   </nav>
 
+  <main id="main" role="main">
   <!-- ══ HERO ══ -->
   <section id="hero">
     <div class="hero-bg noise">
@@ -1369,7 +1455,7 @@
 
       <div class="hero-logo-wrap reveal reveal-delay-1">
         <div class="hero-logo-glow"></div>
-        <img src="cropped-Vienna-Imperials-03-1.png" alt="Vienna Imperials" class="hero-logo" />
+        <img src="cropped-Vienna-Imperials-03-1.png" alt="Vienna Imperials" class="hero-logo" width="280" height="280" />
       </div>
 
       <h1 class="hero-title reveal reveal-delay-2">
@@ -1393,7 +1479,7 @@
     <div class="about-grid">
       <div class="about-visual reveal">
         <div class="about-hex-bg"></div>
-        <img src="cropped-Vienna-Imperials-03-1.png" alt="Vienna Imperials" class="about-logo" />
+        <img src="cropped-Vienna-Imperials-03-1.png" alt="Vienna Imperials" class="about-logo" loading="lazy" width="260" height="260" />
       </div>
 
       <div>
@@ -1589,6 +1675,198 @@
     </div>
   </section>
 
+  <!-- ══ FAQ ══ -->
+  <section id="faq" style="background:linear-gradient(180deg,#0F2150 0%,#0C1B3A 100%);padding:7rem 2rem;">
+    <div style="max-width:800px;margin:0 auto;position:relative;z-index:1;">
+      <div style="text-align:center;margin-bottom:3rem;">
+        <p class="section-label reveal">FAQ</p>
+        <div class="gold-line reveal reveal-delay-1" style="margin:0 auto 1.5rem;"></div>
+        <h2 class="section-title reveal reveal-delay-1">Häufige Fragen / <span style="background:linear-gradient(135deg,var(--gold),var(--gold-lt));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Common Questions</span></h2>
+        <div style="display:flex;gap:0.75rem;justify-content:center;margin-top:1.5rem;" class="reveal reveal-delay-2">
+          <button onclick="setFaqLang('de')" id="faqBtnDe" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;padding:6px 16px;border-radius:4px;border:1px solid rgba(212,150,26,0.5);background:rgba(212,150,26,0.15);color:var(--gold-lt);cursor:pointer;">Deutsch</button>
+          <button onclick="setFaqLang('en')" id="faqBtnEn" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;padding:6px 16px;border-radius:4px;border:1px solid rgba(244,247,255,0.2);background:transparent;color:rgba(244,247,255,0.6);cursor:pointer;">English</button>
+        </div>
+      </div>
+      <div id="faqDe" class="faq-list reveal">
+        <details class="faq-item">
+          <summary class="faq-question">Was ist Dodgeball?</summary>
+          <p class="faq-answer">Dodgeball ist ein Mannschaftssport, bei dem zwei Teams versuchen, die Spieler des gegnerischen Teams durch Treffen mit weichen Schaumstoffbällen auszuscheiden. Gefangene Bälle bringen ausgeschiedene Mitspieler zurück ins Spiel.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Wo trainieren wir?</summary>
+          <p class="faq-answer">Wir trainieren in der Sporthalle Stella-Klein-Löw-Weg in Wien. Jeden Donnerstag von 18:00 bis 21:00 Uhr.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Wie kann ich mitmachen?</summary>
+          <p class="faq-answer">Einfach beim nächsten Drop-in-Abend vorbeikommen! Keine Anmeldung erforderlich. Du kannst uns auch per E-Mail an <a href="mailto:hello@viennaimperials.at" style="color:var(--gold-lt);">hello@viennaimperials.at</a> kontaktieren.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Kostet es etwas?</summary>
+          <p class="faq-answer">Für Drop-in-Abende wird eine kleine Drop-in-Gebühr erhoben. Saisonmitglieder zahlen einen ermäßigten Saisonbeitrag. Kontaktiere uns für aktuelle Preise.</p>
+        </details>
+
+        <div class="faq-category">Rund um den Einstieg</div>
+        <details class="faq-item">
+          <summary class="faq-question">Was genau ist die Social League?</summary>
+          <p class="faq-answer">Bei der Social League steht das Miteinander im Vordergrund: Du wirst vor Ort per Losverfahren in ein Team eingeteilt, lernst jedes Mal neue Leute kennen, und der Fokus liegt auf Spaß statt Wettkampf.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Muss ich Profi sein, um mitzuspielen?</summary>
+          <p class="faq-answer">Absolut nicht! Ob Nationalteamspieler oder absoluter Neuling – bei uns ist jede*r willkommen. Wir mischen die Teams bunt durch, damit alle voneinander lernen und auf ihre Kosten kommen.</p>
+        </details>
+
+        <div class="faq-category">Spielregeln</div>
+        <details class="faq-item">
+          <summary class="faq-question">Wie startet ein Spiel?</summary>
+          <p class="faq-answer">Zu Beginn liegen 6 Bälle auf der Mittellinie. Beim Anpfiff sprinten beide Teams los: Dein Team schnappt sich die 3 Bälle auf der rechten Seite, das Gegnerteam die 3 auf der linken – und dann heißt es: Ready, set, dodge!</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Was passiert, wenn mein Wurf gefangen wird?</summary>
+          <p class="faq-answer">Zwei Dinge auf einmal: Du bist ausgeschieden und musst das Feld verlassen. Gleichzeitig darf das gegnerische Team einen ihrer ausgeschiedenen Spieler zurückholen. Ein einziger Fang kann das Blatt komplett wenden!</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Wann ist eine Spielrunde zu Ende?</summary>
+          <p class="faq-answer">Ein Spiel endet entweder nach Ablauf der regulären Spielzeit oder wenn ein Team alle Spieler*innen des Gegners eliminiert hat – das nennen wir „Full Clear".</p>
+        </details>
+
+        <div class="faq-category">Turnierformat &amp; Finale</div>
+        <details class="faq-item">
+          <summary class="faq-question">Wie läuft das Turnier ab?</summary>
+          <p class="faq-answer">Wir spielen im Round-Robin-Format – jedes Team trifft einmal auf jedes andere. So hast du garantiert viele Spiele und triffst alle Mitspieler*innen in der Halle.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Was ist das „Last WoMen Standing"?</summary>
+          <p class="faq-answer">Unser großes Highlight zum Abschluss! In gemischten Teams kämpfen alle gemeinsam um den Titel der letzten verbleibenden Personen auf dem Feld – ein echtes Spektakel.</p>
+        </details>
+
+        <div class="faq-category">Mitgliedschaft &amp; Kosten</div>
+        <details class="faq-item">
+          <summary class="faq-question">Welche Mitgliedschaftsmodelle gibt es?</summary>
+          <p class="faq-answer">Wir halten es flexibel: Mit dem Jahres-Abo (180 €/Jahr) oder dem Semester-Ticket (100 €/Semester) unterstützt du den Verein und genießt alle Vorteile. Wer lieber einzeln zahlt: Montags- &amp; Freitagstraining kosten 5 € pro Einheit, die Social League (Donnerstag) 10 €.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Kann ich myClubs nutzen?</summary>
+          <p class="faq-answer">Ja! Wir sind myClubs-Partner. Du kannst deinen Check-in für alle drei Termine nutzen – egal ob beim Technik-Training am Montag oder Freitag oder bei der Social League am Donnerstag.</p>
+        </details>
+
+        <div class="faq-category">Punkte &amp; Ranking</div>
+        <details class="faq-item">
+          <summary class="faq-question">Wie werden Punkte vergeben?</summary>
+          <p class="faq-answer">Nach der Hauptrunde erhältst du Platzierungspunkte für das Website-Ranking: 1. Platz = 3 Pkt, 2. Platz = 2,5 Pkt, 3. Platz = 2 Pkt, 4. Platz = 1,5 Pkt, 5. Platz = 1 Pkt.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Gibt es auch Punkte beim Finale?</summary>
+          <p class="faq-answer">Ja! Beim „Last WoMen Standing" sammeln die Gewinner*innen individuelle Punkte: 1. Platz (1 Dame &amp; 1 Herr) = je 1 Pkt, 2. Platz = je 0,5 Pkt.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Wo finde ich das aktuelle Ranking?</summary>
+          <p class="faq-answer">Alle Ergebnisse und die aktuelle Rangliste werden regelmäßig auf unserer Website aktualisiert – einfach im Ranking-Bereich nachschauen.</p>
+        </details>
+      </div>
+      <div id="faqEn" class="faq-list reveal" style="display:none;">
+        <details class="faq-item">
+          <summary class="faq-question">What is dodgeball?</summary>
+          <p class="faq-answer">Dodgeball is a team sport where two teams try to eliminate opposing players by hitting them with soft foam balls. Catching a ball brings an eliminated teammate back into play.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Where do we train?</summary>
+          <p class="faq-answer">We train at Sporthalle Stella-Klein-Löw-Weg in Vienna, every Thursday from 6:00 PM to 9:00 PM.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">How do I join?</summary>
+          <p class="faq-answer">Just show up at the next drop-in evening! No registration needed. You can also reach us at <a href="mailto:hello@viennaimperials.at" style="color:var(--gold-lt);">hello@viennaimperials.at</a>.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Is there a cost?</summary>
+          <p class="faq-answer">Drop-in evenings have a small drop-in fee. Season members pay a reduced season contribution. Contact us for current pricing.</p>
+        </details>
+
+        <div class="faq-category">Getting Started</div>
+        <details class="faq-item">
+          <summary class="faq-question">What exactly is the Social League?</summary>
+          <p class="faq-answer">The Social League is all about community: you're assigned to a team on the spot by random draw, meet new people every time, and the focus is on fun rather than competition.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Do I need to be a pro to play?</summary>
+          <p class="faq-answer">Not at all! Whether you're a national-team player or a complete beginner, everyone is welcome. We mix up the teams so that everyone can learn from each other and have a great time.</p>
+        </details>
+
+        <div class="faq-category">Rules &amp; Gameplay</div>
+        <details class="faq-item">
+          <summary class="faq-question">How does a game start?</summary>
+          <p class="faq-answer">At the start, 6 balls are placed on the centre line. On the whistle, both teams sprint forward: your team grabs the 3 balls on the right side, the opposing team takes the 3 on the left — then it's: Ready, set, dodge!</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">What happens if my throw gets caught?</summary>
+          <p class="faq-answer">Two things at once: you're eliminated and must leave the court. At the same time, the opposing team gets to bring back one of their eliminated players. A single catch can completely turn the game around!</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">When does a round end?</summary>
+          <p class="faq-answer">A game ends either when the regular time runs out or when one team has eliminated all of the opposing players — we call that a "Full Clear".</p>
+        </details>
+
+        <div class="faq-category">Tournament Format &amp; Finals</div>
+        <details class="faq-item">
+          <summary class="faq-question">How does the tournament work?</summary>
+          <p class="faq-answer">We play in a round-robin format — every team faces every other team once. This guarantees plenty of games and means you'll get to meet everyone in the hall.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">What is "Last WoMen Standing"?</summary>
+          <p class="faq-answer">Our big closing highlight! In mixed teams, everyone fights together for the title of the last person standing on the court — it's a real spectacle.</p>
+        </details>
+
+        <div class="faq-category">Membership &amp; Pricing</div>
+        <details class="faq-item">
+          <summary class="faq-question">What membership options are available?</summary>
+          <p class="faq-answer">We keep it flexible: with an annual pass (€180/year) or a semester ticket (€100/semester) you support the club and enjoy all the benefits. Prefer to pay per session? Monday &amp; Friday training costs €5 per session, and the Social League (Thursday) is €10.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Can I use myClubs?</summary>
+          <p class="faq-answer">Yes! We're a myClubs partner. You can use your check-in for all three sessions — whether it's technical training on Monday or Friday, or the Social League on Thursday.</p>
+        </details>
+
+        <div class="faq-category">Points &amp; Rankings</div>
+        <details class="faq-item">
+          <summary class="faq-question">How are points awarded?</summary>
+          <p class="faq-answer">After the main round you receive placement points for the website ranking: 1st place = 3 pts, 2nd = 2.5 pts, 3rd = 2 pts, 4th = 1.5 pts, 5th = 1 pt.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Are there points in the finals too?</summary>
+          <p class="faq-answer">Yes! In "Last WoMen Standing", winners collect individual points: 1st place (1 woman &amp; 1 man) = 1 pt each, 2nd place = 0.5 pts each.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Where can I find the current rankings?</summary>
+          <p class="faq-answer">All results and the current leaderboard are updated regularly on our website — just check the Rankings section.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "What is dodgeball?", "acceptedAnswer": { "@type": "Answer", "text": "Dodgeball is a team sport where two teams try to eliminate opposing players by hitting them with soft foam balls. Catching a ball brings an eliminated teammate back into play." } },
+      { "@type": "Question", "name": "Where do we train?", "acceptedAnswer": { "@type": "Answer", "text": "We train at Sporthalle Stella-Klein-Löw-Weg in Vienna, every Thursday from 6:00 PM to 9:00 PM." } },
+      { "@type": "Question", "name": "How do I join?", "acceptedAnswer": { "@type": "Answer", "text": "Just show up at the next drop-in evening! No registration needed. You can also reach us at imperialsdodgeball@gmail.com." } },
+      { "@type": "Question", "name": "Is there a cost?", "acceptedAnswer": { "@type": "Answer", "text": "Drop-in evenings have a small drop-in fee. Season members pay a reduced season contribution. Contact us for current pricing." } },
+      { "@type": "Question", "name": "What exactly is the Social League?", "acceptedAnswer": { "@type": "Answer", "text": "The Social League is all about community: you're assigned to a team on the spot by random draw, meet new people every time, and the focus is on fun rather than competition." } },
+      { "@type": "Question", "name": "Do I need to be a pro to play?", "acceptedAnswer": { "@type": "Answer", "text": "Not at all! Whether you're a national-team player or a complete beginner, everyone is welcome. We mix up the teams so that everyone can learn from each other and have a great time." } },
+      { "@type": "Question", "name": "How does a game start?", "acceptedAnswer": { "@type": "Answer", "text": "At the start, 6 balls are placed on the centre line. On the whistle, both teams sprint forward: your team grabs the 3 balls on the right side, the opposing team takes the 3 on the left — then it's: Ready, set, dodge!" } },
+      { "@type": "Question", "name": "What happens if my throw gets caught?", "acceptedAnswer": { "@type": "Answer", "text": "Two things at once: you're eliminated and must leave the court. At the same time, the opposing team gets to bring back one of their eliminated players. A single catch can completely turn the game around!" } },
+      { "@type": "Question", "name": "When does a round end?", "acceptedAnswer": { "@type": "Answer", "text": "A game ends either when the regular time runs out or when one team has eliminated all of the opposing players — we call that a Full Clear." } },
+      { "@type": "Question", "name": "How does the tournament work?", "acceptedAnswer": { "@type": "Answer", "text": "We play in a round-robin format — every team faces every other team once. This guarantees plenty of games and means you'll get to meet everyone in the hall." } },
+      { "@type": "Question", "name": "What is Last WoMen Standing?", "acceptedAnswer": { "@type": "Answer", "text": "Our big closing highlight! In mixed teams, everyone fights together for the title of the last person standing on the court — it's a real spectacle." } },
+      { "@type": "Question", "name": "What membership options are available?", "acceptedAnswer": { "@type": "Answer", "text": "We keep it flexible: with an annual pass (€180/year) or a semester ticket (€100/semester) you support the club and enjoy all the benefits. Prefer to pay per session? Monday & Friday training costs €5 per session, and the Social League (Thursday) is €10." } },
+      { "@type": "Question", "name": "Can I use myClubs?", "acceptedAnswer": { "@type": "Answer", "text": "Yes! We're a myClubs partner. You can use your check-in for all three sessions — whether it's technical training on Monday or Friday, or the Social League on Thursday." } },
+      { "@type": "Question", "name": "How are points awarded?", "acceptedAnswer": { "@type": "Answer", "text": "After the main round you receive placement points for the website ranking: 1st place = 3 pts, 2nd = 2.5 pts, 3rd = 2 pts, 4th = 1.5 pts, 5th = 1 pt." } },
+      { "@type": "Question", "name": "Are there points in the finals too?", "acceptedAnswer": { "@type": "Answer", "text": "Yes! In Last WoMen Standing, winners collect individual points: 1st place (1 woman & 1 man) = 1 pt each, 2nd place = 0.5 pts each." } },
+      { "@type": "Question", "name": "Where can I find the current rankings?", "acceptedAnswer": { "@type": "Answer", "text": "All results and the current leaderboard are updated regularly on our website — just check the Rankings section." } }
+    ]
+  }
+  </script>
+
   <!-- ══ RANKINGS ══ -->
   <section id="rankings">
     <div style="position:absolute;top:-10%;left:-5%;width:700px;height:700px;background:radial-gradient(ellipse at center,rgba(26,61,143,0.12) 0%,transparent 70%);pointer-events:none;"></div>
@@ -1672,7 +1950,7 @@
     <div class="cta-radial-1"></div>
     <div class="cta-radial-2"></div>
     <div class="cta-inner">
-      <p class="section-label reveal" style="text-align:center;">Ready to Play?</p>
+      <p class="section-label reveal" style="text-align:center;">Ready to Play? / Bereit zum Spielen?</p>
       <div class="gold-line reveal reveal-delay-1" style="margin:0 auto 1.5rem;"></div>
       <h2 class="cta-title reveal reveal-delay-1">
         Play with the<br/><em>Imperials</em>
@@ -1680,10 +1958,33 @@
       <p class="cta-sub reveal reveal-delay-2">
         Join Austria's Premier Foam Dodgeball League today
       </p>
-      <div class="cta-ctas reveal reveal-delay-3">
-        <a href="https://www.instagram.com/imperialsdodgeball/" class="btn-primary">Join the League</a>
-        <a href="mailto:imperialsdodgeball@gmail.com" class="btn-secondary">Mail Us</a>
-      </div>
+      <form id="joinForm" class="signup-form reveal reveal-delay-3" onsubmit="submitJoinForm(event)" novalidate>
+        <div class="signup-form-grid">
+          <div class="signup-field">
+            <label for="joinName" class="signup-label">Name *</label>
+            <input type="text" id="joinName" name="name" class="signup-input" placeholder="Your name / Dein Name" required autocomplete="name" />
+          </div>
+          <div class="signup-field">
+            <label for="joinEmail" class="signup-label">Email *</label>
+            <input type="email" id="joinEmail" name="email" class="signup-input" placeholder="your@email.com" required autocomplete="email" />
+          </div>
+          <div class="signup-field">
+            <label for="joinLevel" class="signup-label">Erfahrungslevel / Experience</label>
+            <select id="joinLevel" name="level" class="signup-input">
+              <option value="">Select / Auswählen</option>
+              <option value="Anfänger">Anfänger / Beginner</option>
+              <option value="Fortgeschritten">Fortgeschritten / Intermediate</option>
+              <option value="Profi">Profi / Advanced</option>
+            </select>
+          </div>
+          <div class="signup-field">
+            <label for="joinSource" class="signup-label">Wie hast du von uns gehört? / How did you find us?</label>
+            <input type="text" id="joinSource" name="source" class="signup-input" placeholder="Instagram, Friend, Google…" autocomplete="off" />
+          </div>
+        </div>
+        <button type="submit" class="btn-primary signup-submit" id="joinSubmitBtn">Jetzt mitmachen / Join the League</button>
+        <div id="joinSuccess" class="signup-success" style="display:none;">✓ Danke! Wir melden uns bald. / Thanks! We'll be in touch soon.</div>
+      </form>
 
       <p style="margin-top:2rem; font-size:0.85rem; color:rgba(244,247,255,0.3); font-family:'Barlow Condensed',sans-serif; letter-spacing:0.08em; text-transform:uppercase;" class="reveal reveal-delay-4">
         No commitment · Drop in anytime · Vienna, Austria
@@ -1691,11 +1992,12 @@
     </div>
   </section>
 
+  </main>
   <!-- ══ FOOTER ══ -->
-  <footer>
+  <footer role="contentinfo">
     <div class="footer-inner">
       <div class="footer-brand">
-        <img src="cropped-Vienna-Imperials-03-1.png" alt="Vienna Imperials" />
+        <img src="cropped-Vienna-Imperials-03-1.png" alt="Vienna Imperials" loading="lazy" width="48" height="48" />
         <div class="footer-brand-text">
           <span class="footer-brand-name">Vienna Imperials</span>
           <span class="footer-brand-tagline">Austria's Premier Foam Dodgeball League</span>
@@ -1707,6 +2009,13 @@
         <li><a href="#why">Join</a></li>
         <li><a href="mailto:hello@viennaimperials.at">Contact</a></li>
       </ul>
+      <form id="newsletterForm" onsubmit="submitNewsletterForm(event)" novalidate style="display:flex;flex-direction:column;gap:0.5rem;min-width:200px;max-width:260px;">
+        <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(244,247,255,0.45);margin-bottom:0.15rem;">Newsletter</p>
+        <input type="text" id="nlName" placeholder="Name" class="signup-input" style="padding:8px 12px;font-size:0.85rem;" required autocomplete="name" />
+        <input type="email" id="nlEmail" placeholder="Email" class="signup-input" style="padding:8px 12px;font-size:0.85rem;" required autocomplete="email" />
+        <button type="submit" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.08em;text-transform:uppercase;padding:8px 16px;border-radius:4px;background:linear-gradient(135deg,var(--gold),var(--gold-lt));color:var(--deep);border:none;cursor:pointer;">Abonnieren / Subscribe</button>
+        <div id="nlSuccess" style="display:none;font-size:0.8rem;color:var(--gold-lt);font-family:'Barlow Condensed',sans-serif;">✓ Subscribed!</div>
+      </form>
       <div class="footer-social">
         <!-- Instagram -->
         <a href="https://www.instagram.com/imperialsdodgeball/" class="social-btn" aria-label="Instagram">
@@ -1718,7 +2027,11 @@
     </div>
     <div class="footer-copy">
       <p>&copy; 2026 Vienna Imperials. All rights reserved.</p>
-      <p>Vienna, Austria · imperial-dodgeball.com</p>
+      <p>Vienna, Austria · <a href="https://imperialsdodgeball.com" style="color:inherit;text-decoration:none;">imperialsdodgeball.com</a></p>
+      <p style="margin-top:0.5rem;">
+        <a href="/impressum.html" style="color:rgba(244,247,255,0.5);text-decoration:none;font-size:0.8rem;margin-right:1rem;">Impressum</a>
+        <a href="/datenschutz.html" style="color:rgba(244,247,255,0.5);text-decoration:none;font-size:0.8rem;">Datenschutz</a>
+      </p>
     </div>
   </footer>
 
@@ -1727,7 +2040,7 @@
     <div class="modal" id="adminLoginCard" style="max-width:400px;">
       <button class="modal-close" onclick="closeAdminLoginModal()" style="position:absolute;top:1rem;right:1rem;">&#10005;</button>
       <div class="login-logo">
-        <img src="cropped-Vienna-Imperials-03-1.png" alt="Vienna Imperials" />
+        <img src="cropped-Vienna-Imperials-03-1.png" alt="Vienna Imperials" width="72" height="72" loading="lazy" />
         <span class="login-title">Vienna Imperials</span>
         <p class="login-sub">Admin Access</p>
       </div>
@@ -1934,51 +2247,56 @@
 
     // ── Mobile menu toggle
     function toggleMenu() {
-      const links = document.querySelector('.nav-links');
-      const toggle = document.querySelector('.nav-toggle');
-      if (links.style.display === 'flex') {
-        links.style.display = 'none';
-        toggle.style.transform = '';
-      } else {
-        links.style.display = 'flex';
-        links.style.flexDirection = 'column';
-        links.style.position = 'fixed';
-        links.style.top = '72px';
-        links.style.left = '0';
-        links.style.right = '0';
-        links.style.background = 'rgba(12,27,58,0.97)';
-        links.style.backdropFilter = 'blur(16px)';
-        links.style.padding = '1.5rem 2rem 2rem';
-        links.style.gap = '1.25rem';
-        links.style.borderBottom = '1px solid rgba(212,150,26,0.15)';
-        toggle.style.transform = 'rotate(90deg)';
-      }
+      document.body.classList.toggle('nav-open');
     }
+
+    // ── Close mobile menu on outside click
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('nav') && document.body.classList.contains('nav-open')) {
+        document.body.classList.remove('nav-open');
+      }
+    });
 
     // ── Close mobile menu on link click
     document.querySelectorAll('.nav-links a').forEach(link => {
       link.addEventListener('click', () => {
-        const links = document.querySelector('.nav-links');
-        const toggle = document.querySelector('.nav-toggle');
         if (window.innerWidth <= 680) {
-          links.style.display = 'none';
-          toggle.style.transform = '';
+          document.body.classList.remove('nav-open');
         }
       });
     });
 
-    // ══════════════════════════════════════════════════════
-    // ADMIN AUTH
-    // ══════════════════════════════════════════════════════
-    const ADMIN_PASSWORD = 'Imperials2026';
-    const SESSION_KEY    = 'vi_admin_session';
+    // ── Hidden admin route: /#admin-access reveals login button
+    function checkAdminRoute() {
+      if (window.location.hash === '#admin-access') {
+        document.getElementById('adminNavLoginItem').style.display = 'list-item';
+      }
+    }
+    checkAdminRoute();
+    window.addEventListener('hashchange', checkAdminRoute);
 
-    function isAdmin() { return sessionStorage.getItem(SESSION_KEY) === 'true'; }
+    // ── FAQ language toggle
+    function setFaqLang(lang) {
+      document.getElementById('faqDe').style.display = lang === 'de' ? '' : 'none';
+      document.getElementById('faqEn').style.display = lang === 'en' ? '' : 'none';
+      const active = { background: 'rgba(212,150,26,0.15)', borderColor: 'rgba(212,150,26,0.5)', color: 'var(--gold-lt)' };
+      const inactive = { background: 'transparent', borderColor: 'rgba(244,247,255,0.2)', color: 'rgba(244,247,255,0.6)' };
+      Object.assign(document.getElementById('faqBtnDe').style, lang === 'de' ? active : inactive);
+      Object.assign(document.getElementById('faqBtnEn').style, lang === 'en' ? active : inactive);
+    }
+
+    // ══════════════════════════════════════════════════════
+    // ADMIN AUTH (server-validated)
+    // ══════════════════════════════════════════════════════
+    const SESSION_KEY = 'vi_admin_token';
+
+    function isAdmin() { return !!sessionStorage.getItem(SESSION_KEY); }
+    function getToken() { return sessionStorage.getItem(SESSION_KEY) || ''; }
 
     function updateAdminUI() {
       const admin = isAdmin();
       document.body.classList.toggle('admin-mode', admin);
-      document.getElementById('adminNavLoginItem').style.display  = admin ? 'none' : '';
+      document.getElementById('adminNavLoginItem').style.display  = admin ? 'none' : (window.location.hash === '#admin-access' ? 'list-item' : 'none');
       document.getElementById('adminNavLoggedItem').style.display = admin ? 'list-item' : 'none';
       document.getElementById('rankingsAdminBar').style.display   = admin ? 'flex' : 'none';
     }
@@ -1995,23 +2313,40 @@
     function adminLoginBdClick(e) {
       if (e.target === document.getElementById('adminLoginBackdrop')) closeAdminLoginModal();
     }
-    function attemptAdminLogin() {
+    async function attemptAdminLogin() {
       const val = document.getElementById('adminLoginPass').value;
-      if (val === ADMIN_PASSWORD) {
-        sessionStorage.setItem(SESSION_KEY, 'true');
-        closeAdminLoginModal();
-        updateAdminUI();
-        render();
-        toast('Welcome back, Admin', 'success');
-      } else {
-        const card  = document.getElementById('adminLoginCard');
-        const error = document.getElementById('adminLoginError');
-        error.classList.add('show');
-        card.classList.remove('shake');
-        void card.offsetWidth;
-        card.classList.add('shake');
-        document.getElementById('adminLoginPass').value = '';
-        document.getElementById('adminLoginPass').focus();
+      const loginBtn = document.querySelector('.login-btn');
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Verifying…';
+      try {
+        const res = await fetch('/api/admin-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: val })
+        });
+        if (res.ok) {
+          const { token } = await res.json();
+          sessionStorage.setItem(SESSION_KEY, token);
+          closeAdminLoginModal();
+          updateAdminUI();
+          await loadPlayersFromAPI();
+          render();
+          toast('Welcome back, Admin', 'success');
+        } else {
+          const card  = document.getElementById('adminLoginCard');
+          const error = document.getElementById('adminLoginError');
+          error.classList.add('show');
+          card.classList.remove('shake');
+          void card.offsetWidth;
+          card.classList.add('shake');
+          document.getElementById('adminLoginPass').value = '';
+          document.getElementById('adminLoginPass').focus();
+        }
+      } catch (err) {
+        toast('Login failed — network error', 'danger');
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Enter Admin Mode';
       }
     }
     function adminLogout() {
@@ -2042,12 +2377,34 @@
 
     let players  = JSON.parse(localStorage.getItem('vi_players') || 'null') || DEFAULT_PLAYERS.map(p=>({...p}));
     let nextId   = Math.max(0, ...players.map(p=>p.id)) + 1;
+
+    async function loadPlayersFromAPI() {
+      try {
+        const res = await fetch('/api/rankings');
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            players = data;
+            nextId = Math.max(0, ...players.map(p=>p.id)) + 1;
+          }
+        }
+      } catch (e) { /* fall back to localStorage */ }
+    }
     let filter   = 'all';
     let sortKey  = 'points';
     let editId   = null;
     let deleteId = null;
 
-    function save() { localStorage.setItem('vi_players', JSON.stringify(players)); }
+    function save() {
+      localStorage.setItem('vi_players', JSON.stringify(players));
+      if (isAdmin()) {
+        fetch('/api/rankings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() },
+          body: JSON.stringify(players)
+        }).catch(() => {});
+      }
+    }
 
     // ══════════════════════════════════════════════════════
     // RENDER
@@ -2217,6 +2574,17 @@
     // IMPORT
     // ══════════════════════════════════════════════════════
     let importData=[], importMode='replace';
+    let xlsxLoaded = false;
+    async function loadXLSX() {
+      if (xlsxLoaded || typeof XLSX !== 'undefined') { xlsxLoaded = true; return; }
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js';
+        s.onload = () => { xlsxLoaded = true; resolve(); };
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
     function openImport() {
       importData=[]; importMode='replace';
       document.getElementById('importPreviewSection').style.display='none';
@@ -2225,6 +2593,7 @@
       document.getElementById('modeReplace').classList.add('selected');
       document.getElementById('modeMerge').classList.remove('selected');
       document.getElementById('importBackdrop').classList.add('open');
+      loadXLSX().catch(() => toast('Failed to load Excel library', 'danger'));
     }
     function closeImport() { document.getElementById('importBackdrop').classList.remove('open'); }
     function importBdClick(e) { if(e.target===document.getElementById('importBackdrop')) closeImport(); }
@@ -2321,7 +2690,61 @@
     // INIT
     // ══════════════════════════════════════════════════════
     updateAdminUI();
-    render();
+    loadPlayersFromAPI().then(render);
+
+    // ── Signup forms
+    async function submitSignupForm(formId, successId, submitBtnId, type) {
+      const nameEl  = document.getElementById(formId === 'joinForm' ? 'joinName' : 'nlName');
+      const emailEl = document.getElementById(formId === 'joinForm' ? 'joinEmail' : 'nlEmail');
+      const name  = nameEl?.value.trim();
+      const email = emailEl?.value.trim();
+      const level  = formId === 'joinForm' ? (document.getElementById('joinLevel')?.value || '') : '';
+      const source = formId === 'joinForm' ? (document.getElementById('joinSource')?.value || '') : '';
+      if (!name || !email) { toast('Please fill in Name and Email', 'danger'); return; }
+      const btn = submitBtnId ? document.getElementById(submitBtnId) : null;
+      if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+      try {
+        const res = await fetch('/api/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, level, source, type })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          document.getElementById(formId).style.display = 'none';
+          const s = document.getElementById(successId);
+          s.textContent = data.message;
+          s.style.display = 'block';
+        } else {
+          toast('Something went wrong. Please try again.', 'danger');
+          if (btn) { btn.disabled = false; btn.textContent = type === 'newsletter' ? 'Abonnieren / Subscribe' : 'Jetzt mitmachen / Join the League'; }
+        }
+      } catch {
+        toast('Network error. Please try again.', 'danger');
+        if (btn) { btn.disabled = false; btn.textContent = type === 'newsletter' ? 'Abonnieren / Subscribe' : 'Jetzt mitmachen / Join the League'; }
+      }
+    }
+    function submitJoinForm(e) { e.preventDefault(); submitSignupForm('joinForm', 'joinSuccess', 'joinSubmitBtn', 'join'); }
+    function submitNewsletterForm(e) { e.preventDefault(); submitSignupForm('newsletterForm', 'nlSuccess', null, 'newsletter'); }
+
+    // ── Cookie consent
+    (function() {
+      const consent = localStorage.getItem('vi_cookie_consent');
+      const banner  = document.getElementById('cookieBanner');
+      if (!consent) { banner.style.display = 'flex'; }
+      if (consent === 'declined') {
+        document.querySelectorAll('link[href*="fonts.googleapis.com"]').forEach(el => el.remove());
+      }
+    })();
+    function acceptCookies() {
+      localStorage.setItem('vi_cookie_consent', 'accepted');
+      document.getElementById('cookieBanner').style.display = 'none';
+    }
+    function declineCookies() {
+      localStorage.setItem('vi_cookie_consent', 'declined');
+      document.getElementById('cookieBanner').style.display = 'none';
+      document.querySelectorAll('link[href*="fonts.googleapis.com"]').forEach(el => el.remove());
+    }
   </script>
 </body>
 </html>

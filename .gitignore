@@ -5,3 +5,14 @@ credentials.json
 token.json
 .tmp/
 website/
+.env.local
+
+.vercel
+
+# Internal work files
+.claude/
+prompts/
+vienna-imperials-review.md
+_patch_legal.md
+website.code-workspace
+"Screenshot 2026-03-13 171002.png"

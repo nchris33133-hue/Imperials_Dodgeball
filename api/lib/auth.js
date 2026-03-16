@@ -1,0 +1,104 @@
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+
+const ACCESS_TOKEN_EXPIRY = '15m';
+const REFRESH_TOKEN_DAYS = 7;
+
+function getSecret() {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) throw new Error('Missing JWT_SECRET');
+  return secret;
+}
+
+function createAccessToken(user) {
+  return jwt.sign(
+    { sub: user.id, role: 'member', iss: 'vienna-member' },
+    getSecret(),
+    { expiresIn: ACCESS_TOKEN_EXPIRY }
+  );
+}
+
+function verifyAccessToken(token) {
+  try {
+    const payload = jwt.verify(token, getSecret());
+    return payload;
+  } catch {
+    return null;
+  }
+}
+
+function extractTokenFromHeader(req) {
+  const auth = req.headers['authorization'] || '';
+  return auth.startsWith('Bearer ') ? auth.slice(7) : null;
+}
+
+function extractTokenFromCookie(req, name) {
+  const cookies = req.headers['cookie'] || '';
+  const match = cookies.split(';').find(c => c.trim().startsWith(name + '='));
+  return match ? match.split('=')[1].trim() : null;
+}
+
+function requireMember(req, res) {
+  const token = extractTokenFromCookie(req, 'access_token') || extractTokenFromHeader(req);
+  if (!token) {
+    res.status(401).json({ error: 'Authentication required', code: 'UNAUTHORIZED' });
+    return null;
+  }
+  const payload = verifyAccessToken(token);
+  if (!payload || payload.role !== 'member' || payload.iss !== 'vienna-member') {
+    res.status(401).json({ error: 'Invalid or expired token', code: 'INVALID_TOKEN' });
+    return null;
+  }
+  return payload;
+}
+
+function generateRefreshToken() {
+  return crypto.randomBytes(32).toString('hex');
+}
+
+function hashRefreshToken(token) {
+  return crypto.createHash('sha256').update(token).digest('hex');
+}
+
+function setAccessTokenCookie(res, token) {
+  res.setHeader('Set-Cookie', [
+    `access_token=${token}; HttpOnly; Secure; SameSite=Strict; Path=/api; Max-Age=900`,
+    ...(res.getHeader('Set-Cookie') || [])
+  ].flat());
+}
+
+function setRefreshTokenCookie(res, token) {
+  const maxAge = REFRESH_TOKEN_DAYS * 24 * 60 * 60;
+  const existing = res.getHeader('Set-Cookie') || [];
+  res.setHeader('Set-Cookie', [
+    ...(Array.isArray(existing) ? existing : [existing]),
+    `refresh_token=${token}; HttpOnly; Secure; SameSite=Strict; Path=/api/auth; Max-Age=${maxAge}`
+  ]);
+}
+
+function clearAuthCookies(res) {
+  res.setHeader('Set-Cookie', [
+    'access_token=; HttpOnly; Secure; SameSite=Strict; Path=/api; Max-Age=0',
+    'refresh_token=; HttpOnly; Secure; SameSite=Strict; Path=/api/auth; Max-Age=0'
+  ]);
+}
+
+function preHashPassword(password) {
+  return crypto.createHash('sha256').update(password).digest('base64');
+}
+
+module.exports = {
+  ACCESS_TOKEN_EXPIRY,
+  REFRESH_TOKEN_DAYS,
+  createAccessToken,
+  verifyAccessToken,
+  extractTokenFromHeader,
+  extractTokenFromCookie,
+  requireMember,
+  generateRefreshToken,
+  hashRefreshToken,
+  setAccessTokenCookie,
+  setRefreshTokenCookie,
+  clearAuthCookies,
+  preHashPassword,
+};

@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Member Area — Vienna Imperials</title>
+  <meta name="description" content="Vienna Imperials member dashboard. View your stats, rankings, and tier." />
+  <meta name="robots" content="noindex" />
+
+  <link rel="stylesheet" href="/tailwind.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0C1B3A;
+      color: #F4F7FF;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0C1B3A; }
+    ::-webkit-scrollbar-thumb { background: #D4961A; border-radius: 3px; }
+
+    :root {
+      --gold:    #D4961A;
+      --gold-lt: #F0B830;
+      --red:     #E8193C;
+      --royal:   #1A3D8F;
+      --navy:    #0F2150;
+      --deep:    #0C1B3A;
+      --mid:     #3567C0;
+      --cloud:   #F4F7FF;
+      --brass:   #8B7847;
+      --border:  rgba(53,103,192,0.22);
+      --panel:   #122060;
+    }
+
+    .noise::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      opacity: 0.4;
+      z-index: 1;
+    }
+
+    .display { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.04em; line-height: 0.95; }
+    .heading { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; letter-spacing: -0.01em; }
+
+    /* ── Navigation ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 2rem; height: 72px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(12, 27, 58, 0.95);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 32px rgba(0,0,0,0.4), 0 1px 0 rgba(212,150,26,0.15);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .nav-logo img { height: 44px; width: auto; }
+    .nav-logo span { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.06em; color: var(--gold-lt); line-height: 1; }
+    .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+    .nav-links a { font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 1rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(244,247,255,0.75); text-decoration: none; transition: color 0.2s ease; }
+    .nav-links a:hover { color: var(--gold-lt); }
+    .nav-cta { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--deep) !important; background: linear-gradient(135deg, var(--gold), var(--gold-lt)); padding: 8px 20px; border-radius: 4px; transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease !important; }
+    .nav-cta:hover { color: var(--deep) !important; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(212,150,26,0.5); filter: brightness(1.1); }
+
+    .nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; z-index: 101; }
+    .nav-toggle span { display: block; width: 22px; height: 2px; background: var(--cloud); border-radius: 2px; transition: transform 0.25s ease, opacity 0.2s ease; }
+    body.nav-open .nav-toggle span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    body.nav-open .nav-toggle span:nth-child(2) { opacity: 0; }
+    body.nav-open .nav-toggle span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    .member-nav-identity { display: flex; align-items: center; gap: 0.6rem; }
+    .member-nav-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-lt); }
+    .member-nav-logout { font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; background: transparent; border: 1px solid rgba(244,247,255,0.1); border-radius: 6px; padding: 5px 12px; color: rgba(244,247,255,0.45); cursor: pointer; transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease; }
+    .member-nav-logout:hover { background: rgba(248,113,113,0.08); color: #F87171; border-color: rgba(248,113,113,0.4); }
+
+    .tier-badge { display: inline-block; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 2px 7px; border-radius: 4px; margin-left: 7px; vertical-align: middle; }
+    .tier-bronze  { background: rgba(205,127,50,0.15); color: #CD7F32; border: 1px solid rgba(205,127,50,0.25); }
+    .tier-silver  { background: rgba(192,192,192,0.1); color: #B0B8C8; border: 1px solid rgba(192,192,192,0.2); }
+    .tier-gold    { background: rgba(212,150,26,0.15); color: var(--gold-lt); border: 1px solid rgba(212,150,26,0.3); }
+    .tier-platinum { background: rgba(100,200,255,0.1); color: #67E8F9; border: 1px solid rgba(100,200,255,0.2); }
+
+    /* ── Auth card ── */
+    .auth-wrap {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 1rem; padding-top: 88px;
+    }
+    .auth-card {
+      width: 100%; max-width: 440px;
+      background: var(--panel); border: 1px solid var(--border); border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .auth-card.hidden { display: none; }
+    .auth-logo { text-align: center; margin-bottom: 1.75rem; }
+    .auth-logo img { height: 72px; filter: drop-shadow(0 4px 16px rgba(212,150,26,0.25)); }
+    .auth-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.08em; color: var(--gold-lt); text-align: center; display: block; margin-top: 0.5rem; }
+    .auth-sub { font-size: 0.8rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(244,247,255,0.35); text-align: center; margin-top: 4px; margin-bottom: 1.5rem; }
+    .auth-divider { width: 32px; height: 2px; background: linear-gradient(90deg, var(--gold), var(--gold-lt)); margin: 0 auto 1.75rem; border-radius: 2px; }
+
+    .field-group { margin-bottom: 16px; }
+    .field-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(244,247,255,0.4); display: block; margin-bottom: 6px; }
+    .field-input {
+      width: 100%; background: rgba(12,27,58,0.8); border: 1px solid var(--border); border-radius: 8px;
+      padding: 11px 14px; font-family: 'Inter', sans-serif; font-size: 0.95rem; color: var(--cloud);
+      outline: none; transition: border-color 0.2s ease; letter-spacing: 0.04em;
+    }
+    .field-input:focus { border-color: rgba(212,150,26,0.5); }
+    .field-input::placeholder { color: rgba(244,247,255,0.2); }
+    .field-input.error { border-color: rgba(248,113,113,0.5); }
+    .field-error { font-size: 0.78rem; color: #F87171; font-weight: 600; margin-top: 4px; display: none; }
+    .field-error.show { display: block; }
+
+    .password-wrap { position: relative; }
+    .password-wrap .field-input { padding-right: 44px; }
+    .password-toggle {
+      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+      width: 32px; height: 32px; background: none; border: none; cursor: pointer;
+      color: rgba(244,247,255,0.3); display: flex; align-items: center; justify-content: center;
+      transition: color 0.15s ease;
+    }
+    .password-toggle:hover { color: rgba(244,247,255,0.6); }
+
+    .strength-bar { height: 4px; border-radius: 2px; background: rgba(244,247,255,0.05); margin-top: 8px; overflow: hidden; }
+    .strength-fill { height: 100%; border-radius: 2px; width: 0; transition: width 0.3s ease, background 0.3s ease; }
+    .strength-label { font-size: 0.7rem; font-weight: 600; margin-top: 4px; }
+
+    .remember-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+    .remember-row input[type="checkbox"] {
+      width: 18px; height: 18px; border: 1px solid var(--border); border-radius: 4px;
+      background: rgba(12,27,58,0.8); appearance: none; -webkit-appearance: none;
+      cursor: pointer; position: relative; flex-shrink: 0;
+    }
+    .remember-row input[type="checkbox"]:checked { background: var(--gold); border-color: var(--gold); }
+    .remember-row input[type="checkbox"]:checked::after {
+      content: ''; position: absolute; left: 5px; top: 2px; width: 5px; height: 9px;
+      border: solid var(--deep); border-width: 0 2px 2px 0; transform: rotate(45deg);
+    }
+    .remember-row label { font-size: 0.85rem; color: rgba(244,247,255,0.55); font-weight: 500; cursor: pointer; }
+
+    .auth-btn {
+      width: 100%; margin-top: 1.25rem;
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1rem;
+      letter-spacing: 0.14em; text-transform: uppercase; padding: 12px; border-radius: 8px;
+      border: none; background: linear-gradient(135deg, var(--gold), var(--gold-lt)); color: var(--deep);
+      cursor: pointer; position: relative; overflow: hidden;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 4px 20px rgba(212,150,26,0.3);
+    }
+    .auth-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(212,150,26,0.4); }
+    .auth-btn:active { transform: none; }
+    .auth-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+    .auth-btn:focus-visible { outline: 2px solid var(--gold-lt); outline-offset: 2px; }
+
+    .auth-spinner {
+      display: inline-block; width: 16px; height: 16px;
+      border: 2px solid var(--deep); border-top-color: transparent;
+      border-radius: 50%; animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .auth-footer { text-align: center; margin-top: 1.25rem; font-size: 0.85rem; color: rgba(244,247,255,0.45); }
+    .auth-footer a { color: var(--gold-lt); text-decoration: none; font-weight: 600; }
+    .auth-footer a:hover { text-decoration: underline; }
+
+    .auth-error-banner {
+      background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2);
+      border-radius: 8px; padding: 12px 16px; color: #F87171;
+      font-size: 0.85rem; font-weight: 600; margin-bottom: 16px;
+      display: none; align-items: center; justify-content: space-between;
+    }
+    .auth-error-banner.show { display: flex; }
+    .auth-error-banner button { background: none; border: none; color: #F87171; cursor: pointer; font-size: 1.1rem; padding: 0 0 0 8px; }
+
+    .auth-success { text-align: center; padding: 2rem 0; }
+    .auth-success-icon { font-size: 48px; color: #4ADE80; margin-bottom: 1rem; }
+    .auth-success-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--gold-lt); letter-spacing: 0.08em; }
+    .auth-success-text { font-size: 0.85rem; color: rgba(244,247,255,0.6); margin-top: 0.5rem; }
+
+    @keyframes shake { 0%,100%{transform:translateX(0)} 15%{transform:translateX(-6px)} 30%{transform:translateX(5px)} 45%{transform:translateX(-4px)} 60%{transform:translateX(3px)} 75%{transform:translateX(-2px)} }
+    .shake { animation: shake 0.4s ease; }
+
+    /* ── Dashboard ── */
+    .dashboard { display: none; padding-top: 72px; }
+    .dashboard.active { display: block; }
+
+    .dash-header {
+      position: relative; background: var(--deep); padding: 2rem 2rem 1.5rem; overflow: hidden;
+    }
+    .dash-header::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 2px; background: linear-gradient(90deg, var(--gold), var(--gold-lt), var(--gold));
+    }
+    .dash-header-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .dash-welcome { font-family: 'Bebas Neue', sans-serif; font-size: 1.75rem; color: var(--cloud); letter-spacing: 0.04em; }
+    .dash-welcome .name { color: var(--gold-lt); }
+
+    .dash-content { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+
+    /* Stats card */
+    .stats-card {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+      padding: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); margin-bottom: 2rem;
+    }
+    .stats-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+    .stats-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.25rem; color: var(--cloud); }
+    .stats-rank-block { text-align: right; }
+    .stats-rank-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--gold-lt); line-height: 1; }
+    .stats-rank-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(244,247,255,0.35); }
+
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+    }
+    .stat-cell { text-align: center; }
+    .stat-value { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--cloud); }
+    .stat-label { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(244,247,255,0.35); margin-top: 2px; }
+    .stat-value.gold { color: var(--gold-lt); }
+    .stat-value.purple { color: #C084FC; }
+    .stat-value.gain-pos { color: #4ADE80; }
+    .stat-value.gain-neg { color: #F87171; }
+
+    .stats-empty {
+      text-align: center; padding: 24px 0; font-size: 0.9rem;
+      color: rgba(244,247,255,0.5);
+    }
+
+    /* Skeleton loading */
+    .skeleton { background: linear-gradient(90deg, rgba(244,247,255,0.03) 25%, rgba(244,247,255,0.06) 50%, rgba(244,247,255,0.03) 75%); background-size: 200% 100%; animation: shimmer 1.5s ease infinite; border-radius: 4px; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    /* Leaderboard */
+    .leaderboard-section { margin-top: 2rem; }
+    .leaderboard-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--cloud);
+      letter-spacing: 0.04em; margin-bottom: 0.5rem;
+    }
+    .leaderboard-line { width: 32px; height: 2px; background: linear-gradient(90deg, var(--gold), var(--gold-lt)); border-radius: 2px; margin-bottom: 1.5rem; }
+
+    .lb-controls { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
+    .lb-tab {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.78rem;
+      letter-spacing: 0.1em; text-transform: uppercase; padding: 6px 14px; border-radius: 6px;
+      border: 1px solid var(--border); background: transparent; color: rgba(244,247,255,0.45);
+      cursor: pointer; transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+    .lb-tab:hover { background: rgba(53,103,192,0.1); color: var(--cloud); }
+    .lb-tab.active { background: rgba(212,150,26,0.12); color: var(--gold-lt); border-color: rgba(212,150,26,0.3); }
+    .lb-search {
+      margin-left: auto; background: rgba(12,27,58,0.8); border: 1px solid var(--border);
+      border-radius: 6px; padding: 6px 12px; font-family: 'Inter', sans-serif; font-size: 0.85rem;
+      color: var(--cloud); outline: none; width: 180px; transition: border-color 0.2s ease;
+    }
+    .lb-search:focus { border-color: rgba(212,150,26,0.5); }
+    .lb-search::placeholder { color: rgba(244,247,255,0.2); }
+
+    .lb-table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
+    .lb-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .lb-table th {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.7rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: rgba(244,247,255,0.4);
+      padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border);
+      background: rgba(12,27,58,0.5); white-space: nowrap; cursor: pointer;
+    }
+    .lb-table th:hover { color: var(--gold-lt); }
+    .lb-table td { padding: 10px 12px; border-bottom: 1px solid rgba(53,103,192,0.08); white-space: nowrap; }
+    .lb-table tbody tr { transition: background 0.15s ease; }
+    .lb-table tbody tr:hover { background: rgba(53,103,192,0.05); }
+    .lb-table .row-self { background: rgba(212,150,26,0.06); border-left: 3px solid var(--gold); }
+    .lb-table .row-self td:first-child { padding-left: 9px; }
+    .lb-table .row-self .player-name { color: var(--gold-lt); }
+    .you-badge {
+      display: inline-block; font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+      font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase;
+      background: rgba(212,150,26,0.15); color: var(--gold-lt); padding: 1px 6px;
+      border-radius: 3px; margin-left: 6px; vertical-align: middle;
+    }
+    .player-name { color: var(--cloud); font-weight: 500; }
+    .points-val { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--cloud); }
+    .gain-pos { color: #4ADE80; font-weight: 700; }
+    .gain-neg { color: #F87171; font-weight: 700; }
+    .gain-neu { color: rgba(244,247,255,0.25); }
+    .streak-val { color: var(--gold-lt); font-weight: 700; }
+    .ref-val { color: #C084FC; font-weight: 700; }
+
+    .rank-medal { font-size: 1rem; }
+    .rank-num { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 0.9rem; color: rgba(244,247,255,0.55); }
+
+    .lb-empty { text-align: center; padding: 2rem; color: rgba(244,247,255,0.4); font-size: 0.9rem; }
+
+    /* Session expired overlay */
+    .session-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      z-index: 200; display: flex; align-items: center; justify-content: center;
+      padding: 1rem; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    }
+    .session-overlay.open { opacity: 1; pointer-events: all; }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .stats-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 640px) {
+      nav { padding: 0 1rem; }
+      .nav-links { display: none; }
+      .nav-toggle { display: flex; }
+      body.nav-open .nav-links {
+        display: flex; flex-direction: column; position: fixed;
+        top: 72px; left: 0; right: 0; bottom: 0;
+        background: rgba(12,27,58,0.98); padding: 2rem;
+        gap: 1.5rem; z-index: 99;
+      }
+      .auth-card { border-radius: 16px 16px 0 0; }
+      .auth-wrap { align-items: flex-end; padding: 0; padding-top: 72px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .dash-welcome { font-size: 1.3rem; }
+      .dash-header-inner { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+      .dash-content { padding: 1.5rem 1rem; }
+      .leaderboard-title { font-size: 1.25rem; }
+      .lb-search { width: 100%; margin-left: 0; margin-top: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ NAVIGATION ══ -->
+  <nav id="navbar" role="navigation" aria-label="Member navigation">
+    <a href="/" class="nav-logo">
+      <img src="/cropped-Vienna-Imperials-03-1.png" alt="Vienna Imperials Logo" width="44" height="44" />
+      <span>Vienna Imperials</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <!-- Logged out -->
+      <li class="nav-guest"><a href="/">Back to Site</a></li>
+      <li class="nav-guest"><a href="#" class="nav-cta" onclick="showView('login'); return false;">Log In</a></li>
+      <!-- Logged in -->
+      <li class="nav-member" style="display:none;"><a href="#stats">Dashboard</a></li>
+      <li class="nav-member" style="display:none;"><a href="#leaderboard">Rankings</a></li>
+      <li class="nav-member" style="display:none;"><a href="/">Back to Site</a></li>
+      <li class="nav-member" style="display:none;">
+        <span class="member-nav-identity">
+          <span class="member-nav-name" id="navMemberName"></span>
+          <button class="member-nav-logout" onclick="handleLogout()" aria-label="Log out of member account">Log Out</button>
+        </span>
+      </li>
+    </ul>
+    <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ══ LOGIN VIEW ══ -->
+  <div class="auth-wrap" id="loginView">
+    <div class="auth-card" id="loginCard">
+      <div class="auth-logo">
+        <img src="/cropped-Vienna-Imperials-03-1.png" alt="Vienna Imperials" />
+        <span class="auth-title">MEMBER LOGIN</span>
+        <div class="auth-sub">WELCOME BACK</div>
+      </div>
+      <div class="auth-divider"></div>
+
+      <div class="auth-error-banner" id="loginBanner" role="alert">
+        <span id="loginBannerText"></span>
+        <button onclick="this.parentElement.classList.remove('show')" aria-label="Dismiss">&times;</button>
+      </div>
+
+      <form id="loginForm" novalidate onsubmit="handleLogin(event)">
+        <div class="field-group">
+          <label class="field-label" for="loginEmail">Email</label>
+          <input class="field-input" type="email" id="loginEmail" placeholder="you@example.com" required autocomplete="email" />
+          <div class="field-error" id="loginEmailError" role="alert"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="loginPassword">Password</label>
+          <div class="password-wrap">
+            <input class="field-input" type="password" id="loginPassword" placeholder="Enter your password..." required autocomplete="current-password" />
+            <button type="button" class="password-toggle" onclick="togglePasswordVisibility(this)" aria-label="Toggle password visibility">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div class="field-error" id="loginPasswordError" role="alert"></div>
+        </div>
+        <div class="remember-row">
+          <input type="checkbox" id="rememberMe" />
+          <label for="rememberMe">Remember me</label>
+        </div>
+        <button type="submit" class="auth-btn" id="loginBtn">Log In</button>
+        <div class="field-error" id="loginError" role="alert" style="text-align:center;margin-top:0.75rem;"></div>
+      </form>
+      <div class="auth-footer">Don't have an account? <a href="#" onclick="showView('register'); return false;">Register</a></div>
+    </div>
+  </div>
+
+  <!-- ══ REGISTER VIEW ══ -->
+  <div class="auth-wrap hidden" id="registerView" style="display:none;">
+    <div class="auth-card" id="registerCard">
+      <div class="auth-logo">
+        <img src="/cropped-Vienna-Imperials-03-1.png" alt="Vienna Imperials" />
+        <span class="auth-title">CREATE ACCOUNT</span>
+        <div class="auth-sub">MEMBER REGISTRATION</div>
+      </div>
+      <div class="auth-divider"></div>
+
+      <div class="auth-error-banner" id="registerBanner" role="alert">
+        <span id="registerBannerText"></span>
+        <button onclick="this.parentElement.classList.remove('show')" aria-label="Dismiss">&times;</button>
+      </div>
+
+      <form id="registerForm" novalidate onsubmit="handleRegister(event)">
+        <div class="field-group">
+          <label class="field-label" for="regName">Display Name</label>
+          <input class="field-input" type="text" id="regName" placeholder="Your display name..." required minlength="2" maxlength="50" autocomplete="name" />
+          <div class="field-error" id="regNameError" role="alert"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="regEmail">Email</label>
+          <input class="field-input" type="email" id="regEmail" placeholder="you@example.com" required autocomplete="email" />
+          <div class="field-error" id="regEmailError" role="alert"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="regPassword">Password</label>
+          <div class="password-wrap">
+            <input class="field-input" type="password" id="regPassword" placeholder="Minimum 8 characters..." required minlength="8" autocomplete="new-password" />
+            <button type="button" class="password-toggle" onclick="togglePasswordVisibility(this)" aria-label="Toggle password visibility">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+          <div class="strength-label" id="strengthLabel" aria-live="polite"></div>
+          <div class="field-error" id="regPasswordError" role="alert"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="regConfirm">Confirm Password</label>
+          <div class="password-wrap">
+            <input class="field-input" type="password" id="regConfirm" placeholder="Confirm your password..." required autocomplete="new-password" />
+            <button type="button" class="password-toggle" onclick="togglePasswordVisibility(this)" aria-label="Toggle password visibility">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div class="field-error" id="regConfirmError" role="alert"></div>
+        </div>
+        <button type="submit" class="auth-btn" id="registerBtn">Create Account</button>
+      </form>
+      <div class="auth-footer">Already have an account? <a href="#" onclick="showView('login'); return false;">Log in</a></div>
+    </div>
+
+    <!-- Success state (hidden by default) -->
+    <div class="auth-card hidden" id="registerSuccess" style="display:none;">
+      <div class="auth-success">
+        <div class="auth-success-icon">&#10003;</div>
+        <div class="auth-success-title">ACCOUNT CREATED</div>
+        <div class="auth-success-text">Welcome to the Imperials. Redirecting to your dashboard...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ DASHBOARD VIEW ══ -->
+  <div class="dashboard" id="dashboardView">
+    <div class="dash-header noise">
+      <div class="dash-header-inner">
+        <div class="dash-welcome">WELCOME BACK, <span class="name" id="dashName"></span></div>
+      </div>
+    </div>
+
+    <div class="dash-content">
+      <!-- Stats card -->
+      <div class="stats-card" id="statsCard">
+        <div class="stats-top">
+          <div>
+            <span class="stats-name" id="statsName"></span>
+            <span class="tier-badge" id="statsTier" style="display:none;"></span>
+          </div>
+          <div class="stats-rank-block">
+            <div class="stats-rank-num" id="statsRank">—</div>
+            <div class="stats-rank-label">OVERALL RANK</div>
+          </div>
+        </div>
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-cell"><div class="stat-value" id="statPoints">—</div><div class="stat-label">Points</div></div>
+          <div class="stat-cell"><div class="stat-value gold" id="statStreak">—</div><div class="stat-label">Streak</div></div>
+          <div class="stat-cell"><div class="stat-value" id="statPlayed">—</div><div class="stat-label">Played</div></div>
+          <div class="stat-cell"><div class="stat-value purple" id="statRef">—</div><div class="stat-label">Ref Games</div></div>
+          <div class="stat-cell"><div class="stat-value" id="statGain">—</div><div class="stat-label">Last Gain</div></div>
+        </div>
+        <div class="stats-empty" id="statsEmpty" style="display:none;">
+          You haven't played any games yet. Join a session to start earning points!
+        </div>
+      </div>
+
+      <!-- Leaderboard -->
+      <div class="leaderboard-section" id="leaderboard">
+        <div class="leaderboard-title">LEADERBOARD</div>
+        <div class="leaderboard-line"></div>
+
+        <div class="lb-controls">
+          <button class="lb-tab active" data-filter="all" onclick="filterLeaderboard('all', this)">All</button>
+          <button class="lb-tab" data-filter="male" onclick="filterLeaderboard('male', this)">Male</button>
+          <button class="lb-tab" data-filter="female" onclick="filterLeaderboard('female', this)">Female</button>
+          <input class="lb-search" type="text" placeholder="Search players..." id="lbSearch" oninput="renderLeaderboard()" />
+        </div>
+
+        <div class="lb-table-wrap">
+          <table class="lb-table" role="table">
+            <thead>
+              <tr>
+                <th onclick="sortLeaderboard('rank')">#</th>
+                <th onclick="sortLeaderboard('name')">Player</th>
+                <th onclick="sortLeaderboard('points')">Points</th>
+                <th onclick="sortLeaderboard('gain')">Gain</th>
+                <th onclick="sortLeaderboard('played')">Played</th>
+                <th onclick="sortLeaderboard('streak')">Streak</th>
+                <th onclick="sortLeaderboard('ref')">REF</th>
+              </tr>
+            </thead>
+            <tbody id="lbBody"></tbody>
+          </table>
+        </div>
+        <div class="lb-empty" id="lbEmpty" style="display:none;">No players found.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SESSION EXPIRED OVERLAY ══ -->
+  <div class="session-overlay" id="sessionOverlay">
+    <div class="auth-card">
+      <div style="text-align:center; margin-bottom:1.5rem;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--gold-lt)" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <span class="auth-title">SESSION EXPIRED</span>
+      <div class="auth-sub">Please log in again to continue.</div>
+      <div class="auth-divider"></div>
+      <form onsubmit="handleReAuth(event)" novalidate>
+        <div class="field-group">
+          <label class="field-label" for="reAuthEmail">Email</label>
+          <input class="field-input" type="email" id="reAuthEmail" readonly style="opacity:0.6;" />
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="reAuthPassword">Password</label>
+          <input class="field-input" type="password" id="reAuthPassword" placeholder="Enter your password..." autocomplete="current-password" />
+          <div class="field-error" id="reAuthError" role="alert"></div>
+        </div>
+        <button type="submit" class="auth-btn" id="reAuthBtn">Log Back In</button>
+      </form>
+      <div class="auth-footer" style="margin-top:1rem;">
+        <a href="#" onclick="handleFullLogout(); return false;">Use a different account</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ═══════════════════════════════════════
+       STATE
+    ═══════════════════════════════════════ */
+    let currentUser = null;
+    let rankingsData = [];
+    let lbFilter = 'all';
+    let lbSort = { key: 'points', asc: false };
+
+    /* ═══════════════════════════════════════
+       API HELPER
+    ═══════════════════════════════════════ */
+    async function api(url, opts = {}) {
+      const options = {
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        ...opts,
+      };
+      const res = await fetch(url, options);
+
+      // Try silent refresh on 401
+      if (res.status === 401 && !opts._retried) {
+        const refreshed = await silentRefresh();
+        if (refreshed) {
+          return api(url, { ...opts, _retried: true });
+        }
+        showSessionExpired();
+        throw new Error('SESSION_EXPIRED');
+      }
+
+      return res;
+    }
+
+    async function silentRefresh() {
+      try {
+        const res = await fetch('/api/auth/refresh', {
+          method: 'POST',
+          credentials: 'include',
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.user) currentUser = data.user;
+          return true;
+        }
+        return false;
+      } catch {
+        return false;
+      }
+    }
+
+    /* ═══════════════════════════════════════
+       VIEW SWITCHING
+    ═══════════════════════════════════════ */
+    function showView(view) {
+      document.body.classList.remove('nav-open');
+      document.getElementById('loginView').style.display = view === 'login' ? '' : 'none';
+      document.getElementById('registerView').style.display = view === 'register' ? '' : 'none';
+      document.getElementById('dashboardView').classList.toggle('active', view === 'dashboard');
+
+      // Nav state
+      document.querySelectorAll('.nav-guest').forEach(el => el.style.display = view === 'dashboard' ? 'none' : '');
+      document.querySelectorAll('.nav-member').forEach(el => el.style.display = view === 'dashboard' ? '' : 'none');
+
+      if (view === 'login') setTimeout(() => document.getElementById('loginEmail').focus(), 60);
+      if (view === 'register') setTimeout(() => document.getElementById('regName').focus(), 60);
+    }
+
+    function updateNavUser() {
+      if (currentUser) {
+        document.getElementById('navMemberName').textContent = currentUser.display_name;
+      }
+    }
+
+    /* ═══════════════════════════════════════
+       VALIDATION
+    ═══════════════════════════════════════ */
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    function showFieldError(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.classList.add('show');
+      const input = el.previousElementSibling;
+      if (input && (input.classList.contains('field-input') || input.classList.contains('password-wrap'))) {
+        const inp = input.classList.contains('password-wrap') ? input.querySelector('.field-input') : input;
+        inp.classList.add('error');
+      }
+    }
+
+    function clearFieldError(id) {
+      const el = document.getElementById(id);
+      el.textContent = '';
+      el.classList.remove('show');
+    }
+
+    function clearAllErrors(prefix) {
+      document.querySelectorAll(`[id^="${prefix}"][id$="Error"]`).forEach(el => {
+        el.textContent = '';
+        el.classList.remove('show');
+      });
+      document.querySelectorAll(`#${prefix}View .field-input`).forEach(el => el.classList.remove('error'));
+    }
+
+    /* ═══════════════════════════════════════
+       PASSWORD STRENGTH
+    ═══════════════════════════════════════ */
+    document.getElementById('regPassword').addEventListener('input', function() {
+      const pw = this.value;
+      const fill = document.getElementById('strengthFill');
+      const label = document.getElementById('strengthLabel');
+      let strength = 0;
+      if (pw.length >= 8) strength++;
+      if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) strength++;
+      if (/[0-9]/.test(pw) || /[^a-zA-Z0-9]/.test(pw)) strength++;
+
+      const levels = [
+        { w: '0%', bg: 'transparent', text: '', color: '' },
+        { w: '33%', bg: '#F87171', text: 'Weak', color: '#F87171' },
+        { w: '66%', bg: 'var(--gold)', text: 'Good', color: 'var(--gold-lt)' },
+        { w: '100%', bg: '#4ADE80', text: 'Strong', color: '#4ADE80' },
+      ];
+      const level = pw.length === 0 ? levels[0] : levels[Math.min(strength, 3)];
+      fill.style.width = level.w;
+      fill.style.background = level.bg;
+      label.textContent = level.text;
+      label.style.color = level.color;
+    });
+
+    /* ═══════════════════════════════════════
+       PASSWORD VISIBILITY TOGGLE
+    ═══════════════════════════════════════ */
+    function togglePasswordVisibility(btn) {
+      const input = btn.previousElementSibling;
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+      btn.innerHTML = isPassword
+        ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+        : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    }
+
+    /* ═══════════════════════════════════════
+       LOGIN
+    ═══════════════════════════════════════ */
+    async function handleLogin(e) {
+      e.preventDefault();
+      clearAllErrors('login');
+
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const remember = document.getElementById('rememberMe').checked;
+      let hasError = false;
+
+      if (!email) { showFieldError('loginEmailError', 'Email is required'); hasError = true; }
+      else if (!EMAIL_RE.test(email)) { showFieldError('loginEmailError', 'Please enter a valid email address'); hasError = true; }
+      if (!password) { showFieldError('loginPasswordError', 'Password is required'); hasError = true; }
+
+      if (hasError) return;
+
+      const btn = document.getElementById('loginBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="auth-spinner"></span>';
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ email, password, remember_me: remember }),
+        });
+
+        const data = await res.json();
+
+        if (res.status === 429) {
+          const banner = document.getElementById('loginBanner');
+          document.getElementById('loginBannerText').textContent = data.error;
+          banner.classList.add('show');
+          btn.disabled = true;
+          btn.textContent = 'LOG IN';
+          if (data.retry_after) {
+            let remaining = data.retry_after;
+            const interval = setInterval(() => {
+              remaining--;
+              btn.textContent = `WAIT ${remaining}s`;
+              if (remaining <= 0) {
+                clearInterval(interval);
+                btn.disabled = false;
+                btn.textContent = 'LOG IN';
+              }
+            }, 1000);
+          }
+          return;
+        }
+
+        if (!res.ok) {
+          document.getElementById('loginCard').classList.add('shake');
+          setTimeout(() => document.getElementById('loginCard').classList.remove('shake'), 400);
+          showFieldError('loginError', data.error || 'Invalid email or password');
+          btn.disabled = false;
+          btn.textContent = 'LOG IN';
+          return;
+        }
+
+        currentUser = data.user;
+        enterDashboard();
+      } catch (err) {
+        const banner = document.getElementById('loginBanner');
+        document.getElementById('loginBannerText').textContent = 'Something went wrong. Please try again later.';
+        banner.classList.add('show');
+        btn.disabled = false;
+        btn.textContent = 'LOG IN';
+      }
+    }
+
+    /* ═══════════════════════════════════════
+       REGISTER
+    ═══════════════════════════════════════ */
+    async function handleRegister(e) {
+      e.preventDefault();
+      clearAllErrors('reg');
+
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const confirm = document.getElementById('regConfirm').value;
+      let hasError = false;
+
+      if (!name) { showFieldError('regNameError', 'Display name is required'); hasError = true; }
+      else if (name.length < 2) { showFieldError('regNameError', 'Display name must be at least 2 characters'); hasError = true; }
+      if (!email) { showFieldError('regEmailError', 'Email is required'); hasError = true; }
+      else if (!EMAIL_RE.test(email)) { showFieldError('regEmailError', 'Please enter a valid email address'); hasError = true; }
+      if (!password) { showFieldError('regPasswordError', 'Password is required'); hasError = true; }
+      else if (password.length < 8) { showFieldError('regPasswordError', 'Password must be at least 8 characters'); hasError = true; }
+      if (!confirm) { showFieldError('regConfirmError', 'Please confirm your password'); hasError = true; }
+      else if (password !== confirm) { showFieldError('regConfirmError', 'Passwords do not match'); hasError = true; }
+
+      if (hasError) return;
+
+      const btn = document.getElementById('registerBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="auth-spinner"></span>';
+
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ email, password, display_name: name }),
+        });
+
+        const data = await res.json();
+
+        if (res.status === 409) {
+          showFieldError('regEmailError', 'An account with this email already exists');
+          btn.disabled = false;
+          btn.textContent = 'CREATE ACCOUNT';
+          return;
+        }
+
+        if (res.status === 429) {
+          const banner = document.getElementById('registerBanner');
+          document.getElementById('registerBannerText').textContent = data.error;
+          banner.classList.add('show');
+          btn.disabled = false;
+          btn.textContent = 'CREATE ACCOUNT';
+          return;
+        }
+
+        if (!res.ok) {
+          const banner = document.getElementById('registerBanner');
+          document.getElementById('registerBannerText').textContent = data.error || 'Registration failed. Please try again.';
+          banner.classList.add('show');
+          btn.disabled = false;
+          btn.textContent = 'CREATE ACCOUNT';
+          return;
+        }
+
+        currentUser = data.user;
+
+        // Show success state
+        document.getElementById('registerCard').style.display = 'none';
+        document.getElementById('registerSuccess').style.display = '';
+        setTimeout(() => enterDashboard(), 1500);
+      } catch (err) {
+        const banner = document.getElementById('registerBanner');
+        document.getElementById('registerBannerText').textContent = 'Something went wrong. Please try again later.';
+        banner.classList.add('show');
+        btn.disabled = false;
+        btn.textContent = 'CREATE ACCOUNT';
+      }
+    }
+
+    /* ═══════════════════════════════════════
+       DASHBOARD
+    ═══════════════════════════════════════ */
+    async function enterDashboard() {
+      showView('dashboard');
+      updateNavUser();
+      document.getElementById('dashName').textContent = currentUser.display_name;
+      document.getElementById('statsName').textContent = currentUser.display_name;
+
+      // Show skeletons
+      document.querySelectorAll('.stat-value').forEach(el => {
+        el.dataset.original = el.textContent;
+        el.innerHTML = '<span class="skeleton" style="display:inline-block;width:40px;height:16px;">&nbsp;</span>';
+      });
+      document.getElementById('statsRank').innerHTML = '<span class="skeleton" style="display:inline-block;width:32px;height:24px;">&nbsp;</span>';
+
+      try {
+        const res = await api('/api/member/stats');
+        if (!res.ok) throw new Error('Failed to load stats');
+        const data = await res.json();
+
+        if (data.stats) {
+          document.getElementById('statsRank').textContent = '#' + data.stats.rank;
+          document.getElementById('statPoints').textContent = data.stats.points;
+          document.getElementById('statStreak').textContent = data.stats.streak;
+          document.getElementById('statPlayed').textContent = data.stats.played;
+          document.getElementById('statRef').textContent = data.stats.ref;
+
+          const gainEl = document.getElementById('statGain');
+          if (data.stats.gain !== null && data.stats.gain !== undefined) {
+            gainEl.textContent = (data.stats.gain > 0 ? '+' : '') + data.stats.gain;
+            gainEl.className = 'stat-value ' + (data.stats.gain > 0 ? 'gain-pos' : data.stats.gain < 0 ? 'gain-neg' : '');
+          } else {
+            gainEl.textContent = '—';
+          }
+
+          // Tier badge
+          if (data.stats.tier) {
+            const tierEl = document.getElementById('statsTier');
+            tierEl.textContent = data.stats.tier;
+            tierEl.className = 'tier-badge tier-' + data.stats.tier;
+            tierEl.style.display = '';
+          }
+
+          document.getElementById('statsEmpty').style.display = 'none';
+        } else {
+          // No linked ranking
+          document.querySelectorAll('.stat-value').forEach(el => el.textContent = '—');
+          document.getElementById('statsRank').textContent = '—';
+          document.getElementById('statsEmpty').style.display = '';
+        }
+
+        // Leaderboard
+        rankingsData = data.rankings || [];
+        renderLeaderboard();
+      } catch (err) {
+        if (err.message === 'SESSION_EXPIRED') return;
+        document.querySelectorAll('.stat-value').forEach(el => el.textContent = '—');
+        document.getElementById('statsRank').textContent = '—';
+      }
+    }
+
+    /* ═══════════════════════════════════════
+       LEADERBOARD
+    ═══════════════════════════════════════ */
+    function filterLeaderboard(filter, btn) {
+      lbFilter = filter;
+      document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderLeaderboard();
+    }
+
+    function sortLeaderboard(key) {
+      if (lbSort.key === key) {
+        lbSort.asc = !lbSort.asc;
+      } else {
+        lbSort.key = key;
+        lbSort.asc = key === 'name';
+      }
+      renderLeaderboard();
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function renderLeaderboard() {
+      const search = (document.getElementById('lbSearch').value || '').toLowerCase();
+      let players = [...rankingsData];
+
+      // Sort by points first to determine ranks
+      players.sort((a, b) => (b.points || 0) - (a.points || 0));
+      players.forEach((p, i) => p._rank = i + 1);
+
+      // Filter
+      if (lbFilter !== 'all') {
+        players = players.filter(p => p.gender === lbFilter);
+      }
+      if (search) {
+        players = players.filter(p => (p.name || '').toLowerCase().includes(search));
+      }
+
+      // Sort
+      const { key, asc } = lbSort;
+      if (key === 'rank') {
+        players.sort((a, b) => asc ? a._rank - b._rank : b._rank - a._rank);
+      } else if (key === 'name') {
+        players.sort((a, b) => asc ? (a.name || '').localeCompare(b.name || '') : (b.name || '').localeCompare(a.name || ''));
+      } else {
+        players.sort((a, b) => asc ? (a[key] || 0) - (b[key] || 0) : (b[key] || 0) - (a[key] || 0));
+      }
+
+      const tbody = document.getElementById('lbBody');
+      const empty = document.getElementById('lbEmpty');
+
+      if (players.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = '';
+        return;
+      }
+      empty.style.display = 'none';
+
+      const selfName = currentUser && currentUser.ranking_player_name
+        ? currentUser.ranking_player_name.toLowerCase()
+        : null;
+
+      const medals = ['', '\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'];
+      let selfRow = null;
+
+      tbody.innerHTML = players.map(p => {
+        const isSelf = selfName && (p.name || '').toLowerCase() === selfName;
+        if (isSelf) selfRow = p._rank;
+        const rankDisplay = p._rank <= 3
+          ? `<span class="rank-medal">${medals[p._rank]}</span>`
+          : `<span class="rank-num">${p._rank}</span>`;
+        const gainClass = (p.gain > 0) ? 'gain-pos' : (p.gain < 0) ? 'gain-neg' : 'gain-neu';
+        const gainText = p.gain > 0 ? '+' + p.gain : (p.gain === null || p.gain === undefined ? '—' : p.gain);
+        const tierHtml = p.tier ? `<span class="tier-badge tier-${escapeHtml(p.tier)}">${escapeHtml(p.tier)}</span>` : '';
+        const youBadge = isSelf ? '<span class="you-badge">YOU</span>' : '';
+
+        return `<tr class="${isSelf ? 'row-self' : ''}" ${isSelf ? 'aria-current="true"' : ''}>
+          <td>${rankDisplay}</td>
+          <td><span class="player-name">${escapeHtml(p.name || '')}</span>${tierHtml}${youBadge}</td>
+          <td><span class="points-val">${p.points}</span></td>
+          <td><span class="${gainClass}">${gainText}</span></td>
+          <td>${p.played}</td>
+          <td><span class="streak-val">${p.streak}</span></td>
+          <td><span class="ref-val">${p.ref}</span></td>
+        </tr>`;
+      }).join('');
+
+      // Auto-scroll to user's row
+      if (selfRow) {
+        setTimeout(() => {
+          const row = tbody.querySelector('.row-self');
+          if (row) row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+      }
+    }
+
+    /* ═══════════════════════════════════════
+       SESSION EXPIRED
+    ═══════════════════════════════════════ */
+    function showSessionExpired() {
+      if (currentUser) {
+        document.getElementById('reAuthEmail').value = currentUser.email;
+      }
+      document.getElementById('sessionOverlay').classList.add('open');
+      setTimeout(() => document.getElementById('reAuthPassword').focus(), 60);
+    }
+
+    async function handleReAuth(e) {
+      e.preventDefault();
+      clearFieldError('reAuthError');
+      const email = document.getElementById('reAuthEmail').value;
+      const password = document.getElementById('reAuthPassword').value;
+      if (!password) { showFieldError('reAuthError', 'Password is required'); return; }
+
+      const btn = document.getElementById('reAuthBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="auth-spinner"></span>';
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ email, password, remember_me: true }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          showFieldError('reAuthError', data.error || 'Invalid credentials');
+          btn.disabled = false;
+          btn.textContent = 'LOG BACK IN';
+          return;
+        }
+
+        currentUser = data.user;
+        document.getElementById('sessionOverlay').classList.remove('open');
+        document.getElementById('reAuthPassword').value = '';
+        btn.disabled = false;
+        btn.textContent = 'LOG BACK IN';
+
+        // Re-fetch dashboard data
+        enterDashboard();
+      } catch {
+        showFieldError('reAuthError', 'Something went wrong');
+        btn.disabled = false;
+        btn.textContent = 'LOG BACK IN';
+      }
+    }
+
+    function handleFullLogout() {
+      document.getElementById('sessionOverlay').classList.remove('open');
+      currentUser = null;
+      showView('login');
+    }
+
+    /* ═══════════════════════════════════════
+       LOGOUT
+    ═══════════════════════════════════════ */
+    async function handleLogout() {
+      try {
+        await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+      } catch { /* ignore */ }
+      currentUser = null;
+      showView('login');
+    }
+
+    /* ═══════════════════════════════════════
+       MOBILE NAV
+    ═══════════════════════════════════════ */
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('nav') && document.body.classList.contains('nav-open')) {
+        document.body.classList.remove('nav-open');
+      }
+    });
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => document.body.classList.remove('nav-open'));
+    });
+
+    /* ═══════════════════════════════════════
+       INIT — check for existing session
+    ═══════════════════════════════════════ */
+    (async function init() {
+      try {
+        const res = await fetch('/api/auth/verify', { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.valid && data.user) {
+            currentUser = data.user;
+            enterDashboard();
+            return;
+          }
+        }
+        // Try refresh
+        const refreshed = await silentRefresh();
+        if (refreshed && currentUser) {
+          enterDashboard();
+          return;
+        }
+      } catch { /* no session */ }
+      showView('login');
+    })();
+  </script>
+</body>
+</html>

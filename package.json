@@ -1,5 +1,15 @@
 {
+  "scripts": {
+    "build:css": "tailwindcss -i ./input.css -o ./tailwind.min.css --minify"
+  },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
+    "bcryptjs": "^3.0.3",
+    "jsonwebtoken": "^9.0.3",
     "puppeteer": "^24.39.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.2.1",
+    "tailwindcss": "^4.2.1"
   }
 }
