@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { setCors } = require('./lib/cors');
-const { checkRateLimit, recordAttempt, clearAttempts } = require('./lib/rate-limit');
+const { setCors } = require('../lib/cors');
+const { checkRateLimit, recordAttempt, clearAttempts } = require('../lib/rate-limit');
 
 module.exports = async (req, res) => {
   setCors(req, res, 'POST, OPTIONS');

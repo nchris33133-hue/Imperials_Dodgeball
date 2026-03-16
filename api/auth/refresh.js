@@ -1,6 +1,6 @@
-const { getDb } = require('../lib/db');
-const { setCors } = require('../lib/cors');
-const { extractTokenFromCookie, createAccessToken, generateRefreshToken, hashRefreshToken, setAccessTokenCookie, setRefreshTokenCookie, REFRESH_TOKEN_DAYS } = require('../lib/auth');
+const { getDb } = require('../../lib/db');
+const { setCors } = require('../../lib/cors');
+const { extractTokenFromCookie, createAccessToken, generateRefreshToken, hashRefreshToken, setAccessTokenCookie, setRefreshTokenCookie, REFRESH_TOKEN_DAYS } = require('../../lib/auth');
 
 module.exports = async (req, res) => {
   setCors(req, res, 'POST, OPTIONS');

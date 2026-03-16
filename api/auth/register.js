@@ -1,9 +1,9 @@
 const bcrypt = require('bcryptjs');
-const { getDb } = require('../lib/db');
-const { setCors } = require('../lib/cors');
-const { validateEmail, validatePassword, validateDisplayName, sanitizeHtml } = require('../lib/validation');
-const { createAccessToken, generateRefreshToken, hashRefreshToken, setAccessTokenCookie, setRefreshTokenCookie, preHashPassword, REFRESH_TOKEN_DAYS } = require('../lib/auth');
-const { checkRateLimit, recordAttempt } = require('../lib/rate-limit');
+const { getDb } = require('../../lib/db');
+const { setCors } = require('../../lib/cors');
+const { validateEmail, validatePassword, validateDisplayName, sanitizeHtml } = require('../../lib/validation');
+const { createAccessToken, generateRefreshToken, hashRefreshToken, setAccessTokenCookie, setRefreshTokenCookie, preHashPassword, REFRESH_TOKEN_DAYS } = require('../../lib/auth');
+const { checkRateLimit, recordAttempt } = require('../../lib/rate-limit');
 
 module.exports = async (req, res) => {
   setCors(req, res, 'POST, OPTIONS');

@@ -1,6 +1,6 @@
-const { getDb } = require('../lib/db');
-const { setCors } = require('../lib/cors');
-const { requireMember } = require('../lib/auth');
+const { getDb } = require('../../lib/db');
+const { setCors } = require('../../lib/cors');
+const { requireMember } = require('../../lib/auth');
 
 const DEFAULT_PLAYERS = [
   { id:1,  name:'Sean Aczel',          gender:'male',   tier:'silver',   points:17.5, gain:2.5,  played:7, streak:7, ref:2,  change:0  },

@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { setCors } = require('./lib/cors');
+const { setCors } = require('../lib/cors');
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

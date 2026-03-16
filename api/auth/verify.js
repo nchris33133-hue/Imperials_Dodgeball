@@ -1,6 +1,6 @@
-const { getDb } = require('../lib/db');
-const { setCors } = require('../lib/cors');
-const { requireMember } = require('../lib/auth');
+const { getDb } = require('../../lib/db');
+const { setCors } = require('../../lib/cors');
+const { requireMember } = require('../../lib/auth');
 
 module.exports = async (req, res) => {
   setCors(req, res, 'GET, OPTIONS');
