@@ -12,23 +12,30 @@ async function migrate() {
   const sql = neon(databaseUrl);
   const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
 
-  // Split by semicolons and run each statement
-  const statements = schema
+  // Remove comment-only lines, then split by semicolons
+  const cleaned = schema.replace(/^--.*$/gm, '');
+  const statements = cleaned
     .split(';')
     .map(s => s.trim())
-    .filter(s => s.length > 0 && !s.startsWith('--'));
+    .filter(s => s.length > 0);
 
+  let failed = 0;
   for (const statement of statements) {
+    const preview = statement.replace(/\s+/g, ' ').substring(0, 70);
     try {
       await sql.query(statement);
-      console.log('OK:', statement.substring(0, 60) + '...');
+      console.log('OK:', preview);
     } catch (err) {
-      console.error('FAIL:', statement.substring(0, 60) + '...');
-      console.error(err.message);
-      process.exit(1);
+      failed++;
+      console.error('FAIL:', preview);
+      console.error('  ', err.message);
     }
   }
 
+  if (failed > 0) {
+    console.error(`\nMigration finished with ${failed} error(s).`);
+    process.exit(1);
+  }
   console.log('\nMigration complete.');
 }
 
