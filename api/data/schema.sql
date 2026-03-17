@@ -26,6 +26,12 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
 CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user ON refresh_tokens(user_id);
 CREATE INDEX IF NOT EXISTS idx_refresh_tokens_hash ON refresh_tokens(token_hash);
 
+-- Member approval status
+ALTER TABLE users ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'pending';
+ALTER TABLE users ALTER COLUMN is_active SET DEFAULT FALSE;
+UPDATE users SET status = 'approved' WHERE is_active = TRUE;
+UPDATE users SET status = 'pending' WHERE is_active = FALSE;
+
 CREATE TABLE IF NOT EXISTS login_attempts (
   email_hash    VARCHAR(64) NOT NULL,
   attempt_count INTEGER DEFAULT 1,

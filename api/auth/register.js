@@ -42,8 +42,8 @@ module.exports = async (req, res) => {
     let rows;
     try {
       rows = await sql`
-        INSERT INTO users (email, password_hash, display_name)
-        VALUES (${normalizedEmail}, ${passwordHash}, ${trimmedName})
+        INSERT INTO users (email, password_hash, display_name, is_active, status)
+        VALUES (${normalizedEmail}, ${passwordHash}, ${trimmedName}, false, 'pending')
         RETURNING id, email, display_name, created_at
       `;
     } catch (err) {
@@ -58,27 +58,11 @@ module.exports = async (req, res) => {
 
     const user = rows[0];
 
-    const accessToken = createAccessToken(user);
-    setAccessTokenCookie(res, accessToken);
-
-    const refreshToken = generateRefreshToken();
-    const refreshHash = hashRefreshToken(refreshToken);
-    const expiresAt = new Date(Date.now() + REFRESH_TOKEN_DAYS * 24 * 60 * 60 * 1000).toISOString();
-
-    await sql`
-      INSERT INTO refresh_tokens (user_id, token_hash, expires_at)
-      VALUES (${user.id}, ${refreshHash}, ${expiresAt})
-    `;
-    setRefreshTokenCookie(res, refreshToken);
-
-    console.log(`AUTH: register success user=${user.id}`);
+    console.log(`AUTH: register pending user=${user.id}`);
 
     return res.status(201).json({
-      user: {
-        id: user.id,
-        email: user.email,
-        display_name: user.display_name
-      }
+      pending: true,
+      message: 'Registration successful. Your account is pending admin approval.'
     });
   } catch (err) {
     console.error('AUTH: register error', err.message);

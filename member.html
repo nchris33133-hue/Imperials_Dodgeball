@@ -404,6 +404,22 @@
     </div>
   </div>
 
+  <!-- ══ PENDING APPROVAL STATE ══ -->
+  <div class="auth-wrap" id="pendingView" style="display:none;">
+    <div class="auth-card">
+      <div style="text-align:center; padding:3rem 2rem;">
+        <div style="font-size:3rem; margin-bottom:1rem;">⏳</div>
+        <h2 style="font-family:'Bebas Neue',sans-serif; font-size:2rem; color:#D4961A; letter-spacing:.05em; margin-bottom:.75rem;">ACCOUNT PENDING APPROVAL</h2>
+        <p style="color:#8899bb; font-size:.95rem; max-width:400px; margin:0 auto 1.5rem;">
+          Your registration was successful! A club admin will review and activate your account shortly.
+        </p>
+        <p style="color:#8899bb; font-size:.85rem;">
+          Questions? Email <a href="mailto:imperialsdodgeball@gmail.com" style="color:#D4961A;">imperialsdodgeball@gmail.com</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
   <!-- ══ REGISTER VIEW ══ -->
   <div class="auth-wrap hidden" id="registerView" style="display:none;">
     <div class="auth-card" id="registerCard">
@@ -617,6 +633,7 @@
       document.body.classList.remove('nav-open');
       document.getElementById('loginView').style.display = view === 'login' ? '' : 'none';
       document.getElementById('registerView').style.display = view === 'register' ? '' : 'none';
+      document.getElementById('pendingView').style.display = view === 'pending' ? '' : 'none';
       document.getElementById('dashboardView').classList.toggle('active', view === 'dashboard');
 
       // Nav state
@@ -754,6 +771,10 @@
         }
 
         if (!res.ok) {
+          if (data.code === 'PENDING_APPROVAL') {
+            showView('pending');
+            return;
+          }
           document.getElementById('loginCard').classList.add('shake');
           setTimeout(() => document.getElementById('loginCard').classList.remove('shake'), 400);
           showFieldError('loginError', data.error || 'Invalid email or password');
@@ -833,6 +854,11 @@
           banner.classList.add('show');
           btn.disabled = false;
           btn.textContent = 'CREATE ACCOUNT';
+          return;
+        }
+
+        if (data.pending === true) {
+          showView('pending');
           return;
         }
 

@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
 
     const sql = getDb();
     const users = await sql`
-      SELECT id, email, password_hash, display_name, ranking_player_name, is_active
+      SELECT id, email, password_hash, display_name, ranking_player_name, is_active, status
       FROM users WHERE email = ${normalizedEmail}
     `;
 
@@ -46,6 +46,12 @@ module.exports = async (req, res) => {
     const user = users[0];
 
     if (!user.is_active) {
+      if (user.status === 'pending') {
+        return res.status(403).json({ error: 'Your account is awaiting admin approval.', code: 'PENDING_APPROVAL' });
+      }
+      if (user.status === 'rejected') {
+        return res.status(403).json({ error: 'Your registration was not approved. Contact imperialsdodgeball@gmail.com for more info.', code: 'REJECTED' });
+      }
       return res.status(401).json({ error: 'Invalid email or password', code: 'INVALID_CREDENTIALS' });
     }
 
