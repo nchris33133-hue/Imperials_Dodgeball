@@ -17,21 +17,21 @@ module.exports = async (req, res) => {
   setCors(req, res, 'POST, OPTIONS');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed', code: 'METHOD_NOT_ALLOWED' });
 
   const { name, email, level = '', source = '', type = 'join' } = req.body || {};
-  if (!name || !email) return res.status(400).json({ error: 'Name and email are required' });
+  if (!name || !email) return res.status(400).json({ error: 'Name and email are required', code: 'VALIDATION_ERROR' });
 
   // Validate email format
   const trimmedEmail = String(email).trim().toLowerCase();
   if (trimmedEmail.length > 254 || !EMAIL_RE.test(trimmedEmail)) {
-    return res.status(400).json({ error: 'Invalid email format' });
+    return res.status(400).json({ error: 'Invalid email format', code: 'VALIDATION_ERROR' });
   }
 
   // Validate name length
   const trimmedName = String(name).trim();
   if (trimmedName.length < 1 || trimmedName.length > 100) {
-    return res.status(400).json({ error: 'Invalid name' });
+    return res.status(400).json({ error: 'Invalid name', code: 'VALIDATION_ERROR' });
   }
 
   const csvPath = path.join('/tmp', 'signups.csv');
@@ -50,6 +50,6 @@ module.exports = async (req, res) => {
     return res.status(200).json({ success: true, message });
   } catch (err) {
     console.error('Signup write error:', err.message);
-    return res.status(500).json({ error: 'Could not save signup' });
+    return res.status(500).json({ error: 'Could not save signup', code: 'SERVER_ERROR' });
   }
 };

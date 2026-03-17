@@ -194,6 +194,124 @@
     .dashboard { display: none; padding-top: 72px; }
     .dashboard.active { display: block; }
 
+    /* ── Tab Navigation ── */
+    .dash-tabs {
+      display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem;
+    }
+    .dash-tab {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.85rem;
+      letter-spacing: 0.1em; text-transform: uppercase; padding: 12px 24px;
+      background: transparent; border: none; color: rgba(244,247,255,0.4);
+      cursor: pointer; position: relative;
+      transition: color 0.2s ease;
+    }
+    .dash-tab:hover { color: rgba(244,247,255,0.7); }
+    .dash-tab.active { color: var(--gold-lt); }
+    .dash-tab.active::after {
+      content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
+      height: 2px; background: linear-gradient(90deg, var(--gold), var(--gold-lt));
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Training Calendar ── */
+    .training-nudge {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(212,150,26,0.08); border: 1px solid rgba(212,150,26,0.2);
+      border-radius: 10px; padding: 12px 16px; margin-bottom: 1.5rem;
+      font-size: 0.85rem; color: var(--gold-lt); font-weight: 600;
+    }
+    .training-nudge svg { flex-shrink: 0; }
+
+    .session-card {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px 24px; margin-bottom: 1rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      transition: border-color 0.2s ease;
+    }
+    .session-card:hover { border-color: rgba(53,103,192,0.35); }
+    .session-card.cancelled { opacity: 0.5; }
+    .session-card.cancelled .session-title::after {
+      content: 'CANCELLED'; display: inline-block; margin-left: 10px;
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.65rem;
+      letter-spacing: 0.1em; background: rgba(248,113,113,0.12); color: #F87171;
+      padding: 2px 8px; border-radius: 4px; vertical-align: middle;
+    }
+
+    .session-date-badge {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.7rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-lt);
+      margin-bottom: 6px;
+    }
+    .session-title {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.1rem;
+      color: var(--cloud); margin-bottom: 4px;
+    }
+    .session-meta {
+      font-size: 0.8rem; color: rgba(244,247,255,0.45); margin-bottom: 12px;
+      display: flex; flex-wrap: wrap; gap: 6px 16px;
+    }
+    .session-meta span { display: flex; align-items: center; gap: 4px; }
+
+    .session-counts {
+      display: flex; gap: 16px; font-size: 0.78rem; font-weight: 600;
+      margin-bottom: 14px; flex-wrap: wrap;
+    }
+    .count-attending { color: #4ADE80; }
+    .count-not { color: #F87171; }
+
+    .rsvp-buttons { display: flex; gap: 8px; margin-bottom: 8px; }
+    .rsvp-btn {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.78rem;
+      letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 18px;
+      border-radius: 6px; border: 1px solid var(--border); background: transparent;
+      color: rgba(244,247,255,0.5); cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+    .rsvp-btn:hover { transform: translateY(-1px); }
+    .rsvp-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .rsvp-btn.rsvp-attending.active {
+      background: rgba(74,222,128,0.12); color: #4ADE80; border-color: rgba(74,222,128,0.35);
+    }
+    .rsvp-btn.rsvp-not-attending.active {
+      background: rgba(248,113,113,0.1); color: #F87171; border-color: rgba(248,113,113,0.3);
+    }
+
+    .session-attendees {
+      margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);
+    }
+    .attendees-toggle {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.75rem;
+      letter-spacing: 0.08em; text-transform: uppercase; background: none; border: none;
+      color: rgba(244,247,255,0.35); cursor: pointer; padding: 0;
+      transition: color 0.15s ease;
+    }
+    .attendees-toggle:hover { color: rgba(244,247,255,0.6); }
+    .attendees-list {
+      display: none; margin-top: 8px; font-size: 0.8rem; color: rgba(244,247,255,0.55);
+      line-height: 1.6;
+    }
+    .attendees-list.open { display: block; }
+    .attendees-label {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.68rem;
+      letter-spacing: 0.1em; text-transform: uppercase; margin-top: 6px; margin-bottom: 2px;
+    }
+    .attendees-label.att-yes { color: #4ADE80; }
+    .attendees-label.att-no { color: #F87171; }
+
+    .training-empty {
+      text-align: center; padding: 3rem 1rem; color: rgba(244,247,255,0.4); font-size: 0.9rem;
+    }
+    .training-empty svg { margin-bottom: 1rem; }
+
+    .training-loading {
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .session-skeleton {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px 24px; height: 140px;
+    }
+
     .dash-header {
       position: relative; background: var(--deep); padding: 2rem 2rem 1.5rem; overflow: hidden;
     }
@@ -331,6 +449,11 @@
       .dash-content { padding: 1.5rem 1rem; }
       .leaderboard-title { font-size: 1.25rem; }
       .lb-search { width: 100%; margin-left: 0; margin-top: 8px; }
+      .dash-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .dash-tab { padding: 10px 16px; font-size: 0.78rem; white-space: nowrap; }
+      .session-card { padding: 16px; }
+      .rsvp-buttons { flex-direction: column; }
+      .rsvp-btn { text-align: center; }
     }
   </style>
 </head>
@@ -347,8 +470,9 @@
       <li class="nav-guest"><a href="/">Back to Site</a></li>
       <li class="nav-guest"><a href="#" class="nav-cta" onclick="showView('login'); return false;">Log In</a></li>
       <!-- Logged in -->
-      <li class="nav-member" style="display:none;"><a href="#stats">Dashboard</a></li>
-      <li class="nav-member" style="display:none;"><a href="#leaderboard">Rankings</a></li>
+      <li class="nav-member" style="display:none;"><a href="#" onclick="switchTab('stats'); return false;">My Stats</a></li>
+      <li class="nav-member" style="display:none;"><a href="#" onclick="switchTab('rankings'); return false;">Rankings</a></li>
+      <li class="nav-member" style="display:none;"><a href="#" onclick="switchTab('training'); return false;">Training</a></li>
       <li class="nav-member" style="display:none;"><a href="/">Back to Site</a></li>
       <li class="nav-member" style="display:none;">
         <span class="member-nav-identity">
@@ -492,59 +616,97 @@
     </div>
 
     <div class="dash-content">
-      <!-- Stats card -->
-      <div class="stats-card" id="statsCard">
-        <div class="stats-top">
-          <div>
-            <span class="stats-name" id="statsName"></span>
-            <span class="tier-badge" id="statsTier" style="display:none;"></span>
+      <!-- Tab Navigation -->
+      <div class="dash-tabs">
+        <button class="dash-tab active" data-tab="stats" onclick="switchTab('stats')">My Stats</button>
+        <button class="dash-tab" data-tab="rankings" onclick="switchTab('rankings')">Rankings</button>
+        <button class="dash-tab" data-tab="training" onclick="switchTab('training')">Training</button>
+      </div>
+
+      <!-- Stats Tab -->
+      <div class="tab-panel" id="tab-stats" style="display:block;">
+        <div class="stats-card" id="statsCard">
+          <div class="stats-top">
+            <div>
+              <span class="stats-name" id="statsName"></span>
+              <span class="tier-badge" id="statsTier" style="display:none;"></span>
+            </div>
+            <div class="stats-rank-block">
+              <div class="stats-rank-num" id="statsRank">—</div>
+              <div class="stats-rank-label">OVERALL RANK</div>
+            </div>
           </div>
-          <div class="stats-rank-block">
-            <div class="stats-rank-num" id="statsRank">—</div>
-            <div class="stats-rank-label">OVERALL RANK</div>
+          <div class="stats-grid" id="statsGrid">
+            <div class="stat-cell"><div class="stat-value" id="statPoints">—</div><div class="stat-label">Points</div></div>
+            <div class="stat-cell"><div class="stat-value gold" id="statStreak">—</div><div class="stat-label">Streak</div></div>
+            <div class="stat-cell"><div class="stat-value" id="statPlayed">—</div><div class="stat-label">Played</div></div>
+            <div class="stat-cell"><div class="stat-value purple" id="statRef">—</div><div class="stat-label">Ref Games</div></div>
+            <div class="stat-cell"><div class="stat-value" id="statGain">—</div><div class="stat-label">Last Gain</div></div>
           </div>
-        </div>
-        <div class="stats-grid" id="statsGrid">
-          <div class="stat-cell"><div class="stat-value" id="statPoints">—</div><div class="stat-label">Points</div></div>
-          <div class="stat-cell"><div class="stat-value gold" id="statStreak">—</div><div class="stat-label">Streak</div></div>
-          <div class="stat-cell"><div class="stat-value" id="statPlayed">—</div><div class="stat-label">Played</div></div>
-          <div class="stat-cell"><div class="stat-value purple" id="statRef">—</div><div class="stat-label">Ref Games</div></div>
-          <div class="stat-cell"><div class="stat-value" id="statGain">—</div><div class="stat-label">Last Gain</div></div>
-        </div>
-        <div class="stats-empty" id="statsEmpty" style="display:none;">
-          You haven't played any games yet. Join a session to start earning points!
+          <div class="stats-empty" id="statsEmpty" style="display:none;">
+            You haven't played any games yet. Join a session to start earning points!
+          </div>
         </div>
       </div>
 
-      <!-- Leaderboard -->
-      <div class="leaderboard-section" id="leaderboard">
-        <div class="leaderboard-title">LEADERBOARD</div>
-        <div class="leaderboard-line"></div>
+      <!-- Rankings Tab -->
+      <div class="tab-panel" id="tab-rankings">
+        <div class="leaderboard-section" id="leaderboard">
+          <div class="leaderboard-title">LEADERBOARD</div>
+          <div class="leaderboard-line"></div>
 
-        <div class="lb-controls">
-          <button class="lb-tab active" data-filter="all" onclick="filterLeaderboard('all', this)">All</button>
-          <button class="lb-tab" data-filter="male" onclick="filterLeaderboard('male', this)">Male</button>
-          <button class="lb-tab" data-filter="female" onclick="filterLeaderboard('female', this)">Female</button>
-          <input class="lb-search" type="text" placeholder="Search players..." id="lbSearch" oninput="renderLeaderboard()" />
+          <div class="lb-controls">
+            <button class="lb-tab active" data-filter="all" onclick="filterLeaderboard('all', this)">All</button>
+            <button class="lb-tab" data-filter="male" onclick="filterLeaderboard('male', this)">Male</button>
+            <button class="lb-tab" data-filter="female" onclick="filterLeaderboard('female', this)">Female</button>
+            <input class="lb-search" type="text" placeholder="Search players..." id="lbSearch" oninput="renderLeaderboard()" />
+          </div>
+
+          <div class="lb-table-wrap">
+            <table class="lb-table" role="table">
+              <thead>
+                <tr>
+                  <th onclick="sortLeaderboard('rank')">#</th>
+                  <th onclick="sortLeaderboard('name')">Player</th>
+                  <th onclick="sortLeaderboard('points')">Points</th>
+                  <th onclick="sortLeaderboard('gain')">Gain</th>
+                  <th onclick="sortLeaderboard('played')">Played</th>
+                  <th onclick="sortLeaderboard('streak')">Streak</th>
+                  <th onclick="sortLeaderboard('ref')">REF</th>
+                </tr>
+              </thead>
+              <tbody id="lbBody"></tbody>
+            </table>
+          </div>
+          <div class="lb-empty" id="lbEmpty" style="display:none;">No players found.</div>
+        </div>
+      </div>
+
+      <!-- Training Tab -->
+      <div class="tab-panel" id="tab-training">
+        <!-- Nudge banner for unresponded sessions -->
+        <div class="training-nudge" id="trainingNudge" style="display:none;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="nudgeText"></span>
         </div>
 
-        <div class="lb-table-wrap">
-          <table class="lb-table" role="table">
-            <thead>
-              <tr>
-                <th onclick="sortLeaderboard('rank')">#</th>
-                <th onclick="sortLeaderboard('name')">Player</th>
-                <th onclick="sortLeaderboard('points')">Points</th>
-                <th onclick="sortLeaderboard('gain')">Gain</th>
-                <th onclick="sortLeaderboard('played')">Played</th>
-                <th onclick="sortLeaderboard('streak')">Streak</th>
-                <th onclick="sortLeaderboard('ref')">REF</th>
-              </tr>
-            </thead>
-            <tbody id="lbBody"></tbody>
-          </table>
+        <!-- Loading skeleton -->
+        <div class="training-loading" id="trainingLoading" style="display:none;">
+          <div class="session-skeleton skeleton"></div>
+          <div class="session-skeleton skeleton"></div>
+          <div class="session-skeleton skeleton"></div>
         </div>
-        <div class="lb-empty" id="lbEmpty" style="display:none;">No players found.</div>
+
+        <!-- Session list -->
+        <div id="trainingList"></div>
+
+        <!-- Empty state -->
+        <div class="training-empty" id="trainingEmpty" style="display:none;">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(244,247,255,0.25)" stroke-width="1.5">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          <div>No upcoming sessions scheduled.</div>
+        </div>
       </div>
     </div>
   </div>
@@ -576,574 +738,10 @@
     </div>
   </div>
 
-  <script>
-    /* ═══════════════════════════════════════
-       STATE
-    ═══════════════════════════════════════ */
-    let currentUser = null;
-    let rankingsData = [];
-    let lbFilter = 'all';
-    let lbSort = { key: 'points', asc: false };
-
-    /* ═══════════════════════════════════════
-       API HELPER
-    ═══════════════════════════════════════ */
-    async function api(url, opts = {}) {
-      const options = {
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        ...opts,
-      };
-      const res = await fetch(url, options);
-
-      // Try silent refresh on 401
-      if (res.status === 401 && !opts._retried) {
-        const refreshed = await silentRefresh();
-        if (refreshed) {
-          return api(url, { ...opts, _retried: true });
-        }
-        showSessionExpired();
-        throw new Error('SESSION_EXPIRED');
-      }
-
-      return res;
-    }
-
-    async function silentRefresh() {
-      try {
-        const res = await fetch('/api/auth/refresh', {
-          method: 'POST',
-          credentials: 'include',
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.user) currentUser = data.user;
-          return true;
-        }
-        return false;
-      } catch {
-        return false;
-      }
-    }
-
-    /* ═══════════════════════════════════════
-       VIEW SWITCHING
-    ═══════════════════════════════════════ */
-    function showView(view) {
-      document.body.classList.remove('nav-open');
-      document.getElementById('loginView').style.display = view === 'login' ? '' : 'none';
-      document.getElementById('registerView').style.display = view === 'register' ? '' : 'none';
-      document.getElementById('pendingView').style.display = view === 'pending' ? '' : 'none';
-      document.getElementById('dashboardView').classList.toggle('active', view === 'dashboard');
-
-      // Nav state
-      document.querySelectorAll('.nav-guest').forEach(el => el.style.display = view === 'dashboard' ? 'none' : '');
-      document.querySelectorAll('.nav-member').forEach(el => el.style.display = view === 'dashboard' ? '' : 'none');
-
-      if (view === 'login') setTimeout(() => document.getElementById('loginEmail').focus(), 60);
-      if (view === 'register') setTimeout(() => document.getElementById('regName').focus(), 60);
-    }
-
-    function updateNavUser() {
-      if (currentUser) {
-        document.getElementById('navMemberName').textContent = currentUser.display_name;
-      }
-    }
-
-    /* ═══════════════════════════════════════
-       VALIDATION
-    ═══════════════════════════════════════ */
-    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    function showFieldError(id, msg) {
-      const el = document.getElementById(id);
-      el.textContent = msg;
-      el.classList.add('show');
-      const input = el.previousElementSibling;
-      if (input && (input.classList.contains('field-input') || input.classList.contains('password-wrap'))) {
-        const inp = input.classList.contains('password-wrap') ? input.querySelector('.field-input') : input;
-        inp.classList.add('error');
-      }
-    }
-
-    function clearFieldError(id) {
-      const el = document.getElementById(id);
-      el.textContent = '';
-      el.classList.remove('show');
-    }
-
-    function clearAllErrors(prefix) {
-      document.querySelectorAll(`[id^="${prefix}"][id$="Error"]`).forEach(el => {
-        el.textContent = '';
-        el.classList.remove('show');
-      });
-      document.querySelectorAll(`#${prefix}View .field-input`).forEach(el => el.classList.remove('error'));
-    }
-
-    /* ═══════════════════════════════════════
-       PASSWORD STRENGTH
-    ═══════════════════════════════════════ */
-    document.getElementById('regPassword').addEventListener('input', function() {
-      const pw = this.value;
-      const fill = document.getElementById('strengthFill');
-      const label = document.getElementById('strengthLabel');
-      let strength = 0;
-      if (pw.length >= 8) strength++;
-      if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) strength++;
-      if (/[0-9]/.test(pw) || /[^a-zA-Z0-9]/.test(pw)) strength++;
-
-      const levels = [
-        { w: '0%', bg: 'transparent', text: '', color: '' },
-        { w: '33%', bg: '#F87171', text: 'Weak', color: '#F87171' },
-        { w: '66%', bg: 'var(--gold)', text: 'Good', color: 'var(--gold-lt)' },
-        { w: '100%', bg: '#4ADE80', text: 'Strong', color: '#4ADE80' },
-      ];
-      const level = pw.length === 0 ? levels[0] : levels[Math.min(strength, 3)];
-      fill.style.width = level.w;
-      fill.style.background = level.bg;
-      label.textContent = level.text;
-      label.style.color = level.color;
-    });
-
-    /* ═══════════════════════════════════════
-       PASSWORD VISIBILITY TOGGLE
-    ═══════════════════════════════════════ */
-    function togglePasswordVisibility(btn) {
-      const input = btn.previousElementSibling;
-      const isPassword = input.type === 'password';
-      input.type = isPassword ? 'text' : 'password';
-      btn.innerHTML = isPassword
-        ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
-        : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
-    }
-
-    /* ═══════════════════════════════════════
-       LOGIN
-    ═══════════════════════════════════════ */
-    async function handleLogin(e) {
-      e.preventDefault();
-      clearAllErrors('login');
-
-      const email = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPassword').value;
-      const remember = document.getElementById('rememberMe').checked;
-      let hasError = false;
-
-      if (!email) { showFieldError('loginEmailError', 'Email is required'); hasError = true; }
-      else if (!EMAIL_RE.test(email)) { showFieldError('loginEmailError', 'Please enter a valid email address'); hasError = true; }
-      if (!password) { showFieldError('loginPasswordError', 'Password is required'); hasError = true; }
-
-      if (hasError) return;
-
-      const btn = document.getElementById('loginBtn');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="auth-spinner"></span>';
-
-      try {
-        const res = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ email, password, remember_me: remember }),
-        });
-
-        const data = await res.json();
-
-        if (res.status === 429) {
-          const banner = document.getElementById('loginBanner');
-          document.getElementById('loginBannerText').textContent = data.error;
-          banner.classList.add('show');
-          btn.disabled = true;
-          btn.textContent = 'LOG IN';
-          if (data.retry_after) {
-            let remaining = data.retry_after;
-            const interval = setInterval(() => {
-              remaining--;
-              btn.textContent = `WAIT ${remaining}s`;
-              if (remaining <= 0) {
-                clearInterval(interval);
-                btn.disabled = false;
-                btn.textContent = 'LOG IN';
-              }
-            }, 1000);
-          }
-          return;
-        }
-
-        if (!res.ok) {
-          if (data.code === 'PENDING_APPROVAL') {
-            showView('pending');
-            return;
-          }
-          document.getElementById('loginCard').classList.add('shake');
-          setTimeout(() => document.getElementById('loginCard').classList.remove('shake'), 400);
-          showFieldError('loginError', data.error || 'Invalid email or password');
-          btn.disabled = false;
-          btn.textContent = 'LOG IN';
-          return;
-        }
-
-        currentUser = data.user;
-        enterDashboard();
-      } catch (err) {
-        const banner = document.getElementById('loginBanner');
-        document.getElementById('loginBannerText').textContent = 'Something went wrong. Please try again later.';
-        banner.classList.add('show');
-        btn.disabled = false;
-        btn.textContent = 'LOG IN';
-      }
-    }
-
-    /* ═══════════════════════════════════════
-       REGISTER
-    ═══════════════════════════════════════ */
-    async function handleRegister(e) {
-      e.preventDefault();
-      clearAllErrors('reg');
-
-      const name = document.getElementById('regName').value.trim();
-      const email = document.getElementById('regEmail').value.trim();
-      const password = document.getElementById('regPassword').value;
-      const confirm = document.getElementById('regConfirm').value;
-      let hasError = false;
-
-      if (!name) { showFieldError('regNameError', 'Display name is required'); hasError = true; }
-      else if (name.length < 2) { showFieldError('regNameError', 'Display name must be at least 2 characters'); hasError = true; }
-      if (!email) { showFieldError('regEmailError', 'Email is required'); hasError = true; }
-      else if (!EMAIL_RE.test(email)) { showFieldError('regEmailError', 'Please enter a valid email address'); hasError = true; }
-      if (!password) { showFieldError('regPasswordError', 'Password is required'); hasError = true; }
-      else if (password.length < 8) { showFieldError('regPasswordError', 'Password must be at least 8 characters'); hasError = true; }
-      if (!confirm) { showFieldError('regConfirmError', 'Please confirm your password'); hasError = true; }
-      else if (password !== confirm) { showFieldError('regConfirmError', 'Passwords do not match'); hasError = true; }
-
-      if (hasError) return;
-
-      const btn = document.getElementById('registerBtn');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="auth-spinner"></span>';
-
-      try {
-        const res = await fetch('/api/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ email, password, display_name: name }),
-        });
-
-        const data = await res.json();
-
-        if (res.status === 409) {
-          showFieldError('regEmailError', 'An account with this email already exists');
-          btn.disabled = false;
-          btn.textContent = 'CREATE ACCOUNT';
-          return;
-        }
-
-        if (res.status === 429) {
-          const banner = document.getElementById('registerBanner');
-          document.getElementById('registerBannerText').textContent = data.error;
-          banner.classList.add('show');
-          btn.disabled = false;
-          btn.textContent = 'CREATE ACCOUNT';
-          return;
-        }
-
-        if (!res.ok) {
-          const banner = document.getElementById('registerBanner');
-          document.getElementById('registerBannerText').textContent = data.error || 'Registration failed. Please try again.';
-          banner.classList.add('show');
-          btn.disabled = false;
-          btn.textContent = 'CREATE ACCOUNT';
-          return;
-        }
-
-        if (data.pending === true) {
-          showView('pending');
-          return;
-        }
-
-        currentUser = data.user;
-
-        // Show success state
-        document.getElementById('registerCard').style.display = 'none';
-        document.getElementById('registerSuccess').style.display = '';
-        setTimeout(() => enterDashboard(), 1500);
-      } catch (err) {
-        const banner = document.getElementById('registerBanner');
-        document.getElementById('registerBannerText').textContent = 'Something went wrong. Please try again later.';
-        banner.classList.add('show');
-        btn.disabled = false;
-        btn.textContent = 'CREATE ACCOUNT';
-      }
-    }
-
-    /* ═══════════════════════════════════════
-       DASHBOARD
-    ═══════════════════════════════════════ */
-    async function enterDashboard() {
-      showView('dashboard');
-      updateNavUser();
-      document.getElementById('dashName').textContent = currentUser.display_name;
-      document.getElementById('statsName').textContent = currentUser.display_name;
-
-      // Show skeletons
-      document.querySelectorAll('.stat-value').forEach(el => {
-        el.dataset.original = el.textContent;
-        el.innerHTML = '<span class="skeleton" style="display:inline-block;width:40px;height:16px;">&nbsp;</span>';
-      });
-      document.getElementById('statsRank').innerHTML = '<span class="skeleton" style="display:inline-block;width:32px;height:24px;">&nbsp;</span>';
-
-      try {
-        const res = await api('/api/member/stats');
-        if (!res.ok) throw new Error('Failed to load stats');
-        const data = await res.json();
-
-        if (data.stats) {
-          document.getElementById('statsRank').textContent = '#' + data.stats.rank;
-          document.getElementById('statPoints').textContent = data.stats.points;
-          document.getElementById('statStreak').textContent = data.stats.streak;
-          document.getElementById('statPlayed').textContent = data.stats.played;
-          document.getElementById('statRef').textContent = data.stats.ref;
-
-          const gainEl = document.getElementById('statGain');
-          if (data.stats.gain !== null && data.stats.gain !== undefined) {
-            gainEl.textContent = (data.stats.gain > 0 ? '+' : '') + data.stats.gain;
-            gainEl.className = 'stat-value ' + (data.stats.gain > 0 ? 'gain-pos' : data.stats.gain < 0 ? 'gain-neg' : '');
-          } else {
-            gainEl.textContent = '—';
-          }
-
-          // Tier badge
-          if (data.stats.tier) {
-            const tierEl = document.getElementById('statsTier');
-            tierEl.textContent = data.stats.tier;
-            tierEl.className = 'tier-badge tier-' + data.stats.tier;
-            tierEl.style.display = '';
-          }
-
-          document.getElementById('statsEmpty').style.display = 'none';
-        } else {
-          // No linked ranking
-          document.querySelectorAll('.stat-value').forEach(el => el.textContent = '—');
-          document.getElementById('statsRank').textContent = '—';
-          document.getElementById('statsEmpty').style.display = '';
-        }
-
-        // Leaderboard
-        rankingsData = data.rankings || [];
-        renderLeaderboard();
-      } catch (err) {
-        if (err.message === 'SESSION_EXPIRED') return;
-        document.querySelectorAll('.stat-value').forEach(el => el.textContent = '—');
-        document.getElementById('statsRank').textContent = '—';
-      }
-    }
-
-    /* ═══════════════════════════════════════
-       LEADERBOARD
-    ═══════════════════════════════════════ */
-    function filterLeaderboard(filter, btn) {
-      lbFilter = filter;
-      document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-      renderLeaderboard();
-    }
-
-    function sortLeaderboard(key) {
-      if (lbSort.key === key) {
-        lbSort.asc = !lbSort.asc;
-      } else {
-        lbSort.key = key;
-        lbSort.asc = key === 'name';
-      }
-      renderLeaderboard();
-    }
-
-    function escapeHtml(str) {
-      const div = document.createElement('div');
-      div.textContent = str;
-      return div.innerHTML;
-    }
-
-    function renderLeaderboard() {
-      const search = (document.getElementById('lbSearch').value || '').toLowerCase();
-      let players = [...rankingsData];
-
-      // Sort by points first to determine ranks
-      players.sort((a, b) => (b.points || 0) - (a.points || 0));
-      players.forEach((p, i) => p._rank = i + 1);
-
-      // Filter
-      if (lbFilter !== 'all') {
-        players = players.filter(p => p.gender === lbFilter);
-      }
-      if (search) {
-        players = players.filter(p => (p.name || '').toLowerCase().includes(search));
-      }
-
-      // Sort
-      const { key, asc } = lbSort;
-      if (key === 'rank') {
-        players.sort((a, b) => asc ? a._rank - b._rank : b._rank - a._rank);
-      } else if (key === 'name') {
-        players.sort((a, b) => asc ? (a.name || '').localeCompare(b.name || '') : (b.name || '').localeCompare(a.name || ''));
-      } else {
-        players.sort((a, b) => asc ? (a[key] || 0) - (b[key] || 0) : (b[key] || 0) - (a[key] || 0));
-      }
-
-      const tbody = document.getElementById('lbBody');
-      const empty = document.getElementById('lbEmpty');
-
-      if (players.length === 0) {
-        tbody.innerHTML = '';
-        empty.style.display = '';
-        return;
-      }
-      empty.style.display = 'none';
-
-      const selfName = currentUser && currentUser.ranking_player_name
-        ? currentUser.ranking_player_name.toLowerCase()
-        : null;
-
-      const medals = ['', '\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'];
-      let selfRow = null;
-
-      tbody.innerHTML = players.map(p => {
-        const isSelf = selfName && (p.name || '').toLowerCase() === selfName;
-        if (isSelf) selfRow = p._rank;
-        const rankDisplay = p._rank <= 3
-          ? `<span class="rank-medal">${medals[p._rank]}</span>`
-          : `<span class="rank-num">${p._rank}</span>`;
-        const gainClass = (p.gain > 0) ? 'gain-pos' : (p.gain < 0) ? 'gain-neg' : 'gain-neu';
-        const gainText = p.gain > 0 ? '+' + p.gain : (p.gain === null || p.gain === undefined ? '—' : p.gain);
-        const tierHtml = p.tier ? `<span class="tier-badge tier-${escapeHtml(p.tier)}">${escapeHtml(p.tier)}</span>` : '';
-        const youBadge = isSelf ? '<span class="you-badge">YOU</span>' : '';
-
-        return `<tr class="${isSelf ? 'row-self' : ''}" ${isSelf ? 'aria-current="true"' : ''}>
-          <td>${rankDisplay}</td>
-          <td><span class="player-name">${escapeHtml(p.name || '')}</span>${tierHtml}${youBadge}</td>
-          <td><span class="points-val">${p.points}</span></td>
-          <td><span class="${gainClass}">${gainText}</span></td>
-          <td>${p.played}</td>
-          <td><span class="streak-val">${p.streak}</span></td>
-          <td><span class="ref-val">${p.ref}</span></td>
-        </tr>`;
-      }).join('');
-
-      // Auto-scroll to user's row
-      if (selfRow) {
-        setTimeout(() => {
-          const row = tbody.querySelector('.row-self');
-          if (row) row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 100);
-      }
-    }
-
-    /* ═══════════════════════════════════════
-       SESSION EXPIRED
-    ═══════════════════════════════════════ */
-    function showSessionExpired() {
-      if (currentUser) {
-        document.getElementById('reAuthEmail').value = currentUser.email;
-      }
-      document.getElementById('sessionOverlay').classList.add('open');
-      setTimeout(() => document.getElementById('reAuthPassword').focus(), 60);
-    }
-
-    async function handleReAuth(e) {
-      e.preventDefault();
-      clearFieldError('reAuthError');
-      const email = document.getElementById('reAuthEmail').value;
-      const password = document.getElementById('reAuthPassword').value;
-      if (!password) { showFieldError('reAuthError', 'Password is required'); return; }
-
-      const btn = document.getElementById('reAuthBtn');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="auth-spinner"></span>';
-
-      try {
-        const res = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ email, password, remember_me: true }),
-        });
-        const data = await res.json();
-
-        if (!res.ok) {
-          showFieldError('reAuthError', data.error || 'Invalid credentials');
-          btn.disabled = false;
-          btn.textContent = 'LOG BACK IN';
-          return;
-        }
-
-        currentUser = data.user;
-        document.getElementById('sessionOverlay').classList.remove('open');
-        document.getElementById('reAuthPassword').value = '';
-        btn.disabled = false;
-        btn.textContent = 'LOG BACK IN';
-
-        // Re-fetch dashboard data
-        enterDashboard();
-      } catch {
-        showFieldError('reAuthError', 'Something went wrong');
-        btn.disabled = false;
-        btn.textContent = 'LOG BACK IN';
-      }
-    }
-
-    function handleFullLogout() {
-      document.getElementById('sessionOverlay').classList.remove('open');
-      currentUser = null;
-      showView('login');
-    }
-
-    /* ═══════════════════════════════════════
-       LOGOUT
-    ═══════════════════════════════════════ */
-    async function handleLogout() {
-      try {
-        await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-      } catch { /* ignore */ }
-      currentUser = null;
-      showView('login');
-    }
-
-    /* ═══════════════════════════════════════
-       MOBILE NAV
-    ═══════════════════════════════════════ */
-    document.addEventListener('click', function(e) {
-      if (!e.target.closest('nav') && document.body.classList.contains('nav-open')) {
-        document.body.classList.remove('nav-open');
-      }
-    });
-    document.querySelectorAll('.nav-links a').forEach(link => {
-      link.addEventListener('click', () => document.body.classList.remove('nav-open'));
-    });
-
-    /* ═══════════════════════════════════════
-       INIT — check for existing session
-    ═══════════════════════════════════════ */
-    (async function init() {
-      try {
-        const res = await fetch('/api/auth/verify', { credentials: 'include' });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.valid && data.user) {
-            currentUser = data.user;
-            enterDashboard();
-            return;
-          }
-        }
-        // Try refresh
-        const refreshed = await silentRefresh();
-        if (refreshed && currentUser) {
-          enterDashboard();
-          return;
-        }
-      } catch { /* no session */ }
-      showView('login');
-    })();
-  </script>
+  <script src="/js/member-core.js"></script>
+  <script src="/js/member-auth.js"></script>
+  <script src="/js/member-dashboard.js"></script>
+  <script src="/js/member-training.js"></script>
+  <script src="/js/member-init.js"></script>
 </body>
 </html>

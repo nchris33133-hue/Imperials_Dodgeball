@@ -7,17 +7,17 @@ module.exports = async (req, res) => {
   setCors(req, res, 'POST, OPTIONS');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed', code: 'METHOD_NOT_ALLOWED' });
 
   try {
     const { password } = req.body || {};
-    if (!password) return res.status(400).json({ error: 'Password required' });
+    if (!password) return res.status(400).json({ error: 'Password required', code: 'VALIDATION_ERROR' });
 
     const hash = process.env.ADMIN_PASSWORD_HASH;
     const secret = process.env.JWT_SECRET;
 
     if (!hash || !secret) {
-      return res.status(500).json({ error: 'Server misconfigured' });
+      return res.status(500).json({ error: 'Server misconfigured', code: 'SERVER_ERROR' });
     }
 
     // Rate limit using a fixed key for admin login
@@ -25,7 +25,9 @@ module.exports = async (req, res) => {
     const rateCheck = await checkRateLimit(adminKey);
     if (rateCheck.limited) {
       return res.status(429).json({
-        error: `Too many attempts. Try again in ${Math.ceil(rateCheck.retryAfter / 60)} minutes.`
+        error: `Too many attempts. Try again in ${Math.ceil(rateCheck.retryAfter / 60)} minutes.`,
+        code: 'RATE_LIMITED',
+        retry_after: rateCheck.retryAfter
       });
     }
 
@@ -33,7 +35,7 @@ module.exports = async (req, res) => {
     if (!match) {
       await recordAttempt(adminKey);
       console.log('AUTH: admin login failed');
-      return res.status(401).json({ error: 'Invalid password' });
+      return res.status(401).json({ error: 'Invalid password', code: 'INVALID_CREDENTIALS' });
     }
 
     await clearAttempts(adminKey);
@@ -43,6 +45,6 @@ module.exports = async (req, res) => {
     return res.status(200).json({ token });
   } catch (err) {
     console.error('AUTH: admin login error', err.message);
-    return res.status(500).json({ error: 'Login failed' });
+    return res.status(500).json({ error: 'Login failed', code: 'SERVER_ERROR' });
   }
 };

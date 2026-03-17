@@ -1,19 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { getDb } = require('../lib/db');
 const { setCors } = require('../lib/cors');
-
-const DEFAULT_PLAYERS = [
-  { id:1,  name:'Sean Aczel',          gender:'male',   tier:'silver',   points:17.5, gain:2.5,  played:7, streak:7, ref:2,  change:0  },
-  { id:2,  name:'Apachiiblu Nicholls', gender:'male',   tier:'silver',   points:15.0, gain:2.5,  played:7, streak:7, ref:5,  change:0  },
-  { id:3,  name:'Jeremy Sang',         gender:'male',   tier:'silver',   points:14.0, gain:2.5,  played:6, streak:5, ref:3,  change:0  },
-  { id:4,  name:'James Morris',        gender:'male',   tier:'silver',   points:14.0, gain:null, played:6, streak:6, ref:2,  change:0  },
-  { id:5,  name:'Mark Gillam',         gender:'male',   tier:'silver',   points:12.5, gain:1.0,  played:7, streak:7, ref:2,  change:0  },
-  { id:6,  name:'Justin Oh',           gender:'male',   tier:'silver',   points:11.5, gain:2.5,  played:6, streak:6, ref:1,  change:0  },
-  { id:7,  name:'Isaac Lewis',         gender:'male',   tier:'silver',   points:11.0, gain:2.5,  played:6, streak:6, ref:1,  change:0  },
-  { id:8,  name:'Emma Bauer',          gender:'female', tier:'gold',     points:10.5, gain:2.0,  played:5, streak:4, ref:3,  change:1  },
-  { id:9,  name:'Lena Hofer',          gender:'female', tier:'silver',   points:9.0,  gain:1.5,  played:5, streak:3, ref:2,  change:0  },
-  { id:10, name:'Tobias Winkler',      gender:'male',   tier:'bronze',   points:8.5,  gain:1.0,  played:4, streak:2, ref:1,  change:-1 },
-];
+const { DEFAULT_PLAYERS } = require('../lib/defaults');
 
 function verifyToken(req) {
   const auth = req.headers['authorization'] || '';
@@ -46,9 +34,9 @@ module.exports = async (req, res) => {
   }
 
   if (req.method === 'POST') {
-    if (!verifyToken(req)) return res.status(401).json({ error: 'Unauthorized' });
+    if (!verifyToken(req)) return res.status(401).json({ error: 'Unauthorized', code: 'UNAUTHORIZED' });
     const players = req.body;
-    if (!Array.isArray(players)) return res.status(400).json({ error: 'Expected array' });
+    if (!Array.isArray(players)) return res.status(400).json({ error: 'Expected array', code: 'VALIDATION_ERROR' });
 
     try {
       const sql = getDb();
@@ -61,9 +49,9 @@ module.exports = async (req, res) => {
       return res.status(200).json({ success: true });
     } catch (err) {
       console.error('Rankings write error:', err.message);
-      return res.status(500).json({ error: 'Failed to save rankings' });
+      return res.status(500).json({ error: 'Failed to save rankings', code: 'SERVER_ERROR' });
     }
   }
 
-  return res.status(405).json({ error: 'Method not allowed' });
+  return res.status(405).json({ error: 'Method not allowed', code: 'METHOD_NOT_ALLOWED' });
 };
