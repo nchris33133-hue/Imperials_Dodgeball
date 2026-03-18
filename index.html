@@ -2385,6 +2385,13 @@
             <label class="form-label" for="fChange">Rank Change</label>
             <input class="form-input" type="number" id="fChange" placeholder="0 (neg = down)" />
           </div>
+          <div class="form-group full" id="fMemberLinkGroup" style="display:none;">
+            <label class="form-label" for="fMemberLink">Link to Member Account</label>
+            <select class="form-select" id="fMemberLink">
+              <option value="">— No member linked —</option>
+            </select>
+            <div style="font-size:.72rem; color:#8899bb; margin-top:.25rem;">Links this player's stats to a member's dashboard</div>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
@@ -2804,8 +2811,26 @@
     // ══════════════════════════════════════════════════════
     // EDIT / ADD MODAL
     // ══════════════════════════════════════════════════════
-    function openModal(id=null) {
+    let membersList = null; // cached approved members
+
+    async function loadMembersForLinking() {
+      if (membersList) return membersList;
+      try {
+        const res = await fetch('/api/admin/members?status=approved', {
+          headers: { 'Authorization': 'Bearer ' + getToken() }
+        });
+        if (!res.ok) return [];
+        const data = await res.json();
+        membersList = data.members || [];
+        return membersList;
+      } catch { return []; }
+    }
+
+    async function openModal(id=null) {
       editId = id;
+      const linkGroup = document.getElementById('fMemberLinkGroup');
+      const linkSelect = document.getElementById('fMemberLink');
+
       if (id!==null) {
         const p = players.find(x=>x.id===id);
         if (!p) return;
@@ -2821,18 +2846,31 @@
         document.getElementById('fStreak').value = p.streak;
         document.getElementById('fRef').value    = p.ref;
         document.getElementById('fChange').value = p.change;
+
+        // Show member link dropdown for admins
+        if (isAdmin()) {
+          linkGroup.style.display = '';
+          linkSelect.innerHTML = '<option value="">— No member linked —</option><option disabled>Loading...</option>';
+          const members = await loadMembersForLinking();
+          linkSelect.innerHTML = '<option value="">— No member linked —</option>' +
+            members.map(m => `<option value="${m.id}">${esc(m.display_name)} (${esc(m.email)})</option>`).join('');
+          // Pre-select the member currently linked to this player
+          const linked = members.find(m => m.ranking_player_name && m.ranking_player_name.toLowerCase() === p.name.toLowerCase());
+          if (linked) linkSelect.value = linked.id;
+        }
       } else {
         document.getElementById('modalEyebrow').textContent = 'Add Player';
         document.getElementById('modalTitle').textContent   = 'New Entry';
         document.getElementById('saveBtn').textContent      = 'Add Player';
         document.getElementById('playerForm').reset();
+        linkGroup.style.display = 'none';
       }
       document.getElementById('modalBackdrop').classList.add('open');
       setTimeout(()=>document.getElementById('fName').focus(),60);
     }
     function closeModal() { document.getElementById('modalBackdrop').classList.remove('open'); editId=null; }
     function backdropClick(e) { if(e.target===document.getElementById('modalBackdrop')) closeModal(); }
-    function savePlayer(e) {
+    async function savePlayer(e) {
       e.preventDefault();
       const gainRaw = document.getElementById('fGain').value;
       const data = {
@@ -2848,7 +2886,41 @@
       };
       if (editId!==null) {
         const idx = players.findIndex(p=>p.id===editId);
+        const oldName = idx !== -1 ? players[idx].name : null;
         if (idx!==-1) players[idx]={...players[idx],...data};
+
+        // Handle member linking
+        if (isAdmin()) {
+          const linkSelect = document.getElementById('fMemberLink');
+          const selectedUserId = linkSelect.value;
+
+          // Unlink any member previously linked to this player (by old name)
+          if (membersList) {
+            const prevLinked = membersList.find(m => m.ranking_player_name && m.ranking_player_name.toLowerCase() === (oldName || '').toLowerCase());
+            if (prevLinked && prevLinked.id !== selectedUserId) {
+              await fetch('/api/admin/members', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() },
+                body: JSON.stringify({ user_id: prevLinked.id, action: 'link', ranking_player_name: '' })
+              }).catch(() => {});
+              prevLinked.ranking_player_name = null;
+            }
+          }
+
+          // Link the newly selected member
+          if (selectedUserId) {
+            await fetch('/api/admin/members', {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() },
+              body: JSON.stringify({ user_id: selectedUserId, action: 'link', ranking_player_name: data.name })
+            }).catch(() => {});
+            if (membersList) {
+              const m = membersList.find(x => x.id === selectedUserId);
+              if (m) m.ranking_player_name = data.name;
+            }
+          }
+        }
+
         toast('Player updated','success');
       } else {
         players.push({id:nextId++,...data});

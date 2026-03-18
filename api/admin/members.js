@@ -40,11 +40,17 @@ module.exports = async (req, res) => {
     if (!user_id || !action) {
       return res.status(400).json({ error: 'user_id and action are required', code: 'VALIDATION_ERROR' });
     }
-    if (!['approve', 'reject'].includes(action)) {
-      return res.status(400).json({ error: 'action must be "approve" or "reject"', code: 'VALIDATION_ERROR' });
+    if (!['approve', 'reject', 'link'].includes(action)) {
+      return res.status(400).json({ error: 'action must be "approve", "reject", or "link"', code: 'VALIDATION_ERROR' });
     }
     try {
-      if (action === 'approve') {
+      if (action === 'link') {
+        await sql`
+          UPDATE users
+          SET ranking_player_name = ${ranking_player_name || null}
+          WHERE id = ${user_id}
+        `;
+      } else if (action === 'approve') {
         await sql`
           UPDATE users
           SET is_active = true,
