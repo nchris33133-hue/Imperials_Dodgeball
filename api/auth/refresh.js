@@ -1,6 +1,7 @@
 const { getDb } = require('../../lib/db');
 const { setCors } = require('../../lib/cors');
 const { extractTokenFromCookie, createAccessToken, generateRefreshToken, hashRefreshToken, setAccessTokenCookie, setRefreshTokenCookie, REFRESH_TOKEN_DAYS } = require('../../lib/auth');
+const { checkRateLimit, recordAttempt, clearAttempts } = require('../../lib/rate-limit');
 
 module.exports = async (req, res) => {
   setCors(req, res, 'POST, OPTIONS');
@@ -14,7 +15,14 @@ module.exports = async (req, res) => {
       return res.status(401).json({ error: 'No refresh token', code: 'NO_REFRESH_TOKEN' });
     }
 
+    // Rate limit refresh attempts by token hash to prevent brute-force
     const tokenHash = hashRefreshToken(refreshToken);
+    const rateKey = `refresh_${tokenHash.slice(0, 16)}`;
+    const rateCheck = await checkRateLimit(rateKey);
+    if (rateCheck.limited) {
+      return res.status(429).json({ error: 'Too many attempts. Try again later.', code: 'RATE_LIMITED', retryAfter: rateCheck.retryAfter });
+    }
+
     const sql = getDb();
 
     const rows = await sql`
@@ -25,6 +33,7 @@ module.exports = async (req, res) => {
     `;
 
     if (rows.length === 0) {
+      await recordAttempt(rateKey);
       return res.status(401).json({ error: 'Invalid or expired refresh token', code: 'INVALID_REFRESH_TOKEN' });
     }
 
@@ -51,7 +60,7 @@ module.exports = async (req, res) => {
     setAccessTokenCookie(res, accessToken);
     setRefreshTokenCookie(res, newRefreshToken);
 
-    console.log(`AUTH: token refresh user=${row.user_id}`);
+    await clearAttempts(rateKey);
 
     return res.status(200).json({
       user: {
@@ -62,7 +71,6 @@ module.exports = async (req, res) => {
       }
     });
   } catch (err) {
-    console.error('AUTH: refresh error', err.message);
     return res.status(500).json({ error: 'Token refresh failed', code: 'SERVER_ERROR' });
   }
 };

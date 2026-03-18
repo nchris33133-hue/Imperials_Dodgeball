@@ -41,8 +41,7 @@ module.exports = async (req, res) => {
           ORDER BY s.session_date ASC, s.start_time ASC
         `;
         return res.status(200).json({ sessions });
-      } catch (err) {
-        console.error('TRAINING: upcoming error', err.message);
+      } catch {
         return res.status(500).json({ error: 'Failed to load sessions', code: 'SERVER_ERROR' });
       }
     }
@@ -77,8 +76,7 @@ module.exports = async (req, res) => {
         `;
 
         return res.status(200).json({ session: sessions[0], attendees });
-      } catch (err) {
-        console.error('TRAINING: session detail error', err.message);
+      } catch {
         return res.status(500).json({ error: 'Failed to load session', code: 'SERVER_ERROR' });
       }
     }
@@ -160,8 +158,7 @@ module.exports = async (req, res) => {
         attending_count: parseInt(counts[0].attending_count) || 0,
         not_attending_count: parseInt(counts[0].not_attending_count) || 0
       });
-    } catch (err) {
-      console.error('TRAINING: rsvp error', err.message);
+    } catch {
       return res.status(500).json({ error: 'RSVP failed', code: 'SERVER_ERROR' });
     }
   }

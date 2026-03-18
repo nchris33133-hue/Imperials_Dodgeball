@@ -58,14 +58,11 @@ module.exports = async (req, res) => {
 
     const user = rows[0];
 
-    console.log(`AUTH: register pending user=${user.id}`);
-
     return res.status(201).json({
       pending: true,
       message: 'Registration successful. Your account is pending admin approval.'
     });
-  } catch (err) {
-    console.error('AUTH: register error', err.message);
+  } catch {
     return res.status(500).json({ error: 'Registration failed. Please try again.', code: 'SERVER_ERROR' });
   }
 };

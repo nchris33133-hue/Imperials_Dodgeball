@@ -34,17 +34,14 @@ module.exports = async (req, res) => {
     const match = await bcrypt.compare(password, hash);
     if (!match) {
       await recordAttempt(adminKey);
-      console.log('AUTH: admin login failed');
       return res.status(401).json({ error: 'Invalid password', code: 'INVALID_CREDENTIALS' });
     }
 
     await clearAttempts(adminKey);
     const token = jwt.sign({ role: 'admin', iss: 'vienna-admin' }, secret, { expiresIn: '1h' });
 
-    console.log('AUTH: admin login success');
     return res.status(200).json({ token });
-  } catch (err) {
-    console.error('AUTH: admin login error', err.message);
+  } catch {
     return res.status(500).json({ error: 'Login failed', code: 'SERVER_ERROR' });
   }
 };

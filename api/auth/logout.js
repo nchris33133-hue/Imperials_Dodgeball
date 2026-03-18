@@ -18,10 +18,8 @@ module.exports = async (req, res) => {
     }
 
     clearAuthCookies(res);
-    console.log('AUTH: logout');
     return res.status(200).json({ success: true });
-  } catch (err) {
-    console.error('AUTH: logout error', err.message);
+  } catch {
     clearAuthCookies(res);
     return res.status(200).json({ success: true });
   }

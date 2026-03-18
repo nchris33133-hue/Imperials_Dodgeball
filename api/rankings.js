@@ -1,19 +1,7 @@
-const jwt = require('jsonwebtoken');
 const { getDb } = require('../lib/db');
 const { setCors } = require('../lib/cors');
+const { requireAdmin } = require('../lib/auth');
 const { DEFAULT_PLAYERS } = require('../lib/defaults');
-
-function verifyToken(req) {
-  const auth = req.headers['authorization'] || '';
-  const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
-  if (!token) return false;
-  try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    return payload.role === 'admin';
-  } catch {
-    return false;
-  }
-}
 
 module.exports = async (req, res) => {
   setCors(req, res, 'GET, POST, OPTIONS');
@@ -27,14 +15,16 @@ module.exports = async (req, res) => {
       if (rows.length > 0 && rows[0].data) {
         return res.status(200).json(rows[0].data);
       }
-    } catch (err) {
-      console.error('Rankings read error:', err.message);
+    } catch {
+      // Fall through to default players
     }
     return res.status(200).json(DEFAULT_PLAYERS);
   }
 
   if (req.method === 'POST') {
-    if (!verifyToken(req)) return res.status(401).json({ error: 'Unauthorized', code: 'UNAUTHORIZED' });
+    const admin = requireAdmin(req, res);
+    if (!admin) return;
+
     const players = req.body;
     if (!Array.isArray(players)) return res.status(400).json({ error: 'Expected array', code: 'VALIDATION_ERROR' });
 
@@ -47,8 +37,7 @@ module.exports = async (req, res) => {
         ON CONFLICT (id) DO UPDATE SET data = ${jsonData}::jsonb, updated_at = NOW()
       `;
       return res.status(200).json({ success: true });
-    } catch (err) {
-      console.error('Rankings write error:', err.message);
+    } catch {
       return res.status(500).json({ error: 'Failed to save rankings', code: 'SERVER_ERROR' });
     }
   }

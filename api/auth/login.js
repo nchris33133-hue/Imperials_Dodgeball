@@ -81,8 +81,6 @@ module.exports = async (req, res) => {
       setRefreshTokenCookie(res, refreshToken);
     }
 
-    console.log(`AUTH: login success user=${user.id}`);
-
     return res.status(200).json({
       user: {
         id: user.id,
@@ -91,8 +89,7 @@ module.exports = async (req, res) => {
         ranking_player_name: user.ranking_player_name
       }
     });
-  } catch (err) {
-    console.error('AUTH: login error', err.message);
+  } catch {
     return res.status(500).json({ error: 'Login failed. Please try again.', code: 'SERVER_ERROR' });
   }
 };

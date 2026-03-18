@@ -36,8 +36,7 @@ module.exports = async (req, res) => {
           ORDER BY s.session_date ASC, s.start_time ASC
         `;
         return res.status(200).json({ sessions });
-      } catch (err) {
-        console.error('ADMIN TRAINING: overview error', err.message);
+      } catch {
         return res.status(500).json({ error: 'Failed to load sessions', code: 'SERVER_ERROR' });
       }
     }
@@ -69,8 +68,7 @@ module.exports = async (req, res) => {
         `;
 
         return res.status(200).json({ session: sessions[0], attendees });
-      } catch (err) {
-        console.error('ADMIN TRAINING: detail error', err.message);
+      } catch {
         return res.status(500).json({ error: 'Failed to load session detail', code: 'SERVER_ERROR' });
       }
     }
@@ -122,8 +120,7 @@ module.exports = async (req, res) => {
         const attendance_rate = totalSlots > 0 ? Math.round((attendingCount / totalSlots) * 100) : 0;
 
         return res.status(200).json({ sessions, matrix, attendance_rate });
-      } catch (err) {
-        console.error('ADMIN TRAINING: matrix error', err.message);
+      } catch {
         return res.status(500).json({ error: 'Failed to load attendance matrix', code: 'SERVER_ERROR' });
       }
     }
@@ -147,10 +144,8 @@ module.exports = async (req, res) => {
           VALUES (${title}, ${description || null}, ${location || null}, ${session_date}, ${start_time}, ${end_time}, ${max_capacity || null})
           RETURNING *
         `;
-        console.log(`ADMIN TRAINING: created session ${result[0].id}`);
         return res.status(201).json({ session: result[0] });
-      } catch (err) {
-        console.error('ADMIN TRAINING: create error', err.message);
+      } catch {
         return res.status(500).json({ error: 'Failed to create session', code: 'SERVER_ERROR' });
       }
     }
@@ -175,10 +170,8 @@ module.exports = async (req, res) => {
           RETURNING *
         `;
         if (result.length === 0) return res.status(404).json({ error: 'Session not found', code: 'NOT_FOUND' });
-        console.log(`ADMIN TRAINING: updated session ${id}`);
         return res.status(200).json({ session: result[0] });
-      } catch (err) {
-        console.error('ADMIN TRAINING: update error', err.message);
+      } catch {
         return res.status(500).json({ error: 'Failed to update session', code: 'SERVER_ERROR' });
       }
     }
@@ -195,10 +188,8 @@ module.exports = async (req, res) => {
           RETURNING *
         `;
         if (result.length === 0) return res.status(404).json({ error: 'Session not found', code: 'NOT_FOUND' });
-        console.log(`ADMIN TRAINING: cancelled session ${id}`);
         return res.status(200).json({ session: result[0] });
-      } catch (err) {
-        console.error('ADMIN TRAINING: cancel error', err.message);
+      } catch {
         return res.status(500).json({ error: 'Failed to cancel session', code: 'SERVER_ERROR' });
       }
     }
@@ -244,10 +235,8 @@ module.exports = async (req, res) => {
           RETURNING *
         `;
 
-        console.log(`ADMIN TRAINING: generated ${sessions.length} recurring sessions`);
         return res.status(201).json({ sessions, count: sessions.length });
-      } catch (err) {
-        console.error('ADMIN TRAINING: generate error', err.message);
+      } catch {
         return res.status(500).json({ error: 'Failed to generate sessions', code: 'SERVER_ERROR' });
       }
     }
@@ -264,10 +253,8 @@ module.exports = async (req, res) => {
     try {
       const result = await sql`DELETE FROM training_sessions WHERE id = ${id} RETURNING id`;
       if (result.length === 0) return res.status(404).json({ error: 'Session not found', code: 'NOT_FOUND' });
-      console.log(`ADMIN TRAINING: deleted session ${id}`);
       return res.status(200).json({ success: true });
-    } catch (err) {
-      console.error('ADMIN TRAINING: delete error', err.message);
+    } catch {
       return res.status(500).json({ error: 'Failed to delete session', code: 'SERVER_ERROR' });
     }
   }

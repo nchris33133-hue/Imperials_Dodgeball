@@ -1,6 +1,7 @@
 const { getDb } = require('../../lib/db');
 const { setCors } = require('../../lib/cors');
 const { requireAdmin } = require('../../lib/auth');
+const { isValidUuid } = require('../../lib/validation');
 
 module.exports = async (req, res) => {
   setCors(req, res, 'GET, PATCH, OPTIONS');
@@ -29,7 +30,6 @@ module.exports = async (req, res) => {
       }
       return res.status(200).json({ members });
     } catch (err) {
-      console.error('ADMIN: list members error', err.message);
       return res.status(500).json({ error: 'Failed to fetch members', code: 'SERVER_ERROR' });
     }
   }
@@ -39,6 +39,9 @@ module.exports = async (req, res) => {
     const { user_id, action, ranking_player_name } = req.body || {};
     if (!user_id || !action) {
       return res.status(400).json({ error: 'user_id and action are required', code: 'VALIDATION_ERROR' });
+    }
+    if (!isValidUuid(user_id)) {
+      return res.status(400).json({ error: 'Invalid user_id format', code: 'VALIDATION_ERROR' });
     }
     if (!['approve', 'reject', 'link'].includes(action)) {
       return res.status(400).json({ error: 'action must be "approve", "reject", or "link"', code: 'VALIDATION_ERROR' });
@@ -64,10 +67,8 @@ module.exports = async (req, res) => {
           WHERE id = ${user_id}
         `;
       }
-      console.log(`ADMIN: ${action} user=${user_id}`);
       return res.status(200).json({ success: true });
     } catch (err) {
-      console.error('ADMIN: approve/reject error', err.message);
       return res.status(500).json({ error: 'Action failed', code: 'SERVER_ERROR' });
     }
   }

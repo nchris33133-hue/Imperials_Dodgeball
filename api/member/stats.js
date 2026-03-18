@@ -60,8 +60,7 @@ module.exports = async (req, res) => {
       stats,
       rankings
     });
-  } catch (err) {
-    console.error('MEMBER: stats error', err.message);
+  } catch {
     return res.status(500).json({ error: 'Could not load stats', code: 'SERVER_ERROR' });
   }
 };
