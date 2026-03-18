@@ -24,15 +24,16 @@ module.exports = async (req, res) => {
         const sessions = await sql`
           SELECT
             s.*,
-            (SELECT COUNT(*) FROM training_attendance WHERE session_id = s.id AND status = 'attending') AS attending_count,
-            (SELECT COUNT(*) FROM training_attendance WHERE session_id = s.id AND status = 'not_attending') AS not_attending_count,
-            (SELECT COUNT(*) FROM users WHERE is_active = true AND status = 'approved') -
-              (SELECT COUNT(*) FROM training_attendance ta
-               JOIN users u ON u.id = ta.user_id
-               WHERE ta.session_id = s.id AND ta.status IN ('attending', 'not_attending')
-               AND u.is_active = true AND u.status = 'approved') AS no_response_count
+            COUNT(*) FILTER (WHERE ta.status = 'attending') AS attending_count,
+            COUNT(*) FILTER (WHERE ta.status = 'not_attending') AS not_attending_count,
+            (SELECT COUNT(*) FROM users WHERE is_active = true AND status = 'approved')
+              - COUNT(DISTINCT ta.user_id) FILTER (WHERE ta.status IN ('attending', 'not_attending')
+                AND ta.user_id IN (SELECT id FROM users WHERE is_active = true AND status = 'approved'))
+              AS no_response_count
           FROM training_sessions s
+          LEFT JOIN training_attendance ta ON ta.session_id = s.id
           WHERE s.session_date >= (NOW() AT TIME ZONE 'Europe/Vienna')::date - ${interval}::interval
+          GROUP BY s.id
           ORDER BY s.session_date ASC, s.start_time ASC
         `;
         return res.status(200).json({ sessions });
@@ -138,6 +139,9 @@ module.exports = async (req, res) => {
       if (!title || !session_date || !start_time || !end_time) {
         return res.status(400).json({ error: 'title, session_date, start_time, and end_time are required', code: 'VALIDATION_ERROR' });
       }
+      if (title.length > 200) return res.status(400).json({ error: 'Title must be at most 200 characters', code: 'VALIDATION_ERROR' });
+      if (description && description.length > 2000) return res.status(400).json({ error: 'Description must be at most 2000 characters', code: 'VALIDATION_ERROR' });
+      if (location && location.length > 200) return res.status(400).json({ error: 'Location must be at most 200 characters', code: 'VALIDATION_ERROR' });
       try {
         const result = await sql`
           INSERT INTO training_sessions (title, description, location, session_date, start_time, end_time, max_capacity)
@@ -200,18 +204,25 @@ module.exports = async (req, res) => {
       if (recurring_day === undefined || !start_time || !end_time || !weeks) {
         return res.status(400).json({ error: 'recurring_day, start_time, end_time, and weeks are required', code: 'VALIDATION_ERROR' });
       }
+      const day = parseInt(recurring_day);
+      if (isNaN(day) || day < 0 || day > 6) {
+        return res.status(400).json({ error: 'recurring_day must be between 0 (Sunday) and 6 (Saturday)', code: 'VALIDATION_ERROR' });
+      }
       if (weeks < 1 || weeks > 52) {
         return res.status(400).json({ error: 'weeks must be between 1 and 52', code: 'VALIDATION_ERROR' });
       }
+      if (title && title.length > 200) return res.status(400).json({ error: 'Title must be at most 200 characters', code: 'VALIDATION_ERROR' });
+      if (description && description.length > 2000) return res.status(400).json({ error: 'Description must be at most 2000 characters', code: 'VALIDATION_ERROR' });
+      if (location && location.length > 200) return res.status(400).json({ error: 'Location must be at most 200 characters', code: 'VALIDATION_ERROR' });
 
       try {
         // Find the next occurrence of the recurring_day (0=Sun..6=Sat)
         const viennaDate = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Vienna' }));
         const todayDay = viennaDate.getDay();
-        let daysUntilNext = (recurring_day - todayDay + 7) % 7;
+        let daysUntilNext = (day - todayDay + 7) % 7;
         if (daysUntilNext === 0) daysUntilNext = 7; // start from next week
 
-        const sessionTitle = title || (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][recurring_day] + ' Training');
+        const sessionTitle = title || (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][day] + ' Training');
         const datesToInsert = [];
         for (let w = 0; w < weeks; w++) {
           const d = new Date(viennaDate);
@@ -229,7 +240,7 @@ module.exports = async (req, res) => {
             d::date,
             ${start_time}::time,
             ${end_time}::time,
-            ${recurring_day}::int,
+            ${day}::int,
             ${max_capacity || null}::int
           FROM unnest(${datesToInsert}::text[]) AS d
           RETURNING *

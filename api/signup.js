@@ -1,8 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { setCors } = require('../lib/cors');
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const { validateEmail } = require('../lib/validation');
 
 function sanitizeCsvField(v) {
   let str = String(v).replace(/"/g, '""');
@@ -19,13 +18,21 @@ module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed', code: 'METHOD_NOT_ALLOWED' });
 
-  const { name, email, level = '', source = '', type = 'join' } = req.body || {};
+  let { name, email, level = '', source = '', type = 'join' } = req.body || {};
   if (!name || !email) return res.status(400).json({ error: 'Name and email are required', code: 'VALIDATION_ERROR' });
+
+  // Whitelist type and sanitize optional fields
+  if (!['join', 'newsletter'].includes(type)) type = 'join';
+  if (typeof level !== 'string') level = '';
+  if (typeof source !== 'string') source = '';
+  level = level.slice(0, 100);
+  source = source.slice(0, 200);
 
   // Validate email format
   const trimmedEmail = String(email).trim().toLowerCase();
-  if (trimmedEmail.length > 254 || !EMAIL_RE.test(trimmedEmail)) {
-    return res.status(400).json({ error: 'Invalid email format', code: 'VALIDATION_ERROR' });
+  const emailError = validateEmail(trimmedEmail);
+  if (emailError) {
+    return res.status(400).json({ error: emailError, code: 'VALIDATION_ERROR' });
   }
 
   // Validate name length

@@ -31,13 +31,14 @@ module.exports = async (req, res) => {
             s.id, s.title, s.description, s.location,
             s.session_date, s.start_time, s.end_time,
             s.max_capacity, s.is_cancelled,
-            a.status AS my_status,
-            (SELECT COUNT(*) FROM training_attendance WHERE session_id = s.id AND status = 'attending') AS attending_count,
-            (SELECT COUNT(*) FROM training_attendance WHERE session_id = s.id AND status = 'not_attending') AS not_attending_count
+            MAX(CASE WHEN ta.user_id = ${userId} THEN ta.status END) AS my_status,
+            COUNT(*) FILTER (WHERE ta.status = 'attending') AS attending_count,
+            COUNT(*) FILTER (WHERE ta.status = 'not_attending') AS not_attending_count
           FROM training_sessions s
-          LEFT JOIN training_attendance a ON a.session_id = s.id AND a.user_id = ${userId}
+          LEFT JOIN training_attendance ta ON ta.session_id = s.id
           WHERE s.session_date >= (NOW() AT TIME ZONE 'Europe/Vienna')::date
             AND s.session_date <= (NOW() AT TIME ZONE 'Europe/Vienna')::date + INTERVAL '28 days'
+          GROUP BY s.id
           ORDER BY s.session_date ASC, s.start_time ASC
         `;
         return res.status(200).json({ sessions });
