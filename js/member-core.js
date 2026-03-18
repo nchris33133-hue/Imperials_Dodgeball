@@ -6,6 +6,7 @@ let rankingsData = [];
 let lbFilter = 'all';
 let lbSort = { key: 'points', asc: false };
 let activeTab = 'stats';
+let lbVisible = 25;
 let trainingSessions = [];
 let trainingLoaded = false;
 const rsvpInFlight = new Set();

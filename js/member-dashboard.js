@@ -86,6 +86,7 @@ function renderDashboardData(data) {
 ═══════════════════════════════════════ */
 function filterLeaderboard(filter, btn) {
   lbFilter = filter;
+  lbVisible = 25;
   document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
   if (btn) btn.classList.add('active');
   renderLeaderboard();
@@ -137,16 +138,20 @@ function renderLeaderboard() {
   }
   empty.style.display = 'none';
 
+  const totalCount = players.length;
+  const visible = players.slice(0, lbVisible);
+
   const selfName = currentUser && currentUser.ranking_player_name
     ? currentUser.ranking_player_name.toLowerCase()
     : null;
 
   const medals = ['', '\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'];
   let selfRow = null;
+  let selfInView = false;
 
-  tbody.innerHTML = players.map(p => {
+  tbody.innerHTML = visible.map(p => {
     const isSelf = selfName && (p.name || '').toLowerCase() === selfName;
-    if (isSelf) selfRow = p._rank;
+    if (isSelf) { selfRow = p._rank; selfInView = true; }
     const rankDisplay = p._rank <= 3
       ? `<span class="rank-medal">${medals[p._rank]}</span>`
       : `<span class="rank-num">${p._rank}</span>`;
@@ -166,8 +171,20 @@ function renderLeaderboard() {
     </tr>`;
   }).join('');
 
+  // Load More button
+  const existing = document.getElementById('lbLoadMore');
+  if (existing) existing.remove();
+  if (totalCount > lbVisible) {
+    const btn = document.createElement('button');
+    btn.id = 'lbLoadMore';
+    btn.className = 'lb-load-more';
+    btn.textContent = `Load More (${lbVisible} of ${totalCount})`;
+    btn.onclick = () => { lbVisible += 25; renderLeaderboard(); };
+    tbody.closest('.lb-table-wrap').after(btn);
+  }
+
   // Auto-scroll to user's row
-  if (selfRow) {
+  if (selfInView && selfRow) {
     setTimeout(() => {
       const row = tbody.querySelector('.row-self');
       if (row) row.scrollIntoView({ behavior: 'smooth', block: 'center' });
