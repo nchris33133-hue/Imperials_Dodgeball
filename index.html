@@ -1380,6 +1380,8 @@
     .btn-icon:focus-visible { outline:2px solid var(--gold-lt); outline-offset:2px; }
     .empty-state { text-align:center; padding:4rem 2rem; color:rgba(244,247,255,0.2); }
     .empty-state svg { margin:0 auto 1rem; display:block; }
+    .rank-load-more { display:block; width:100%; margin-top:.75rem; padding:.7rem; background:rgba(53,103,192,0.1); color:rgba(244,247,255,0.65); border:1px solid rgba(53,103,192,0.2); border-radius:8px; cursor:pointer; font-size:0.85rem; transition:background .15s, color .15s; }
+    .rank-load-more:hover { background:rgba(53,103,192,0.2); color:#F4F7FF; }
 
     /* btn-nav (admin toolbar) */
     .btn-nav { font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:0.85rem; letter-spacing:0.1em; text-transform:uppercase; padding:7px 16px; border-radius:6px; border:none; cursor:pointer; display:flex; align-items:center; gap:6px; transition:transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease; }
@@ -2067,7 +2069,7 @@
         <div class="controls-right">
           <div class="search-wrap">
             <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input class="search-input" type="text" placeholder="Search players&hellip;" id="searchInput" oninput="renderTable()" />
+            <input class="search-input" type="text" placeholder="Search players&hellip;" id="searchInput" oninput="rankVisible=25; renderTable()" />
           </div>
         </div>
       </div>
@@ -2679,6 +2681,7 @@
     let sortKey  = 'points';
     let editId   = null;
     let deleteId = null;
+    let rankVisible = 25;
 
     function save() {
       localStorage.setItem('vi_players', JSON.stringify(players));
@@ -2726,10 +2729,13 @@
         return;
       }
 
+      const totalCount = list.length;
+      const visible = list.slice(0, rankVisible);
+
       let rank = 1;
       const adminActs = isAdmin();
-      tbody.innerHTML = list.map((p,i) => {
-        if (i>0 && p.points<list[i-1].points) rank = i+1;
+      tbody.innerHTML = visible.map((p,i) => {
+        if (i>0 && p.points<visible[i-1].points) rank = i+1;
         const rc  = rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3':'rank-other';
         const chg = p.change>0
           ? `<span class="rank-change up">&#9650;${p.change}</span>`
@@ -2767,6 +2773,18 @@
         </tr>`;
       }).join('');
 
+      // Load More button
+      const existingBtn = document.getElementById('rankLoadMore');
+      if (existingBtn) existingBtn.remove();
+      if (totalCount > rankVisible) {
+        const btn = document.createElement('button');
+        btn.id = 'rankLoadMore';
+        btn.className = 'rank-load-more';
+        btn.textContent = `Load More (${rankVisible} of ${totalCount})`;
+        btn.onclick = () => { rankVisible += 25; renderTable(); };
+        tbody.closest('table').parentElement.after(btn);
+      }
+
       document.querySelectorAll('thead th').forEach(th=>{
         th.classList.remove('sorted');
         if (th.getAttribute('onclick')===`setSort('${sortKey}')`) th.classList.add('sorted');
@@ -2776,11 +2794,12 @@
     function render() { renderStats(); renderTable(); }
     function setFilter(f,btn) {
       filter = f;
+      rankVisible = 25;
       document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       renderTable();
     }
-    function setSort(key) { sortKey=key; renderTable(); }
+    function setSort(key) { sortKey=key; rankVisible=25; renderTable(); }
 
     // ══════════════════════════════════════════════════════
     // EDIT / ADD MODAL
