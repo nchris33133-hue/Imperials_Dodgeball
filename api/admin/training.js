@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
                WHERE ta.session_id = s.id AND ta.status IN ('attending', 'not_attending')
                AND u.is_active = true AND u.status = 'approved') AS no_response_count
           FROM training_sessions s
-          WHERE s.session_date >= (NOW() AT TIME ZONE 'Europe/Vienna')::date - INTERVAL ${interval}
+          WHERE s.session_date >= (NOW() AT TIME ZONE 'Europe/Vienna')::date - ${interval}::interval
           ORDER BY s.session_date ASC, s.start_time ASC
         `;
         return res.status(200).json({ sessions });
@@ -220,21 +220,27 @@ module.exports = async (req, res) => {
         let daysUntilNext = (recurring_day - todayDay + 7) % 7;
         if (daysUntilNext === 0) daysUntilNext = 7; // start from next week
 
-        const rows = [];
+        const sessionTitle = title || (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][recurring_day] + ' Training');
+        const datesToInsert = [];
         for (let w = 0; w < weeks; w++) {
           const d = new Date(viennaDate);
           d.setDate(d.getDate() + daysUntilNext + (w * 7));
-          const dateStr = d.toLocaleDateString('sv-SE', { timeZone: 'Europe/Vienna' });
-          const sessionTitle = title || (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][recurring_day] + ' Training');
-          rows.push({ sessionTitle, dateStr });
+          datesToInsert.push(d.toLocaleDateString('sv-SE', { timeZone: 'Europe/Vienna' }));
         }
 
-        // Batch insert all sessions in one query using UNNEST
-        const titles = rows.map(r => r.sessionTitle);
-        const dates = rows.map(r => r.dateStr);
+        // Batch insert using a single query with generate_series to iterate over a JSON array
         const sessions = await sql`
           INSERT INTO training_sessions (title, description, location, session_date, start_time, end_time, recurring_day, max_capacity)
-          SELECT unnest(${titles}::text[]), ${description || null}, ${location || null}, unnest(${dates}::date[]), ${start_time}::time, ${end_time}::time, ${recurring_day}::int, ${max_capacity || null}::int
+          SELECT
+            ${sessionTitle},
+            ${description || null},
+            ${location || null},
+            d::date,
+            ${start_time}::time,
+            ${end_time}::time,
+            ${recurring_day}::int,
+            ${max_capacity || null}::int
+          FROM unnest(${datesToInsert}::text[]) AS d
           RETURNING *
         `;
 
