@@ -3074,7 +3074,8 @@
       const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
       const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       container.innerHTML = adminTrainingSessions.map(s => {
-        const d = new Date(s.session_date + 'T00:00:00');
+        const dateOnly = typeof s.session_date === 'string' ? s.session_date.slice(0, 10) : s.session_date.toISOString().slice(0, 10);
+        const d = new Date(dateOnly + 'T00:00:00');
         const dateStr = `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
         const att = parseInt(s.attending_count) || 0;
         const notAtt = parseInt(s.not_attending_count) || 0;
@@ -3314,7 +3315,8 @@
 
         let html = '<div class="at-matrix-wrap"><table class="at-matrix"><thead><tr><th>Member</th>';
         sessions.forEach(s => {
-          const d = new Date(s.session_date + 'T00:00:00');
+          const sd = typeof s.session_date === 'string' ? s.session_date.slice(0, 10) : s.session_date.toISOString().slice(0, 10);
+          const d = new Date(sd + 'T00:00:00');
           html += `<th>${d.getDate()} ${months[d.getMonth()]}</th>`;
         });
         html += '</tr></thead><tbody>';

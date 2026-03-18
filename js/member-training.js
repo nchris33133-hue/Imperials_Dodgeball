@@ -61,7 +61,8 @@ function renderTrainingSessions() {
 }
 
 function renderSessionCard(s) {
-  const d = new Date(s.session_date + 'T00:00:00');
+  const dateOnly = typeof s.session_date === 'string' ? s.session_date.slice(0, 10) : s.session_date.toISOString().slice(0, 10);
+  const d = new Date(dateOnly + 'T00:00:00');
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const dateStr = `${dayNames[d.getDay()]} ${d.getDate()} ${monthNames[d.getMonth()]}`;
