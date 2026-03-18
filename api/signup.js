@@ -55,7 +55,8 @@ module.exports = async (req, res) => {
       ? 'Thanks for subscribing! / Danke für deine Anmeldung!'
       : "Thanks for signing up! We'll be in touch. / Danke! Wir melden uns bald.";
     return res.status(200).json({ success: true, message });
-  } catch {
+  } catch (err) {
+    console.error('Could not save signup:', err);
     return res.status(500).json({ error: 'Could not save signup', code: 'SERVER_ERROR' });
   }
 };

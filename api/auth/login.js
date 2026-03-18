@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
   setCors(req, res, 'POST, OPTIONS');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed', code: 'METHOD_NOT_ALLOWED' });
 
   try {
     const { email, password, remember_me = false } = req.body || {};
@@ -89,7 +89,8 @@ module.exports = async (req, res) => {
         ranking_player_name: user.ranking_player_name
       }
     });
-  } catch {
+  } catch (err) {
+    console.error('Login failed:', err);
     return res.status(500).json({ error: 'Login failed. Please try again.', code: 'SERVER_ERROR' });
   }
 };

@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
   setCors(req, res, 'POST, OPTIONS');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed', code: 'METHOD_NOT_ALLOWED' });
 
   try {
     const refreshToken = extractTokenFromCookie(req, 'refresh_token');
@@ -71,6 +71,7 @@ module.exports = async (req, res) => {
       }
     });
   } catch (err) {
+    console.error('Token refresh failed:', err);
     return res.status(500).json({ error: 'Token refresh failed', code: 'SERVER_ERROR' });
   }
 };

@@ -62,9 +62,11 @@ function renderDashboardData(data) {
 
     // Tier badge
     if (data.stats.tier) {
+      const validTiers = ['bronze', 'silver', 'gold', 'platinum'];
+      const tier = validTiers.includes(data.stats.tier) ? data.stats.tier : 'bronze';
       const tierEl = document.getElementById('statsTier');
       tierEl.textContent = data.stats.tier;
-      tierEl.className = 'tier-badge tier-' + data.stats.tier;
+      tierEl.className = 'tier-badge tier-' + tier;
       tierEl.style.display = '';
     }
 

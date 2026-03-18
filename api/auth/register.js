@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
   setCors(req, res, 'POST, OPTIONS');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed', code: 'METHOD_NOT_ALLOWED' });
 
   try {
     const { email, password, display_name } = req.body || {};
@@ -62,7 +62,8 @@ module.exports = async (req, res) => {
       pending: true,
       message: 'Registration successful. Your account is pending admin approval.'
     });
-  } catch {
+  } catch (err) {
+    console.error('Registration failed:', err);
     return res.status(500).json({ error: 'Registration failed. Please try again.', code: 'SERVER_ERROR' });
   }
 };

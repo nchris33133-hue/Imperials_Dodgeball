@@ -6,7 +6,7 @@ module.exports = async (req, res) => {
   setCors(req, res, 'POST, OPTIONS');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed', code: 'METHOD_NOT_ALLOWED' });
 
   try {
     const refreshToken = extractTokenFromCookie(req, 'refresh_token');
@@ -19,7 +19,8 @@ module.exports = async (req, res) => {
 
     clearAuthCookies(res);
     return res.status(200).json({ success: true });
-  } catch {
+  } catch (err) {
+    console.error('Logout error:', err);
     clearAuthCookies(res);
     return res.status(200).json({ success: true });
   }

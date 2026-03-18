@@ -15,8 +15,8 @@ module.exports = async (req, res) => {
       if (rows.length > 0 && rows[0].data) {
         return res.status(200).json(rows[0].data);
       }
-    } catch {
-      // Fall through to default players
+    } catch (err) {
+      console.error('Failed to load rankings from DB:', err);
     }
     return res.status(200).json(DEFAULT_PLAYERS);
   }
@@ -27,6 +27,14 @@ module.exports = async (req, res) => {
 
     const players = req.body;
     if (!Array.isArray(players)) return res.status(400).json({ error: 'Expected array', code: 'VALIDATION_ERROR' });
+    if (players.length > 500) return res.status(400).json({ error: 'Too many players (max 500)', code: 'VALIDATION_ERROR' });
+
+    const VALID_TIERS = ['bronze', 'silver', 'gold', 'platinum'];
+    for (const p of players) {
+      if (typeof p !== 'object' || p === null) return res.status(400).json({ error: 'Each entry must be an object', code: 'VALIDATION_ERROR' });
+      if (p.tier && !VALID_TIERS.includes(p.tier)) return res.status(400).json({ error: `Invalid tier "${p.tier}". Must be one of: ${VALID_TIERS.join(', ')}`, code: 'VALIDATION_ERROR' });
+      if (p.name && typeof p.name === 'string' && p.name.length > 100) return res.status(400).json({ error: 'Player name too long (max 100 chars)', code: 'VALIDATION_ERROR' });
+    }
 
     try {
       const sql = getDb();
@@ -37,7 +45,8 @@ module.exports = async (req, res) => {
         ON CONFLICT (id) DO UPDATE SET data = ${jsonData}::jsonb, updated_at = NOW()
       `;
       return res.status(200).json({ success: true });
-    } catch {
+    } catch (err) {
+      console.error('Failed to save rankings:', err);
       return res.status(500).json({ error: 'Failed to save rankings', code: 'SERVER_ERROR' });
     }
   }

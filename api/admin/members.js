@@ -30,6 +30,7 @@ module.exports = async (req, res) => {
       }
       return res.status(200).json({ members });
     } catch (err) {
+      console.error('Failed to fetch members:', err);
       return res.status(500).json({ error: 'Failed to fetch members', code: 'SERVER_ERROR' });
     }
   }
@@ -69,6 +70,7 @@ module.exports = async (req, res) => {
       }
       return res.status(200).json({ success: true });
     } catch (err) {
+      console.error('Member action failed:', err);
       return res.status(500).json({ error: 'Action failed', code: 'SERVER_ERROR' });
     }
   }

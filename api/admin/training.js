@@ -22,22 +22,29 @@ module.exports = async (req, res) => {
       const interval = range === 'week' ? '7 days' : '30 days';
       try {
         const sessions = await sql`
+          WITH active_count AS (
+            SELECT COUNT(*) AS cnt FROM users WHERE is_active = true AND status = 'approved'
+          )
           SELECT
-            s.*,
+            s.id, s.title, s.description, s.location,
+            s.session_date, s.start_time, s.end_time,
+            s.max_capacity, s.is_cancelled, s.recurring_day,
+            s.created_at, s.updated_at,
             COUNT(*) FILTER (WHERE ta.status = 'attending') AS attending_count,
             COUNT(*) FILTER (WHERE ta.status = 'not_attending') AS not_attending_count,
-            (SELECT COUNT(*) FROM users WHERE is_active = true AND status = 'approved')
-              - COUNT(DISTINCT ta.user_id) FILTER (WHERE ta.status IN ('attending', 'not_attending')
-                AND ta.user_id IN (SELECT id FROM users WHERE is_active = true AND status = 'approved'))
+            ac.cnt - COUNT(DISTINCT ta.user_id) FILTER (WHERE ta.status IN ('attending', 'not_attending')
+              AND ta.user_id IN (SELECT id FROM users WHERE is_active = true AND status = 'approved'))
               AS no_response_count
           FROM training_sessions s
+          CROSS JOIN active_count ac
           LEFT JOIN training_attendance ta ON ta.session_id = s.id
           WHERE s.session_date >= (NOW() AT TIME ZONE 'Europe/Vienna')::date - ${interval}::interval
-          GROUP BY s.id
+          GROUP BY s.id, ac.cnt
           ORDER BY s.session_date ASC, s.start_time ASC
         `;
         return res.status(200).json({ sessions });
-      } catch {
+      } catch (err) {
+        console.error('Failed to load sessions:', err);
         return res.status(500).json({ error: 'Failed to load sessions', code: 'SERVER_ERROR' });
       }
     }
@@ -49,7 +56,11 @@ module.exports = async (req, res) => {
       if (!isValidUuid(id)) return res.status(400).json({ error: 'Invalid session id format', code: 'VALIDATION_ERROR' });
 
       try {
-        const sessions = await sql`SELECT * FROM training_sessions WHERE id = ${id}`;
+        const sessions = await sql`
+          SELECT id, title, description, location, session_date, start_time, end_time,
+                 max_capacity, is_cancelled, recurring_day, created_at, updated_at
+          FROM training_sessions WHERE id = ${id}
+        `;
         if (sessions.length === 0) {
           return res.status(404).json({ error: 'Session not found', code: 'NOT_FOUND' });
         }
@@ -69,7 +80,8 @@ module.exports = async (req, res) => {
         `;
 
         return res.status(200).json({ session: sessions[0], attendees });
-      } catch {
+      } catch (err) {
+        console.error('Failed to load session detail:', err);
         return res.status(500).json({ error: 'Failed to load session detail', code: 'SERVER_ERROR' });
       }
     }
@@ -121,7 +133,8 @@ module.exports = async (req, res) => {
         const attendance_rate = totalSlots > 0 ? Math.round((attendingCount / totalSlots) * 100) : 0;
 
         return res.status(200).json({ sessions, matrix, attendance_rate });
-      } catch {
+      } catch (err) {
+        console.error('Failed to load attendance matrix:', err);
         return res.status(500).json({ error: 'Failed to load attendance matrix', code: 'SERVER_ERROR' });
       }
     }
@@ -149,7 +162,8 @@ module.exports = async (req, res) => {
           RETURNING *
         `;
         return res.status(201).json({ session: result[0] });
-      } catch {
+      } catch (err) {
+        console.error('Failed to create session:', err);
         return res.status(500).json({ error: 'Failed to create session', code: 'SERVER_ERROR' });
       }
     }
@@ -175,7 +189,8 @@ module.exports = async (req, res) => {
         `;
         if (result.length === 0) return res.status(404).json({ error: 'Session not found', code: 'NOT_FOUND' });
         return res.status(200).json({ session: result[0] });
-      } catch {
+      } catch (err) {
+        console.error('Failed to update session:', err);
         return res.status(500).json({ error: 'Failed to update session', code: 'SERVER_ERROR' });
       }
     }
@@ -193,7 +208,8 @@ module.exports = async (req, res) => {
         `;
         if (result.length === 0) return res.status(404).json({ error: 'Session not found', code: 'NOT_FOUND' });
         return res.status(200).json({ session: result[0] });
-      } catch {
+      } catch (err) {
+        console.error('Failed to cancel session:', err);
         return res.status(500).json({ error: 'Failed to cancel session', code: 'SERVER_ERROR' });
       }
     }
@@ -247,7 +263,8 @@ module.exports = async (req, res) => {
         `;
 
         return res.status(201).json({ sessions, count: sessions.length });
-      } catch {
+      } catch (err) {
+        console.error('Failed to generate sessions:', err);
         return res.status(500).json({ error: 'Failed to generate sessions', code: 'SERVER_ERROR' });
       }
     }
@@ -265,7 +282,8 @@ module.exports = async (req, res) => {
       const result = await sql`DELETE FROM training_sessions WHERE id = ${id} RETURNING id`;
       if (result.length === 0) return res.status(404).json({ error: 'Session not found', code: 'NOT_FOUND' });
       return res.status(200).json({ success: true });
-    } catch {
+    } catch (err) {
+      console.error('Failed to delete session:', err);
       return res.status(500).json({ error: 'Failed to delete session', code: 'SERVER_ERROR' });
     }
   }

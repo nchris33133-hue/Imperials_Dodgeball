@@ -33,8 +33,8 @@ module.exports = async (req, res) => {
       if (rankRows.length > 0 && rankRows[0].data) {
         rankings = rankRows[0].data;
       }
-    } catch {
-      // Fall back to defaults
+    } catch (err) {
+      console.error('Failed to load rankings for stats:', err);
     }
 
     // Match user to their ranking entry
@@ -60,7 +60,8 @@ module.exports = async (req, res) => {
       stats,
       rankings
     });
-  } catch {
+  } catch (err) {
+    console.error('Could not load stats:', err);
     return res.status(500).json({ error: 'Could not load stats', code: 'SERVER_ERROR' });
   }
 };

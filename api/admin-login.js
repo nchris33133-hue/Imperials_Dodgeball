@@ -41,7 +41,8 @@ module.exports = async (req, res) => {
     const token = jwt.sign({ role: 'admin', iss: 'vienna-admin' }, secret, { expiresIn: '1h' });
 
     return res.status(200).json({ token });
-  } catch {
+  } catch (err) {
+    console.error('Admin login failed:', err);
     return res.status(500).json({ error: 'Login failed', code: 'SERVER_ERROR' });
   }
 };
