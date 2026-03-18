@@ -117,23 +117,34 @@ module.exports = async (req, res) => {
       if (sessionDate < viennaToday()) {
         return res.status(400).json({ error: 'Cannot RSVP to a past session', code: 'SESSION_PAST' });
       }
+      // Atomic capacity check + upsert in a single transaction
       if (status === 'attending' && sessions[0].max_capacity) {
-        const capacityCheck = await sql`
-          SELECT COUNT(*) AS cnt FROM training_attendance
-          WHERE session_id = ${session_id} AND status = 'attending' AND user_id != ${userId}
+        const result = await sql`
+          WITH current_count AS (
+            SELECT COUNT(*) AS cnt FROM training_attendance
+            WHERE session_id = ${session_id} AND status = 'attending' AND user_id != ${userId}
+          )
+          INSERT INTO training_attendance (session_id, user_id, status, responded_at)
+          SELECT ${session_id}, ${userId}::uuid, ${status}, NOW()
+          FROM current_count
+          WHERE current_count.cnt < ${sessions[0].max_capacity}
+          ON CONFLICT (session_id, user_id)
+          DO UPDATE SET status = ${status}, responded_at = NOW()
+          WHERE (SELECT cnt FROM current_count) < ${sessions[0].max_capacity}
+          RETURNING session_id
         `;
-        if (parseInt(capacityCheck[0].cnt) >= sessions[0].max_capacity) {
+        if (result.length === 0) {
           return res.status(400).json({ error: 'Session is full', code: 'CAPACITY_FULL' });
         }
+      } else {
+        // Non-capacity-limited upsert
+        await sql`
+          INSERT INTO training_attendance (session_id, user_id, status, responded_at)
+          VALUES (${session_id}, ${userId}, ${status}, NOW())
+          ON CONFLICT (session_id, user_id)
+          DO UPDATE SET status = ${status}, responded_at = NOW()
+        `;
       }
-
-      // Upsert attendance
-      await sql`
-        INSERT INTO training_attendance (session_id, user_id, status, responded_at)
-        VALUES (${session_id}, ${userId}, ${status}, NOW())
-        ON CONFLICT (session_id, user_id)
-        DO UPDATE SET status = ${status}, responded_at = NOW()
-      `;
 
       // Return updated counts
       const counts = await sql`

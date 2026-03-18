@@ -45,6 +45,14 @@ module.exports = async (req, res) => {
 
     const user = users[0];
 
+    // Verify password before revealing account status (prevents user enumeration)
+    const preHashed = preHashPassword(password);
+    const valid = await bcrypt.compare(preHashed, user.password_hash);
+    if (!valid) {
+      await recordAttempt(normalizedEmail);
+      return res.status(401).json({ error: 'Invalid email or password', code: 'INVALID_CREDENTIALS' });
+    }
+
     if (!user.is_active) {
       if (user.status === 'pending') {
         return res.status(403).json({ error: 'Your account is awaiting admin approval.', code: 'PENDING_APPROVAL' });
@@ -52,14 +60,6 @@ module.exports = async (req, res) => {
       if (user.status === 'rejected') {
         return res.status(403).json({ error: 'Your registration was not approved. Contact imperialsdodgeball@gmail.com for more info.', code: 'REJECTED' });
       }
-      return res.status(401).json({ error: 'Invalid email or password', code: 'INVALID_CREDENTIALS' });
-    }
-
-    const preHashed = preHashPassword(password);
-    const valid = await bcrypt.compare(preHashed, user.password_hash);
-    if (!valid) {
-      await recordAttempt(normalizedEmail);
-      console.log(`AUTH: login failed user=${user.id}`);
       return res.status(401).json({ error: 'Invalid email or password', code: 'INVALID_CREDENTIALS' });
     }
 

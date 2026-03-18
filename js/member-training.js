@@ -86,12 +86,12 @@ function renderSessionCard(s) {
     rsvpHtml = `
       <div class="rsvp-buttons">
         <button class="rsvp-btn rsvp-attending${myStatus === 'attending' ? ' active' : ''}"
-                onclick="handleRsvp('${s.id}', 'attending')"
+                data-rsvp-session="${escapeHtml(s.id)}" data-rsvp-status="attending"
                 ${myStatus === 'attending' ? 'aria-pressed="true"' : 'aria-pressed="false"'}>
           Attending
         </button>
         <button class="rsvp-btn rsvp-not-attending${myStatus === 'not_attending' ? ' active' : ''}"
-                onclick="handleRsvp('${s.id}', 'not_attending')"
+                data-rsvp-session="${escapeHtml(s.id)}" data-rsvp-status="not_attending"
                 ${myStatus === 'not_attending' ? 'aria-pressed="true"' : 'aria-pressed="false"'}>
           Not Attending
         </button>
@@ -123,7 +123,7 @@ function renderSessionCard(s) {
         </div>
         ${rsvpHtml}
         <div class="session-attendees">
-          <button class="attendees-toggle" onclick="toggleAttendees(this, '${s.id}')">${isPast ? 'Show who attended' : 'Show who\u2019s coming'}</button>
+          <button class="attendees-toggle" data-attendees-session="${escapeHtml(s.id)}">${isPast ? 'Show who attended' : 'Show who\u2019s coming'}</button>
           <div class="attendees-list" id="attendees-${s.id}"></div>
         </div>
       ` : ''}
@@ -239,3 +239,20 @@ function renderAttendeeList(listEl, btn, attendees, sessionId) {
   listEl.classList.add('open');
   btn.textContent = 'Hide attendees';
 }
+
+/* Event delegation for RSVP buttons and attendee toggles */
+(function setupTrainingDelegation() {
+  const list = document.getElementById('trainingList');
+  if (!list) return;
+  list.addEventListener('click', function(e) {
+    const rsvpBtn = e.target.closest('[data-rsvp-session]');
+    if (rsvpBtn) {
+      handleRsvp(rsvpBtn.dataset.rsvpSession, rsvpBtn.dataset.rsvpStatus);
+      return;
+    }
+    const attBtn = e.target.closest('[data-attendees-session]');
+    if (attBtn) {
+      toggleAttendees(attBtn, attBtn.dataset.attendeesSession);
+    }
+  });
+})();
