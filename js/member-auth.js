@@ -162,11 +162,19 @@ async function handleRegister(e) {
    SESSION EXPIRED
 ═══════════════════════════════════════ */
 function showSessionExpired() {
-  if (currentUser) {
-    document.getElementById('reAuthEmail').value = currentUser.email;
+  const emailField = document.getElementById('reAuthEmail');
+  if (currentUser && currentUser.email) {
+    emailField.value = currentUser.email;
+    emailField.readOnly = true;
+    emailField.style.opacity = '0.6';
+  } else {
+    emailField.value = '';
+    emailField.readOnly = false;
+    emailField.style.opacity = '';
   }
   document.getElementById('sessionOverlay').classList.add('open');
-  setTimeout(() => document.getElementById('reAuthPassword').focus(), 60);
+  const focusTarget = emailField.readOnly ? 'reAuthPassword' : 'reAuthEmail';
+  setTimeout(() => document.getElementById(focusTarget).focus(), 60);
 }
 
 async function handleReAuth(e) {
