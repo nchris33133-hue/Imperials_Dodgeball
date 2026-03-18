@@ -1,7 +1,7 @@
 const { getDb } = require('../../lib/db');
 const { setCors } = require('../../lib/cors');
 const { requireAdmin } = require('../../lib/auth');
-const { isValidUuid } = require('../../lib/validation');
+const { isValidUuid, sanitizeHtml } = require('../../lib/validation');
 
 module.exports = async (req, res) => {
   setCors(req, res, 'GET, PATCH, OPTIONS');
@@ -52,11 +52,12 @@ module.exports = async (req, res) => {
         return res.status(400).json({ error: 'ranking_player_name must be a string of at most 100 characters', code: 'VALIDATION_ERROR' });
       }
     }
+    const safeName = ranking_player_name ? sanitizeHtml(ranking_player_name.trim()) : null;
     try {
       if (action === 'link') {
         await sql`
           UPDATE users
-          SET ranking_player_name = ${ranking_player_name || null}
+          SET ranking_player_name = ${safeName}
           WHERE id = ${user_id}
         `;
       } else if (action === 'approve') {
@@ -64,7 +65,7 @@ module.exports = async (req, res) => {
           UPDATE users
           SET is_active = true,
               status = 'approved',
-              ranking_player_name = ${ranking_player_name || null}
+              ranking_player_name = ${safeName}
           WHERE id = ${user_id}
         `;
       } else {

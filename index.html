@@ -49,67 +49,16 @@
   </script>
 
   <link rel="stylesheet" href="/tailwind.min.css" />
+  <link rel="stylesheet" href="/shared.css" />
   <!-- SheetJS loaded on demand when import modal opens -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" as="style" />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <!-- Tailwind config is now in tailwind.config.js; built CSS at /tailwind.min.css -->
 
   <style>
-    /* ── Reset & base ── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #0C1B3A;
-      color: #F4F7FF;
-      overflow-x: hidden;
-    }
-
-    /* ── Custom scrollbar ── */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #0C1B3A; }
-    ::-webkit-scrollbar-thumb { background: #D4961A; border-radius: 3px; }
-
-    /* ── CSS vars ── */
-    :root {
-      --gold:    #D4961A;
-      --gold-lt: #F0B830;
-      --red:     #E8193C;
-      --royal:   #1A3D8F;
-      --navy:    #0F2150;
-      --deep:    #0C1B3A;
-      --mid:     #3567C0;
-      --cloud:   #F4F7FF;
-      --brass:   #8B7847;
-      --border:  rgba(53,103,192,0.22);
-      --panel:   #122060;
-    }
-
-    /* ── Noise texture overlay ── */
-    .noise::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-      pointer-events: none;
-      opacity: 0.4;
-      z-index: 1;
-    }
-
-    /* ── Typography ── */
-    .display {
-      font-family: 'Bebas Neue', sans-serif;
-      letter-spacing: 0.04em;
-      line-height: 0.95;
-    }
-    .heading {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 800;
-      letter-spacing: -0.01em;
-    }
-
     /* ── Gold underline reveal ── */
     .gold-underline {
       position: relative;

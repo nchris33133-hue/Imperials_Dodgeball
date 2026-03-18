@@ -3,6 +3,9 @@ const { setCors } = require('../../lib/cors');
 const { requireAdmin } = require('../../lib/auth');
 const { isValidUuid } = require('../../lib/validation');
 
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+const TIME_RE = /^\d{2}:\d{2}(:\d{2})?$/;
+
 module.exports = async (req, res) => {
   setCors(req, res, 'GET, POST, DELETE, OPTIONS');
   if (req.method === 'OPTIONS') return res.status(200).end();
@@ -155,6 +158,9 @@ module.exports = async (req, res) => {
       if (title.length > 200) return res.status(400).json({ error: 'Title must be at most 200 characters', code: 'VALIDATION_ERROR' });
       if (description && description.length > 2000) return res.status(400).json({ error: 'Description must be at most 2000 characters', code: 'VALIDATION_ERROR' });
       if (location && location.length > 200) return res.status(400).json({ error: 'Location must be at most 200 characters', code: 'VALIDATION_ERROR' });
+      if (!DATE_RE.test(session_date)) return res.status(400).json({ error: 'session_date must be YYYY-MM-DD format', code: 'VALIDATION_ERROR' });
+      if (!TIME_RE.test(start_time)) return res.status(400).json({ error: 'start_time must be HH:MM format', code: 'VALIDATION_ERROR' });
+      if (!TIME_RE.test(end_time)) return res.status(400).json({ error: 'end_time must be HH:MM format', code: 'VALIDATION_ERROR' });
       try {
         const result = await sql`
           INSERT INTO training_sessions (title, description, location, session_date, start_time, end_time, max_capacity)
@@ -173,6 +179,9 @@ module.exports = async (req, res) => {
       const { id, title, description, location, session_date, start_time, end_time, max_capacity } = req.body;
       if (!id) return res.status(400).json({ error: 'Session id required', code: 'VALIDATION_ERROR' });
       if (!isValidUuid(id)) return res.status(400).json({ error: 'Invalid session id format', code: 'VALIDATION_ERROR' });
+      if (session_date !== undefined && !DATE_RE.test(session_date)) return res.status(400).json({ error: 'session_date must be YYYY-MM-DD format', code: 'VALIDATION_ERROR' });
+      if (start_time !== undefined && !TIME_RE.test(start_time)) return res.status(400).json({ error: 'start_time must be HH:MM format', code: 'VALIDATION_ERROR' });
+      if (end_time !== undefined && !TIME_RE.test(end_time)) return res.status(400).json({ error: 'end_time must be HH:MM format', code: 'VALIDATION_ERROR' });
       try {
         const result = await sql`
           UPDATE training_sessions SET
