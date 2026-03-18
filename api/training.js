@@ -1,6 +1,7 @@
 const { getDb } = require('../lib/db');
 const { setCors } = require('../lib/cors');
 const { requireMember } = require('../lib/auth');
+const { isValidUuid } = require('../lib/validation');
 
 // Vienna timezone date for accurate past-session checks
 function viennaToday() {
@@ -50,6 +51,7 @@ module.exports = async (req, res) => {
     if (view === 'session') {
       const id = req.query.id;
       if (!id) return res.status(400).json({ error: 'Session id required', code: 'VALIDATION_ERROR' });
+      if (!isValidUuid(id)) return res.status(400).json({ error: 'Invalid session id format', code: 'VALIDATION_ERROR' });
 
       try {
         const sessions = await sql`
@@ -94,11 +96,14 @@ module.exports = async (req, res) => {
     if (!session_id || !['attending', 'not_attending'].includes(status)) {
       return res.status(400).json({ error: 'session_id and status (attending/not_attending) required', code: 'VALIDATION_ERROR' });
     }
+    if (!isValidUuid(session_id)) {
+      return res.status(400).json({ error: 'Invalid session_id format', code: 'VALIDATION_ERROR' });
+    }
 
     try {
       // Verify session exists, is not cancelled, and is not in the past
       const sessions = await sql`
-        SELECT id, is_cancelled, session_date FROM training_sessions WHERE id = ${session_id}
+        SELECT id, is_cancelled, session_date, max_capacity FROM training_sessions WHERE id = ${session_id}
       `;
       if (sessions.length === 0) {
         return res.status(404).json({ error: 'Session not found', code: 'NOT_FOUND' });
@@ -106,8 +111,20 @@ module.exports = async (req, res) => {
       if (sessions[0].is_cancelled) {
         return res.status(400).json({ error: 'Cannot RSVP to a cancelled session', code: 'SESSION_CANCELLED' });
       }
-      if (sessions[0].session_date < viennaToday()) {
+      const sessionDate = typeof sessions[0].session_date === 'string'
+        ? sessions[0].session_date.slice(0, 10)
+        : sessions[0].session_date.toISOString().slice(0, 10);
+      if (sessionDate < viennaToday()) {
         return res.status(400).json({ error: 'Cannot RSVP to a past session', code: 'SESSION_PAST' });
+      }
+      if (status === 'attending' && sessions[0].max_capacity) {
+        const capacityCheck = await sql`
+          SELECT COUNT(*) AS cnt FROM training_attendance
+          WHERE session_id = ${session_id} AND status = 'attending' AND user_id != ${userId}
+        `;
+        if (parseInt(capacityCheck[0].cnt) >= sessions[0].max_capacity) {
+          return res.status(400).json({ error: 'Session is full', code: 'CAPACITY_FULL' });
+        }
       }
 
       // Upsert attendance

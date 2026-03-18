@@ -1,6 +1,8 @@
 /* ═══════════════════════════════════════
    TRAINING CALENDAR
 ═══════════════════════════════════════ */
+const attendeeCache = {};
+
 async function loadTrainingSessions() {
   const loading = document.getElementById('trainingLoading');
   const list = document.getElementById('trainingList');
@@ -120,7 +122,7 @@ function renderSessionCard(s) {
         </div>
         ${rsvpHtml}
         <div class="session-attendees">
-          <button class="attendees-toggle" onclick="toggleAttendees(this, '${s.id}')">Show who\u2019s coming</button>
+          <button class="attendees-toggle" onclick="toggleAttendees(this, '${s.id}')">${isPast ? 'Show who attended' : 'Show who\u2019s coming'}</button>
           <div class="attendees-list" id="attendees-${s.id}"></div>
         </div>
       ` : ''}
@@ -131,6 +133,10 @@ async function handleRsvp(sessionId, status) {
   // Debounce: prevent double-clicks while request is in flight
   if (rsvpInFlight.has(sessionId)) return;
   rsvpInFlight.add(sessionId);
+
+  // Disable buttons while in flight
+  const card = document.querySelector(`[data-session-id="${sessionId}"]`);
+  if (card) card.querySelectorAll('.rsvp-btn').forEach(b => b.disabled = true);
 
   // Optimistic UI update
   const session = trainingSessions.find(s => s.id === sessionId);
@@ -162,6 +168,7 @@ async function handleRsvp(sessionId, status) {
     session.my_status = data.my_status;
     session.attending_count = data.attending_count;
     session.not_attending_count = data.not_attending_count;
+    delete attendeeCache[sessionId];
     renderTrainingSessions();
   } catch (err) {
     if (err.message === 'SESSION_EXPIRED') return;
@@ -175,13 +182,25 @@ async function handleRsvp(sessionId, status) {
   }
 }
 
+function getAttendeesToggleText(sessionId) {
+  const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Vienna' });
+  const session = trainingSessions.find(s => s.id === sessionId);
+  return (session && session.session_date < today) ? 'Show who attended' : 'Show who\u2019s coming';
+}
+
 async function toggleAttendees(btn, sessionId) {
   const listEl = document.getElementById('attendees-' + sessionId);
   if (!listEl) return;
 
   if (listEl.classList.contains('open')) {
     listEl.classList.remove('open');
-    btn.textContent = 'Show who\u2019s coming';
+    btn.textContent = getAttendeesToggleText(sessionId);
+    return;
+  }
+
+  // Check cache first
+  if (attendeeCache[sessionId]) {
+    renderAttendeeList(listEl, btn, attendeeCache[sessionId], sessionId);
     return;
   }
 
@@ -190,28 +209,32 @@ async function toggleAttendees(btn, sessionId) {
     const res = await api('/api/training?view=session&id=' + sessionId);
     if (!res.ok) throw new Error('Failed');
     const data = await res.json();
-
-    const attending = data.attendees.filter(a => a.status === 'attending');
-    const notAttending = data.attendees.filter(a => a.status === 'not_attending');
-
-    let html = '';
-    if (attending.length > 0) {
-      html += `<div class="attendees-label att-yes">Attending (${attending.length})</div>`;
-      html += attending.map(a => escapeHtml(a.display_name)).join(', ');
-    }
-    if (notAttending.length > 0) {
-      html += `<div class="attendees-label att-no" style="margin-top:8px;">Not Attending (${notAttending.length})</div>`;
-      html += notAttending.map(a => escapeHtml(a.display_name)).join(', ');
-    }
-    if (!html) {
-      html = '<div style="color:rgba(244,247,255,0.3); font-size:0.8rem;">No responses yet.</div>';
-    }
-
-    listEl.innerHTML = html;
-    listEl.classList.add('open');
-    btn.textContent = 'Hide attendees';
+    attendeeCache[sessionId] = data.attendees;
+    renderAttendeeList(listEl, btn, data.attendees, sessionId);
   } catch (err) {
     if (err.message === 'SESSION_EXPIRED') return;
-    btn.textContent = 'Show who\u2019s coming';
+    btn.textContent = getAttendeesToggleText(sessionId);
   }
+}
+
+function renderAttendeeList(listEl, btn, attendees, sessionId) {
+  const attending = attendees.filter(a => a.status === 'attending');
+  const notAttending = attendees.filter(a => a.status === 'not_attending');
+
+  let html = '';
+  if (attending.length > 0) {
+    html += `<div class="attendees-label att-yes">Attending (${attending.length})</div>`;
+    html += attending.map(a => escapeHtml(a.display_name)).join(', ');
+  }
+  if (notAttending.length > 0) {
+    html += `<div class="attendees-label att-no" style="margin-top:8px;">Not Attending (${notAttending.length})</div>`;
+    html += notAttending.map(a => escapeHtml(a.display_name)).join(', ');
+  }
+  if (!html) {
+    html = '<div style="color:rgba(244,247,255,0.3); font-size:0.8rem;">No responses yet.</div>';
+  }
+
+  listEl.innerHTML = html;
+  listEl.classList.add('open');
+  btn.textContent = 'Hide attendees';
 }

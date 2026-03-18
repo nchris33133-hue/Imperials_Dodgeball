@@ -1,6 +1,7 @@
 const { getDb } = require('../../lib/db');
 const { setCors } = require('../../lib/cors');
 const { requireAdmin } = require('../../lib/auth');
+const { isValidUuid } = require('../../lib/validation');
 
 module.exports = async (req, res) => {
   setCors(req, res, 'GET, POST, DELETE, OPTIONS');
@@ -26,7 +27,10 @@ module.exports = async (req, res) => {
             (SELECT COUNT(*) FROM training_attendance WHERE session_id = s.id AND status = 'attending') AS attending_count,
             (SELECT COUNT(*) FROM training_attendance WHERE session_id = s.id AND status = 'not_attending') AS not_attending_count,
             (SELECT COUNT(*) FROM users WHERE is_active = true AND status = 'approved') -
-              (SELECT COUNT(*) FROM training_attendance WHERE session_id = s.id AND status IN ('attending', 'not_attending')) AS no_response_count
+              (SELECT COUNT(*) FROM training_attendance ta
+               JOIN users u ON u.id = ta.user_id
+               WHERE ta.session_id = s.id AND ta.status IN ('attending', 'not_attending')
+               AND u.is_active = true AND u.status = 'approved') AS no_response_count
           FROM training_sessions s
           WHERE s.session_date >= (NOW() AT TIME ZONE 'Europe/Vienna')::date - INTERVAL ${interval}
           ORDER BY s.session_date ASC, s.start_time ASC
@@ -42,6 +46,7 @@ module.exports = async (req, res) => {
     if (view === 'detail') {
       const id = req.query.id;
       if (!id) return res.status(400).json({ error: 'Session id required', code: 'VALIDATION_ERROR' });
+      if (!isValidUuid(id)) return res.status(400).json({ error: 'Invalid session id format', code: 'VALIDATION_ERROR' });
 
       try {
         const sessions = await sql`SELECT * FROM training_sessions WHERE id = ${id}`;
@@ -154,15 +159,16 @@ module.exports = async (req, res) => {
     if (action === 'update') {
       const { id, title, description, location, session_date, start_time, end_time, max_capacity } = req.body;
       if (!id) return res.status(400).json({ error: 'Session id required', code: 'VALIDATION_ERROR' });
+      if (!isValidUuid(id)) return res.status(400).json({ error: 'Invalid session id format', code: 'VALIDATION_ERROR' });
       try {
         const result = await sql`
           UPDATE training_sessions SET
-            title = COALESCE(${title || null}, title),
+            title = COALESCE(${title !== undefined ? title : null}, title),
             description = COALESCE(${description !== undefined ? description : null}, description),
             location = COALESCE(${location !== undefined ? location : null}, location),
-            session_date = COALESCE(${session_date || null}, session_date),
-            start_time = COALESCE(${start_time || null}, start_time),
-            end_time = COALESCE(${end_time || null}, end_time),
+            session_date = COALESCE(${session_date !== undefined ? session_date : null}, session_date),
+            start_time = COALESCE(${start_time !== undefined ? start_time : null}, start_time),
+            end_time = COALESCE(${end_time !== undefined ? end_time : null}, end_time),
             max_capacity = COALESCE(${max_capacity !== undefined ? max_capacity : null}, max_capacity),
             updated_at = NOW()
           WHERE id = ${id}
@@ -181,6 +187,7 @@ module.exports = async (req, res) => {
     if (action === 'cancel') {
       const { id } = req.body;
       if (!id) return res.status(400).json({ error: 'Session id required', code: 'VALIDATION_ERROR' });
+      if (!isValidUuid(id)) return res.status(400).json({ error: 'Invalid session id format', code: 'VALIDATION_ERROR' });
       try {
         const result = await sql`
           UPDATE training_sessions SET is_cancelled = true, updated_at = NOW()
@@ -208,26 +215,28 @@ module.exports = async (req, res) => {
 
       try {
         // Find the next occurrence of the recurring_day (0=Sun..6=Sat)
-        const today = new Date();
-        const todayDay = today.getDay();
+        const viennaDate = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Vienna' }));
+        const todayDay = viennaDate.getDay();
         let daysUntilNext = (recurring_day - todayDay + 7) % 7;
         if (daysUntilNext === 0) daysUntilNext = 7; // start from next week
 
-        const sessions = [];
+        const rows = [];
         for (let w = 0; w < weeks; w++) {
-          const d = new Date(today);
+          const d = new Date(viennaDate);
           d.setDate(d.getDate() + daysUntilNext + (w * 7));
-          const dateStr = d.toISOString().split('T')[0];
-
-          const sessionTitle = title || ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][recurring_day] + ' Training';
-
-          const result = await sql`
-            INSERT INTO training_sessions (title, description, location, session_date, start_time, end_time, recurring_day, max_capacity)
-            VALUES (${sessionTitle}, ${description || null}, ${location || null}, ${dateStr}, ${start_time}, ${end_time}, ${recurring_day}, ${max_capacity || null})
-            RETURNING *
-          `;
-          sessions.push(result[0]);
+          const dateStr = d.toLocaleDateString('sv-SE', { timeZone: 'Europe/Vienna' });
+          const sessionTitle = title || (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][recurring_day] + ' Training');
+          rows.push({ sessionTitle, dateStr });
         }
+
+        // Batch insert all sessions in one query using UNNEST
+        const titles = rows.map(r => r.sessionTitle);
+        const dates = rows.map(r => r.dateStr);
+        const sessions = await sql`
+          INSERT INTO training_sessions (title, description, location, session_date, start_time, end_time, recurring_day, max_capacity)
+          SELECT unnest(${titles}::text[]), ${description || null}, ${location || null}, unnest(${dates}::date[]), ${start_time}::time, ${end_time}::time, ${recurring_day}::int, ${max_capacity || null}::int
+          RETURNING *
+        `;
 
         console.log(`ADMIN TRAINING: generated ${sessions.length} recurring sessions`);
         return res.status(201).json({ sessions, count: sessions.length });
@@ -244,6 +253,7 @@ module.exports = async (req, res) => {
   if (req.method === 'DELETE') {
     const id = req.query.id;
     if (!id) return res.status(400).json({ error: 'Session id required', code: 'VALIDATION_ERROR' });
+    if (!isValidUuid(id)) return res.status(400).json({ error: 'Invalid session id format', code: 'VALIDATION_ERROR' });
 
     try {
       const result = await sql`DELETE FROM training_sessions WHERE id = ${id} RETURNING id`;
