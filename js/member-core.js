@@ -84,7 +84,7 @@ function switchTab(tab) {
     btn.classList.toggle('active', btn.dataset.tab === tab);
   });
   document.querySelectorAll('.tab-panel').forEach(panel => {
-    panel.style.display = panel.id === 'tab-' + tab ? '' : 'none';
+    panel.style.display = panel.id === 'tab-' + tab ? 'block' : 'none';
   });
   // Lazy-load training data on first visit
   if (tab === 'training' && !trainingLoaded) {
