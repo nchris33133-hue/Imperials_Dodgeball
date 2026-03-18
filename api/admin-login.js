@@ -38,7 +38,7 @@ module.exports = async (req, res) => {
     }
 
     await clearAttempts(adminKey);
-    const token = jwt.sign({ role: 'admin', iss: 'vienna-admin' }, secret, { expiresIn: '1h' });
+    const token = jwt.sign({ role: 'admin', iss: 'vienna-admin' }, secret, { expiresIn: '30m' });
 
     return res.status(200).json({ token });
   } catch (err) {

@@ -169,6 +169,12 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+let _lbSearchTimer;
+function debouncedRenderLeaderboard() {
+  clearTimeout(_lbSearchTimer);
+  _lbSearchTimer = setTimeout(renderLeaderboard, 250);
+}
+
 function formatTime(timeStr) {
   if (!timeStr) return '';
   const [h, m] = timeStr.split(':');

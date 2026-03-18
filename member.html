@@ -661,7 +661,7 @@
             <button class="lb-tab active" data-filter="all" onclick="filterLeaderboard('all', this)">All</button>
             <button class="lb-tab" data-filter="male" onclick="filterLeaderboard('male', this)">Male</button>
             <button class="lb-tab" data-filter="female" onclick="filterLeaderboard('female', this)">Female</button>
-            <input class="lb-search" type="text" placeholder="Search players..." id="lbSearch" oninput="renderLeaderboard()" />
+            <input class="lb-search" type="text" placeholder="Search players..." id="lbSearch" oninput="debouncedRenderLeaderboard()" />
           </div>
 
           <div class="lb-table-wrap">

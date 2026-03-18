@@ -47,6 +47,11 @@ module.exports = async (req, res) => {
     if (!['approve', 'reject', 'link'].includes(action)) {
       return res.status(400).json({ error: 'action must be "approve", "reject", or "link"', code: 'VALIDATION_ERROR' });
     }
+    if (ranking_player_name !== undefined && ranking_player_name !== null) {
+      if (typeof ranking_player_name !== 'string' || ranking_player_name.length > 100) {
+        return res.status(400).json({ error: 'ranking_player_name must be a string of at most 100 characters', code: 'VALIDATION_ERROR' });
+      }
+    }
     try {
       if (action === 'link') {
         await sql`

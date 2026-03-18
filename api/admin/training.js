@@ -159,7 +159,7 @@ module.exports = async (req, res) => {
         const result = await sql`
           INSERT INTO training_sessions (title, description, location, session_date, start_time, end_time, max_capacity)
           VALUES (${title}, ${description || null}, ${location || null}, ${session_date}, ${start_time}, ${end_time}, ${max_capacity || null})
-          RETURNING *
+          RETURNING id, title, description, location, session_date, start_time, end_time, max_capacity, is_cancelled, recurring_day, created_at, updated_at
         `;
         return res.status(201).json({ session: result[0] });
       } catch (err) {
@@ -185,7 +185,7 @@ module.exports = async (req, res) => {
             max_capacity = COALESCE(${max_capacity !== undefined ? max_capacity : null}, max_capacity),
             updated_at = NOW()
           WHERE id = ${id}
-          RETURNING *
+          RETURNING id, title, description, location, session_date, start_time, end_time, max_capacity, is_cancelled, recurring_day, created_at, updated_at
         `;
         if (result.length === 0) return res.status(404).json({ error: 'Session not found', code: 'NOT_FOUND' });
         return res.status(200).json({ session: result[0] });
@@ -204,7 +204,7 @@ module.exports = async (req, res) => {
         const result = await sql`
           UPDATE training_sessions SET is_cancelled = true, updated_at = NOW()
           WHERE id = ${id}
-          RETURNING *
+          RETURNING id, title, description, location, session_date, start_time, end_time, max_capacity, is_cancelled, recurring_day, created_at, updated_at
         `;
         if (result.length === 0) return res.status(404).json({ error: 'Session not found', code: 'NOT_FOUND' });
         return res.status(200).json({ session: result[0] });
@@ -259,7 +259,7 @@ module.exports = async (req, res) => {
             ${day}::int,
             ${max_capacity || null}::int
           FROM unnest(${datesToInsert}::text[]) AS d
-          RETURNING *
+          RETURNING id, title, description, location, session_date, start_time, end_time, max_capacity, is_cancelled, recurring_day, created_at, updated_at
         `;
 
         return res.status(201).json({ sessions, count: sessions.length });
