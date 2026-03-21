@@ -938,8 +938,11 @@
 
     /* ── Responsive ── */
     @media (max-width: 900px) {
-      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
-      .about-visual { display: none; }
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .about-visual { flex-direction: row; gap: 0.75rem; }
+      .about-img-wrap { flex: 1; }
+      .about-img-main { height: 200px; }
+      .about-img-secondary { height: 200px; }
       .how-grid { grid-template-columns: 1fr; }
       .league-cards { grid-template-columns: 1fr; }
       .why-grid { grid-template-columns: 1fr; }
@@ -947,6 +950,11 @@
       /* Reduce section padding on tablets */
       #about, #how, #league, #why, #cta { padding: 5rem 1.75rem; }
       #rankings { padding: 5rem 1.75rem; }
+      /* Cookie banner */
+      #cookieBanner { padding: 1rem 1.25rem !important; flex-direction: column !important; align-items: stretch !important; }
+      #cookieBanner p { font-size: 0.82rem !important; min-width: 0 !important; }
+      .cookie-btns { width: 100%; }
+      .cookie-btns button { flex: 1; text-align: center; font-size: 0.8rem !important; padding: 8px 12px !important; }
     }
     /* ── Admin nav item hidden by default, revealed via /#admin-access ── */
     #adminNavLoginItem { display: none; }
@@ -1020,10 +1028,15 @@
       /* League */
       .league-header { flex-direction: column; align-items: flex-start; }
       .league-header .btn-red { width: 100%; text-align: center; }
-      .league-card-img-placeholder { height: 130px; }
-      .league-card-img { height: 130px; }
+      .league-card-img-placeholder { height: 160px; }
+      .league-card-img { height: 160px; }
+      .league-card-img-wrap { height: 160px; }
       /* Why */
       .why-item { padding: 1.5rem; }
+      /* About images side by side on phone */
+      .about-visual { flex-direction: row; gap: 0.5rem; }
+      .about-img-main { height: 160px; }
+      .about-img-secondary { height: 160px; }
       /* CTA */
       .cta-ctas { flex-direction: column; align-items: center; }
       .cta-ctas .btn-primary, .cta-ctas .btn-secondary { width: 100%; max-width: 320px; text-align: center; }
@@ -1044,6 +1057,18 @@
       .stat-value { font-size: 1.8rem; }
       .stats-bar { gap: 0.5rem; }
       nav { padding: 0 1rem; }
+      /* About images stack on very small screens */
+      .about-visual { flex-direction: column; }
+      .about-img-main { height: 180px; }
+      .about-img-secondary { height: 140px; }
+      /* Tighter padding */
+      #about, #how, #league, #why, #cta { padding: 3rem 1rem; }
+      #rankings { padding: 3rem 0.75rem; }
+      /* Rankings table */
+      .stats-bar { flex-wrap: wrap; }
+      .stat-item { min-width: 45%; }
+      /* Footer newsletter */
+      #newsletterForm { min-width: 0 !important; max-width: 100% !important; }
     }
 
     /* ── Divider line ── */
@@ -1528,7 +1553,7 @@
       This site uses Google Fonts and a CDN framework. By continuing you agree to their use.
       <a href="/datenschutz.html" style="color:#D4961A;text-decoration:underline;margin-left:0.5rem;">Datenschutz / Privacy</a>
     </p>
-    <div style="display:flex;gap:0.75rem;flex-shrink:0;">
+    <div class="cookie-btns" style="display:flex;gap:0.75rem;flex-shrink:0;flex-wrap:wrap;">
       <button onclick="acceptCookies()" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.08em;text-transform:uppercase;padding:8px 20px;border-radius:4px;background:linear-gradient(135deg,#D4961A,#F0B830);color:#0C1B3A;border:none;cursor:pointer;">Akzeptieren / Accept</button>
       <button onclick="declineCookies()" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.08em;text-transform:uppercase;padding:8px 20px;border-radius:4px;background:transparent;color:rgba(244,247,255,0.7);border:1px solid rgba(244,247,255,0.2);cursor:pointer;">Ablehnen / Decline</button>
     </div>
