@@ -165,6 +165,13 @@
       inset: 0;
       z-index: 0;
     }
+    .hero-bg-photo {
+      position: absolute;
+      inset: 0;
+      background: url('imperials-action-4.webp') center center / cover no-repeat;
+      opacity: 0.18;
+      z-index: 0;
+    }
     .hero-bg-radial-1 {
       position: absolute;
       top: -20%;
@@ -466,6 +473,15 @@
       position: relative;
       height: 260px;
       filter: drop-shadow(0 10px 40px rgba(0,0,0,0.4));
+    }
+    .about-photo {
+      position: relative;
+      width: 100%;
+      max-width: 460px;
+      border-radius: 12px;
+      object-fit: cover;
+      filter: drop-shadow(0 10px 40px rgba(0,0,0,0.4));
+      border: 2px solid rgba(212,150,26,0.2);
     }
     .about-stat-row {
       display: flex;
@@ -1541,6 +1557,7 @@
   <!-- ══ HERO ══ -->
   <section id="hero">
     <div class="hero-bg noise">
+      <div class="hero-bg-photo"></div>
       <div class="hero-bg-radial-1"></div>
       <div class="hero-bg-radial-2"></div>
       <div class="hero-bg-radial-3"></div>
@@ -1579,7 +1596,7 @@
     <div class="about-grid">
       <div class="about-visual reveal">
         <div class="about-hex-bg"></div>
-        <img src="cropped-Vienna-Imperials-03-1.png" alt="Vienna Imperials" class="about-logo" loading="lazy" width="260" height="260" />
+        <img src="imperials-action-2.webp" alt="Vienna Imperials player celebrating during dodgeball match" class="about-photo" loading="lazy" width="800" height="533" />
       </div>
 
       <div>
@@ -1672,14 +1689,7 @@
       <div class="league-cards">
         <!-- Card 1 -->
         <div class="league-card reveal reveal-delay-1">
-          <div class="league-card-img-placeholder">
-            <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
-              <circle cx="40" cy="40" r="36" stroke="white" stroke-width="3"/>
-              <circle cx="40" cy="40" r="20" stroke="white" stroke-width="2"/>
-              <path d="M40 4 Q55 20 40 40 Q25 20 40 4" stroke="white" stroke-width="2" fill="none"/>
-              <path d="M40 76 Q55 60 40 40 Q25 60 40 76" stroke="white" stroke-width="2" fill="none"/>
-            </svg>
-          </div>
+          <img src="imperials-action-1.webp" alt="Dodgeball player throwing during Thursday drop-in session" class="league-card-img" loading="lazy" width="800" height="533" />
           <span class="league-card-tag tag-gold">Weekly</span>
           <div class="league-card-body">
             <div class="league-card-title">Thursday Drop-In</div>
@@ -1713,11 +1723,7 @@
 
         <!-- Card 3 -->
         <div class="league-card reveal reveal-delay-3">
-          <div class="league-card-img-placeholder">
-            <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
-              <path d="M40 10 L50 30 L72 33 L56 49 L60 70 L40 60 L20 70 L24 49 L8 33 L30 30 Z" stroke="white" stroke-width="3" fill="none"/>
-            </svg>
-          </div>
+          <img src="imperials-action-3.webp" alt="Vienna Imperials team members at championship event" class="league-card-img" loading="lazy" width="800" height="533" />
           <span class="league-card-tag tag-blue">Tournament</span>
           <div class="league-card-body">
             <div class="league-card-title">Championships 2026</div>
@@ -1774,6 +1780,12 @@
       </div>
     </div>
   </section>
+
+  <!-- ══ ACTION PHOTO BREAK ══ -->
+  <div class="photo-break reveal" style="position:relative;overflow:hidden;max-height:400px;">
+    <img src="imperials-action-4.webp" alt="Vienna Imperials dodgeball players in action" loading="lazy" width="1400" height="933" style="width:100%;height:400px;object-fit:cover;object-position:center 40%;display:block;filter:brightness(0.7);" />
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,var(--deep) 0%,transparent 20%,transparent 80%,#0F2150 100%);pointer-events:none;"></div>
+  </div>
 
   <!-- ══ FAQ ══ -->
   <section id="faq" style="background:linear-gradient(180deg,#0F2150 0%,#0C1B3A 100%);padding:7rem 2rem;">
