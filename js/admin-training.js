@@ -147,7 +147,7 @@ async function submitSession() {
   const session_date = document.getElementById('atDate').value;
   const start_time = document.getElementById('atStart').value;
   const end_time = document.getElementById('atEnd').value;
-  const location = document.getElementById('atLocation').value.trim();
+  const sessionLocation = document.getElementById('atLocation').value.trim();
   const description = document.getElementById('atDesc').value.trim();
   const max_capacity = document.getElementById('atCapacity').value ? parseInt(document.getElementById('atCapacity').value) : null;
 
@@ -161,8 +161,8 @@ async function submitSession() {
   btn.textContent = 'Saving...';
 
   const body = editId
-    ? { action: 'update', id: editId, title, session_date, start_time, end_time, location, description, max_capacity }
-    : { action: 'create', title, session_date, start_time, end_time, location, description, max_capacity };
+    ? { action: 'update', id: editId, title, session_date, start_time, end_time, location: sessionLocation, description, max_capacity }
+    : { action: 'create', title, session_date, start_time, end_time, location: sessionLocation, description, max_capacity };
 
   try {
     const res = await fetch('/api/admin/training', {
@@ -227,7 +227,7 @@ async function submitRecurring() {
   const weeks = parseInt(document.getElementById('atRecWeeks').value);
   const start_time = document.getElementById('atRecStart').value;
   const end_time = document.getElementById('atRecEnd').value;
-  const location = document.getElementById('atRecLocation').value.trim() || null;
+  const sessionLocation = document.getElementById('atRecLocation').value.trim() || null;
 
   if (!start_time || !end_time || !weeks) {
     toast('Times and weeks are required', 'danger');
@@ -242,7 +242,7 @@ async function submitRecurring() {
     const res = await fetch('/api/admin/training', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() },
-      body: JSON.stringify({ action: 'generate', title, recurring_day, weeks, start_time, end_time, location })
+      body: JSON.stringify({ action: 'generate', title, recurring_day, weeks, start_time, end_time, location: sessionLocation })
     });
     if (!res.ok) throw new Error('Failed');
     const data = await res.json();

@@ -3,18 +3,14 @@
    Scroll effects, reveal animations, mobile menu
 ═══════════════════════════════════════ */
 
-// ── Scroll progress bar
+// ── Scroll progress bar + sticky nav
 const progressBar = document.getElementById('progress-bar');
+const navbar = document.getElementById('navbar');
 window.addEventListener('scroll', () => {
   const scrollTop = window.scrollY;
   const docHeight = document.documentElement.scrollHeight - window.innerHeight;
   progressBar.style.width = (scrollTop / docHeight * 100) + '%';
-}, { passive: true });
-
-// ── Sticky nav on scroll
-const navbar = document.getElementById('navbar');
-window.addEventListener('scroll', () => {
-  navbar.classList.toggle('scrolled', window.scrollY > 40);
+  navbar.classList.toggle('scrolled', scrollTop > 40);
 }, { passive: true });
 
 // ── Reveal on scroll
@@ -50,6 +46,8 @@ document.querySelectorAll('#hero .reveal').forEach((el, i) => {
 // ── Mobile menu toggle
 function toggleMenu() {
   document.body.classList.toggle('nav-open');
+  const expanded = document.body.classList.contains('nav-open');
+  document.querySelector('.nav-toggle').setAttribute('aria-expanded', expanded);
 }
 
 // ── Close mobile menu on outside click

@@ -45,6 +45,6 @@ function save() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() },
       body: JSON.stringify(players)
-    }).catch(() => {});
+    }).catch(err => console.error('Rankings save failed:', err));
   }
 }

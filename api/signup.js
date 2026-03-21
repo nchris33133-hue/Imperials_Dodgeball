@@ -1,9 +1,8 @@
-const fs = require('fs');
-const path = require('path');
+const { getDb } = require('../lib/db');
 const { setCors } = require('../lib/cors');
 const { validateEmail } = require('../lib/validation');
 
-function sanitizeCsvField(v) {
+function sanitizeField(v) {
   let str = String(v).replace(/"/g, '""');
   // Prevent CSV injection: prefix formula-like values
   if (/^[=+\-@\t\r]/.test(str)) {
@@ -11,6 +10,23 @@ function sanitizeCsvField(v) {
   }
   return str;
 }
+
+async function ensureSignupsTable() {
+  const sql = getDb();
+  await sql`
+    CREATE TABLE IF NOT EXISTS signups (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(200) NOT NULL,
+      email VARCHAR(320) NOT NULL,
+      type VARCHAR(20) NOT NULL DEFAULT 'join',
+      level VARCHAR(50),
+      source VARCHAR(200),
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+}
+
+let _tableReady = null;
 
 module.exports = async (req, res) => {
   setCors(req, res, 'POST, OPTIONS');
@@ -41,16 +57,39 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'Invalid name', code: 'VALIDATION_ERROR' });
   }
 
-  const csvPath = path.join('/tmp', 'signups.csv');
-  const headers = 'timestamp,type,name,email,level,source\n';
-  const row = `"${new Date().toISOString()}","${sanitizeCsvField(type)}","${sanitizeCsvField(trimmedName)}","${sanitizeCsvField(trimmedEmail)}","${sanitizeCsvField(level)}","${sanitizeCsvField(source)}"\n`;
+  // Sanitize fields to prevent injection
+  const safeName = sanitizeField(trimmedName);
+  const safeLevel = sanitizeField(level);
+  const safeSource = sanitizeField(source);
 
   try {
-    if (!fs.existsSync(csvPath)) {
-      fs.writeFileSync(csvPath, headers + row);
-    } else {
-      fs.appendFileSync(csvPath, row);
+    // Ensure the signups table exists (cached after first call)
+    if (!_tableReady) {
+      _tableReady = ensureSignupsTable();
     }
+    await _tableReady;
+
+    const sql = getDb();
+
+    // Rate limit: max 5 submissions per email per hour
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const rateLimitRows = await sql`
+      SELECT COUNT(*)::int AS cnt FROM signups
+      WHERE email = ${trimmedEmail} AND created_at > ${oneHourAgo}
+    `;
+    if (rateLimitRows[0].cnt >= 5) {
+      return res.status(429).json({
+        error: 'Too many signup attempts. Please try again later.',
+        code: 'RATE_LIMITED'
+      });
+    }
+
+    // Insert signup into database
+    await sql`
+      INSERT INTO signups (name, email, type, level, source)
+      VALUES (${safeName}, ${trimmedEmail}, ${type}, ${safeLevel || null}, ${safeSource || null})
+    `;
+
     const message = type === 'newsletter'
       ? 'Thanks for subscribing! / Danke für deine Anmeldung!'
       : "Thanks for signing up! We'll be in touch. / Danke! Wir melden uns bald.";
