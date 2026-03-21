@@ -336,7 +336,7 @@
     <p class="page-subtitle">Gemäß DSGVO / EU 2016/679 &nbsp;·&nbsp; Pursuant to GDPR / EU 2016/679</p>
     <div class="gold-bar"></div>
 
-    <p class="last-updated">Stand / Last Updated: März / March 2026</p>
+    <p class="last-updated">Stand / Last Updated: 21. März / 21 March 2026</p>
 
     <!-- 1. Verantwortlicher -->
     <div class="section">
@@ -355,7 +355,7 @@
       <ul class="data-list" style="margin-top:0.5rem;">
         <li><strong>Organisation:</strong> Vienna Imperials Dodgeball Club</li>
         <li><strong>Verantwortliche Person / Contact Person:</strong> Christoph Kopka</li>
-        <li><strong>E-Mail:</strong> <a href="mailto:imperialsdodgeball@gmail.com" style="color:#D4961A;">imperialsdodgeball@gmail.com</a></li>
+        <li><strong>E-Mail:</strong> <a href="mailto:hello@viennaimperials.at" style="color:#D4961A;">hello@viennaimperials.at</a></li>
         <li><strong>Adresse / Address:</strong> Berchtoldgasse 8/21, 1220 Wien, Österreich</li>
       </ul>
     </div>
@@ -387,13 +387,13 @@
       <div class="lang-de">
         <p class="lang-tag de">Deutsch</p>
         <p>
-          Spielernamen und Punktestände werden in einer serverseitigen JSON-Datei gespeichert. Diese Daten sind öffentlich auf der Website sichtbar. Die Aufnahme in die Rankings erfolgt ausschließlich durch Club-Administratoren. Daten werden für die aktuelle Saison gespeichert.
+          Spielernamen und Punktestände werden in einer serverseitigen Datenbank gespeichert. Diese Daten sind öffentlich auf der Website sichtbar. Die Aufnahme in die Rankings erfolgt ausschließlich durch Club-Administratoren. Daten werden für die aktuelle Saison gespeichert.
         </p>
       </div>
       <div class="lang-en">
         <p class="lang-tag en">English</p>
         <p>
-          Player names and point totals are stored in a server-side JSON file. This data is publicly visible on the website. Inclusion in the rankings is carried out exclusively by club administrators. Data is retained for the current season.
+          Player names and point totals are stored in a server-side database. This data is publicly visible on the website. Inclusion in the rankings is carried out exclusively by club administrators. Data is retained for the current season.
         </p>
       </div>
 
@@ -409,6 +409,67 @@
         <p class="lang-tag en">English</p>
         <p>
           When using the contact form, your name and email address are collected. This data is used solely to respond to your enquiry and is not shared with third parties. Retention period: 12 months.
+        </p>
+      </div>
+
+      <p class="sub-heading">Mitgliederkonto · Member Account</p>
+
+      <div class="lang-de">
+        <p class="lang-tag de">Deutsch</p>
+        <p>
+          Bei der Registrierung für ein Mitgliederkonto werden folgende Daten erhoben und in einer serverseitigen Datenbank gespeichert:
+          E-Mail-Adresse (als Anmeldename), Passwort (nur als kryptografischer Hash gespeichert, niemals im Klartext), Anzeigename und Kontoerstellungsdatum.
+          Die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung — Bereitstellung der Mitglieder-Funktionalität).
+          Für die Authentifizierung werden JWT-Tokens verwendet: Zugriffstoken mit 15 Minuten Gültigkeit als HttpOnly-Cookie, sowie ein Erneuerungstoken mit 7 Tagen Gültigkeit (gehashter Wert serverseitig gespeichert).
+          Fehlgeschlagene Anmeldeversuche werden zur Missbrauchsprävention temporär protokolliert und nach 15 Minuten automatisch gelöscht.
+        </p>
+      </div>
+      <div class="lang-en">
+        <p class="lang-tag en">English</p>
+        <p>
+          When registering for a member account, the following data is collected and stored in a server-side database:
+          email address (used as login identifier), password (stored only as a cryptographic hash, never in plain text), display name, and account creation date.
+          Processing is based on Art. 6(1)(b) GDPR (contractual necessity — providing member functionality).
+          For authentication, JWT tokens are used: access token with 15-minute validity stored as an HttpOnly cookie, and a refresh token with 7-day validity (hashed value stored server-side).
+          Failed login attempts are temporarily logged for abuse prevention and automatically deleted after 15 minutes.
+        </p>
+      </div>
+
+      <p class="sub-heading">Kontakt- und Anmeldeformulare · Contact &amp; Signup Forms</p>
+
+      <div class="lang-de">
+        <p class="lang-tag de">Deutsch</p>
+        <p>
+          Die Website bietet zwei Formulare: (1) Anmeldeformular („Join the League"): Name, E-Mail-Adresse, Erfahrungslevel (optional), Quelle (optional).
+          (2) Newsletter-Anmeldung: Name und E-Mail-Adresse.
+          Diese Daten werden serverseitig gespeichert und ausschließlich zur Kontaktaufnahme bzw. zum Versand von Club-Informationen verwendet.
+          Rechtsgrundlage: Art. 6 Abs. 1 lit. a DSGVO (Einwilligung). Aufbewahrungsdauer: 12 Monate.
+        </p>
+      </div>
+      <div class="lang-en">
+        <p class="lang-tag en">English</p>
+        <p>
+          The website offers two forms: (1) Signup form ("Join the League"): name, email address, experience level (optional), referral source (optional).
+          (2) Newsletter signup: name and email address.
+          This data is stored server-side and used exclusively for contacting you or sending club information.
+          Legal basis: Art. 6(1)(a) GDPR (consent). Retention period: 12 months.
+        </p>
+      </div>
+
+      <p class="sub-heading">Trainingsanwesenheit · Training Attendance</p>
+
+      <div class="lang-de">
+        <p class="lang-tag de">Deutsch</p>
+        <p>
+          Für die Organisation von Trainingseinheiten werden folgende Daten erhoben: Teilnahmemeldung (Zu-/Absage) pro Trainingseinheit sowie der Zeitstempel der Meldung.
+          Diese Daten werden nur eingeloggten Mitgliedern zugeordnet und dienen der Trainingsplanung. Admins können die Anwesenheitsübersicht einsehen.
+        </p>
+      </div>
+      <div class="lang-en">
+        <p class="lang-tag en">English</p>
+        <p>
+          For the organisation of training sessions, the following data is collected: attendance response (yes/no) per training session and the timestamp of the response.
+          This data is associated only with logged-in members and is used for training planning. Admins can view the attendance overview.
         </p>
       </div>
     </div>
@@ -447,13 +508,22 @@
             <td><a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a></td>
           </tr>
           <tr>
-            <td>Tailwind CSS CDN</td>
+            <td>Vercel</td>
             <td>
-              CSS-Framework für Layout und Design.<br>
-              <span style="font-size:0.8rem;color:rgba(244,247,255,0.35);">CSS framework for layout and styling.</span>
+              Website-Hosting und Serverless Functions.<br>
+              <span style="font-size:0.8rem;color:rgba(244,247,255,0.35);">Website hosting and serverless functions.</span>
             </td>
-            <td>Tailwind Labs Inc.<br><span style="font-size:0.8rem;color:rgba(244,247,255,0.35);">cdn.tailwindcss.com</span></td>
-            <td><a href="https://tailwindcss.com/privacy" target="_blank" rel="noopener">Tailwind Privacy Policy</a></td>
+            <td>Vercel Inc.<br><span style="font-size:0.8rem;color:rgba(244,247,255,0.35);">vercel.com</span></td>
+            <td><a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">Vercel Privacy Policy</a></td>
+          </tr>
+          <tr>
+            <td>Neon</td>
+            <td>
+              PostgreSQL-Datenbank für Mitglieder- und Rankingdaten.<br>
+              <span style="font-size:0.8rem;color:rgba(244,247,255,0.35);">PostgreSQL database for member and ranking data.</span>
+            </td>
+            <td>Neon Inc.<br><span style="font-size:0.8rem;color:rgba(244,247,255,0.35);">neon.tech</span></td>
+            <td><a href="https://neon.tech/privacy" target="_blank" rel="noopener">Neon Privacy Policy</a></td>
           </tr>
           <tr>
             <td>Instagram</td>
@@ -522,6 +592,42 @@
               <span style="font-size:0.8rem;color:rgba(244,247,255,0.35);">Persistent until cleared.</span>
             </td>
           </tr>
+          <tr>
+            <td><code style="font-size:0.82em;">vi_admin_token</code></td>
+            <td>sessionStorage<br><span style="font-size:0.8rem;color:rgba(244,247,255,0.35);">First-party</span></td>
+            <td>
+              Speichert das Admin-Authentifizierungstoken.<br>
+              <span style="font-size:0.8rem;color:rgba(244,247,255,0.35);">Stores the admin authentication token.</span>
+            </td>
+            <td>
+              Bis Tab geschlossen.<br>
+              <span style="font-size:0.8rem;color:rgba(244,247,255,0.35);">Until tab closed.</span>
+            </td>
+          </tr>
+          <tr>
+            <td><code style="font-size:0.82em;">access_token</code></td>
+            <td>HttpOnly Cookie<br><span style="font-size:0.8rem;color:rgba(244,247,255,0.35);">First-party</span></td>
+            <td>
+              Authentifizierungstoken für Mitgliederkonto.<br>
+              <span style="font-size:0.8rem;color:rgba(244,247,255,0.35);">Authentication token for member account.</span>
+            </td>
+            <td>
+              15 Minuten.<br>
+              <span style="font-size:0.8rem;color:rgba(244,247,255,0.35);">15 minutes.</span>
+            </td>
+          </tr>
+          <tr>
+            <td><code style="font-size:0.82em;">refresh_token</code></td>
+            <td>HttpOnly Cookie<br><span style="font-size:0.8rem;color:rgba(244,247,255,0.35);">First-party</span></td>
+            <td>
+              Erneuerungstoken für Mitgliederkonto.<br>
+              <span style="font-size:0.8rem;color:rgba(244,247,255,0.35);">Refresh token for member account.</span>
+            </td>
+            <td>
+              7 Tage.<br>
+              <span style="font-size:0.8rem;color:rgba(244,247,255,0.35);">7 days.</span>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -571,16 +677,21 @@
           <div class="right-name-en">Right to Object · Art. 21</div>
           <p>Recht auf Widerspruch gegen die Verarbeitung Ihrer personenbezogenen Daten. / Right to object to the processing of your personal data.</p>
         </div>
+        <div class="right-item">
+          <div class="right-name">Widerruf der Einwilligung</div>
+          <div class="right-name-en">Right to Withdraw Consent · Art. 7(3)</div>
+          <p>Recht, eine erteilte Einwilligung jederzeit zu widerrufen. / Right to withdraw consent at any time.</p>
+        </div>
       </div>
 
       <div class="highlight-box">
         <p>
           <strong style="color:#D4961A;">Anfragen / Requests:</strong>
           Zur Ausübung Ihrer Rechte wenden Sie sich bitte an
-          <a href="mailto:imperialsdodgeball@gmail.com">imperialsdodgeball@gmail.com</a>.
+          <a href="mailto:hello@viennaimperials.at">hello@viennaimperials.at</a>.
           Sie haben außerdem das Recht, Beschwerde bei der österreichischen Datenschutzbehörde einzulegen:
           <a href="https://www.dsb.gv.at" target="_blank" rel="noopener">www.dsb.gv.at</a>. &nbsp;
-          To exercise your rights, please contact <a href="mailto:imperialsdodgeball@gmail.com">imperialsdodgeball@gmail.com</a>.
+          To exercise your rights, please contact <a href="mailto:hello@viennaimperials.at">hello@viennaimperials.at</a>.
           You also have the right to lodge a complaint with the Austrian Data Protection Authority: <a href="https://www.dsb.gv.at" target="_blank" rel="noopener">www.dsb.gv.at</a>.
         </p>
       </div>
@@ -615,7 +726,93 @@
           Bis zum Schließen des Browser-Tabs (sessionStorage) /
           Until the browser tab is closed (sessionStorage)
         </li>
+        <li>
+          <strong>Mitgliederkonten / Member accounts:</strong>
+          Bis zur Kontolöschung oder auf Anfrage des Mitglieds /
+          Until account deletion or upon member request
+        </li>
+        <li>
+          <strong>Authentifizierungstoken / Authentication tokens:</strong>
+          Zugriffstoken: 15 Minuten, Erneuerungstoken: 7 Tage /
+          Access token: 15 minutes, Refresh token: 7 days
+        </li>
+        <li>
+          <strong>Trainingsanwesenheit / Training attendance:</strong>
+          Aktuelle Saison / Current season
+        </li>
+        <li>
+          <strong>Newsletter-Anmeldungen / Newsletter signups:</strong>
+          12 Monate / 12 months
+        </li>
       </ul>
+    </div>
+
+    <!-- Rechtsgrundlagen -->
+    <div class="section">
+      <p class="section-label">Art. 6 DSGVO</p>
+      <h2 class="section-title">Rechtsgrundlagen · Legal Basis</h2>
+
+      <table class="info-table">
+        <thead>
+          <tr>
+            <th>Datenverarbeitung / Data Processing</th>
+            <th>Rechtsgrundlage / Legal Basis</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Mitgliederkonto-Registrierung / Member account registration</td>
+            <td>Art. 6 Abs. 1 lit. b — Vertragserfüllung / Contractual necessity</td>
+          </tr>
+          <tr>
+            <td>Kontakt-/Anmeldeformulare / Contact/signup forms</td>
+            <td>Art. 6 Abs. 1 lit. a — Einwilligung / Consent</td>
+          </tr>
+          <tr>
+            <td>Newsletter</td>
+            <td>Art. 6 Abs. 1 lit. a — Einwilligung / Consent</td>
+          </tr>
+          <tr>
+            <td>Rankings (öffentliche Anzeige / public display)</td>
+            <td>Art. 6 Abs. 1 lit. f — Berechtigtes Interesse / Legitimate interest</td>
+          </tr>
+          <tr>
+            <td>Trainingsanwesenheit / Training attendance</td>
+            <td>Art. 6 Abs. 1 lit. b — Vertragserfüllung / Contractual necessity</td>
+          </tr>
+          <tr>
+            <td>Admin-Authentifizierung / Admin authentication</td>
+            <td>Art. 6 Abs. 1 lit. f — Berechtigtes Interesse / Legitimate interest</td>
+          </tr>
+          <tr>
+            <td>Google Fonts</td>
+            <td>Art. 6 Abs. 1 lit. a — Einwilligung / Consent (Cookie-Banner)</td>
+          </tr>
+          <tr>
+            <td>Rate Limiting</td>
+            <td>Art. 6 Abs. 1 lit. f — Berechtigtes Interesse / Legitimate interest</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Datenübermittlung in Drittländer -->
+    <div class="section">
+      <p class="section-label">Art. 44–49 DSGVO</p>
+      <h2 class="section-title">Datenübermittlung in Drittländer · Data Transfer to Third Countries</h2>
+
+      <div class="lang-de">
+        <p class="lang-tag de">Deutsch</p>
+        <p>
+          Einige unserer Dienstleister haben ihren Sitz in den USA (Vercel, Neon, Google). Die Datenübermittlung erfolgt auf Grundlage von Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO) bzw. dem EU-US Data Privacy Framework (Angemessenheitsbeschluss der EU-Kommission).
+        </p>
+      </div>
+      <div class="lang-en">
+        <p class="lang-tag en">English</p>
+        <p>
+          Some of our service providers are based in the United States (Vercel, Neon, Google). Data transfers are based on Standard Contractual Clauses (Art. 46(2)(c) GDPR) or the EU-US Data Privacy Framework (EU Commission adequacy decision).
+        </p>
+      </div>
     </div>
 
     <!-- 7. Änderungen -->
