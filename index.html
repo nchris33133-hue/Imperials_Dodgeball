@@ -1004,10 +1004,12 @@
     .signup-success { margin-top: 1rem; padding: 12px 20px; background: rgba(26,61,143,0.3); border: 1px solid rgba(212,150,26,0.3); border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 1rem; color: var(--gold-lt); text-align: center; }
     @media (max-width: 580px) { .signup-form-grid { grid-template-columns: 1fr; } }
 
-    @media (max-width: 680px) {
-      /* Nav */
+    @media (max-width: 960px) {
+      /* Nav — collapse to hamburger */
       .nav-links { display: none; }
       .nav-toggle { display: flex; }
+    }
+    @media (max-width: 680px) {
       nav { padding: 0 1.25rem; }
       .nav-logo img { height: 36px; }
       .nav-asko img { height: 26px; }
