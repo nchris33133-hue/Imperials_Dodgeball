@@ -112,3 +112,15 @@ function setFilter(f, btn) {
 }
 
 function setSort(key) { sortKey = key; rankVisible = 25; renderTable(); }
+
+// Debounced search input
+(function() {
+  let searchTimeout;
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => { rankVisible = 25; renderTable(); }, 300);
+    });
+  }
+})();

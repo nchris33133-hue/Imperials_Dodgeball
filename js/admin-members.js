@@ -50,11 +50,14 @@ async function loadPendingMembers() {
       </div>
     `).join('');
 
-    // Event delegation for approve/reject buttons
-    container.addEventListener('click', function(e) {
-      const btn = e.target.closest('[data-member-id][data-action]');
-      if (btn) handleMemberAction(btn.dataset.memberId, btn.dataset.action);
-    });
+    // Event delegation — attach once (guard prevents accumulation on reload)
+    if (!container._delegated) {
+      container._delegated = true;
+      container.addEventListener('click', function(e) {
+        const btn = e.target.closest('[data-member-id][data-action]');
+        if (btn) handleMemberAction(btn.dataset.memberId, btn.dataset.action);
+      });
+    }
   } catch (err) {
     container.innerHTML = '<p style="color:#E8193C; font-size:.9rem;">Failed to load members.</p>';
   }

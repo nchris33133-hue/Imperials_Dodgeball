@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const { getDb } = require('../../lib/db');
 const { setCors } = require('../../lib/cors');
-const { validateEmail, validatePassword, validateDisplayName, sanitizeHtml } = require('../../lib/validation');
+const { validateEmail, validatePassword, validateDisplayName, sanitizeHtml, requireJSON } = require('../../lib/validation');
 const { createAccessToken, generateRefreshToken, hashRefreshToken, setAccessTokenCookie, setRefreshTokenCookie, preHashPassword, REFRESH_TOKEN_DAYS } = require('../../lib/auth');
 const { checkRateLimit, recordAttempt } = require('../../lib/rate-limit');
 
@@ -10,6 +10,7 @@ module.exports = async (req, res) => {
 
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed', code: 'METHOD_NOT_ALLOWED' });
+  if (!requireJSON(req)) return res.status(415).json({ error: 'Content-Type must be application/json', code: 'INVALID_CONTENT_TYPE' });
 
   try {
     const { email, password, display_name } = req.body || {};
@@ -48,9 +49,10 @@ module.exports = async (req, res) => {
       `;
     } catch (err) {
       if (err.message && (err.message.includes('unique') || err.message.includes('duplicate'))) {
-        return res.status(409).json({
-          error: 'An account with this email already exists',
-          code: 'EMAIL_EXISTS'
+        // Return generic success to prevent user enumeration
+        return res.status(200).json({
+          pending: true,
+          message: 'Registration request received. If eligible, your account will be reviewed by an admin.'
         });
       }
       throw err;
@@ -58,9 +60,9 @@ module.exports = async (req, res) => {
 
     const user = rows[0];
 
-    return res.status(201).json({
+    return res.status(200).json({
       pending: true,
-      message: 'Registration successful. Your account is pending admin approval.'
+      message: 'Registration request received. If eligible, your account will be reviewed by an admin.'
     });
   } catch (err) {
     console.error('Registration failed:', err);

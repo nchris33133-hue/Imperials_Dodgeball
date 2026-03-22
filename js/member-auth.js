@@ -65,6 +65,7 @@ async function handleLogin(e) {
     }
 
     currentUser = data.user;
+    sessionExpiredShown = false;
     enterDashboard();
   } catch (err) {
     const banner = document.getElementById('loginBanner');
@@ -161,7 +162,11 @@ async function handleRegister(e) {
 /* ═══════════════════════════════════════
    SESSION EXPIRED
 ═══════════════════════════════════════ */
+let sessionExpiredShown = false;
+
 function showSessionExpired() {
+  if (sessionExpiredShown) return;
+  sessionExpiredShown = true;
   const emailField = document.getElementById('reAuthEmail');
   if (currentUser && currentUser.email) {
     emailField.value = currentUser.email;
@@ -205,6 +210,7 @@ async function handleReAuth(e) {
     }
 
     currentUser = data.user;
+    sessionExpiredShown = false;
     document.getElementById('sessionOverlay').classList.remove('open');
     document.getElementById('reAuthPassword').value = '';
     btn.disabled = false;
@@ -221,6 +227,7 @@ async function handleReAuth(e) {
 
 function handleFullLogout() {
   document.getElementById('sessionOverlay').classList.remove('open');
+  sessionExpiredShown = false;
   currentUser = null;
   showView('login');
 }
@@ -232,6 +239,14 @@ async function handleLogout() {
   try {
     await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
   } catch { /* ignore */ }
+  // Clear all client-side state
   currentUser = null;
+  sessionExpiredShown = false;
+  trainingLoaded = false;
+  trainingSessions = [];
+  Object.keys(attendeeCache).forEach(k => delete attendeeCache[k]);
+  // Clear auth cookies client-side in case server request failed
+  document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+  document.cookie = 'refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
   showView('login');
 }

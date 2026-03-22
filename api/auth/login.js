@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const { getDb } = require('../../lib/db');
 const { setCors } = require('../../lib/cors');
-const { validateEmail } = require('../../lib/validation');
+const { validateEmail, requireJSON } = require('../../lib/validation');
 const { createAccessToken, generateRefreshToken, hashRefreshToken, setAccessTokenCookie, setRefreshTokenCookie, preHashPassword, REFRESH_TOKEN_DAYS } = require('../../lib/auth');
 const { checkRateLimit, recordAttempt, clearAttempts } = require('../../lib/rate-limit');
 
@@ -10,6 +10,7 @@ module.exports = async (req, res) => {
 
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed', code: 'METHOD_NOT_ALLOWED' });
+  if (!requireJSON(req)) return res.status(415).json({ error: 'Content-Type must be application/json', code: 'INVALID_CONTENT_TYPE' });
 
   try {
     const { email, password, remember_me = false } = req.body || {};

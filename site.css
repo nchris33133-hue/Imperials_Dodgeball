@@ -1099,7 +1099,7 @@
     .rank-2 { color:#C0C0C0; }
     .rank-3 { color:#CD7F32; }
     .rank-other { color:rgba(244,247,255,0.6); }
-    .rank-change { font-size:0.78rem; font-weight:700; color:rgba(244,247,255,0.25); }
+    .rank-change { font-size:0.78rem; font-weight:700; color:rgba(244,247,255,0.5); }
     .rank-change.up { color:#22C55E; }
     .rank-change.down { color:#F87171; }
     .rank-change.neu { color:rgba(244,247,255,0.2); }

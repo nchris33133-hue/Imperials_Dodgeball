@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <title>Member Area — Vienna Imperials</title>
   <meta name="description" content="Vienna Imperials member dashboard. View your stats, rankings, and tier." />
   <meta name="robots" content="noindex" />
@@ -62,11 +66,11 @@
     .auth-logo { text-align: center; margin-bottom: 1.75rem; }
     .auth-logo img { height: 72px; filter: drop-shadow(0 4px 16px rgba(212,150,26,0.25)); }
     .auth-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.08em; color: var(--gold-lt); text-align: center; display: block; margin-top: 0.5rem; }
-    .auth-sub { font-size: 0.8rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(244,247,255,0.35); text-align: center; margin-top: 4px; margin-bottom: 1.5rem; }
+    .auth-sub { font-size: 0.8rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(244,247,255,0.55); text-align: center; margin-top: 4px; margin-bottom: 1.5rem; }
     .auth-divider { width: 32px; height: 2px; background: linear-gradient(90deg, var(--gold), var(--gold-lt)); margin: 0 auto 1.75rem; border-radius: 2px; }
 
     .field-group { margin-bottom: 16px; }
-    .field-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(244,247,255,0.4); display: block; margin-bottom: 6px; }
+    .field-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(244,247,255,0.6); display: block; margin-bottom: 6px; }
     .field-input {
       width: 100%; background: rgba(12,27,58,0.8); border: 1px solid var(--border); border-radius: 8px;
       padding: 11px 14px; font-family: 'Inter', sans-serif; font-size: 0.95rem; color: var(--cloud);
@@ -158,7 +162,7 @@
     .dash-tab {
       font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.85rem;
       letter-spacing: 0.1em; text-transform: uppercase; padding: 12px 24px;
-      background: transparent; border: none; color: rgba(244,247,255,0.4);
+      background: transparent; border: none; color: rgba(244,247,255,0.6);
       cursor: pointer; position: relative;
       transition: color 0.2s ease;
     }
@@ -240,7 +244,7 @@
     .attendees-toggle {
       font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.75rem;
       letter-spacing: 0.08em; text-transform: uppercase; background: none; border: none;
-      color: rgba(244,247,255,0.35); cursor: pointer; padding: 0;
+      color: rgba(244,247,255,0.55); cursor: pointer; padding: 0;
       transition: color 0.15s ease;
     }
     .attendees-toggle:hover { color: rgba(244,247,255,0.6); }
@@ -257,7 +261,7 @@
     .attendees-label.att-no { color: #F87171; }
 
     .training-empty {
-      text-align: center; padding: 3rem 1rem; color: rgba(244,247,255,0.4); font-size: 0.9rem;
+      text-align: center; padding: 3rem 1rem; color: rgba(244,247,255,0.6); font-size: 0.9rem;
     }
     .training-empty svg { margin-bottom: 1rem; }
 
@@ -294,14 +298,14 @@
     .stats-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.25rem; color: var(--cloud); }
     .stats-rank-block { text-align: right; }
     .stats-rank-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--gold-lt); line-height: 1; }
-    .stats-rank-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(244,247,255,0.35); }
+    .stats-rank-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(244,247,255,0.55); }
 
     .stats-grid {
       display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
     }
     .stat-cell { text-align: center; }
     .stat-value { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--cloud); }
-    .stat-label { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(244,247,255,0.35); margin-top: 2px; }
+    .stat-label { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(244,247,255,0.55); margin-top: 2px; }
     .stat-value.gold { color: var(--gold-lt); }
     .stat-value.purple { color: #C084FC; }
     .stat-value.gain-pos { color: #4ADE80; }
@@ -345,7 +349,7 @@
     .lb-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
     .lb-table th {
       font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.7rem;
-      letter-spacing: 0.12em; text-transform: uppercase; color: rgba(244,247,255,0.4);
+      letter-spacing: 0.12em; text-transform: uppercase; color: rgba(244,247,255,0.6);
       padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border);
       background: rgba(12,27,58,0.5); white-space: nowrap; cursor: pointer;
     }
@@ -366,14 +370,14 @@
     .points-val { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--cloud); }
     .gain-pos { color: #4ADE80; font-weight: 700; }
     .gain-neg { color: #F87171; font-weight: 700; }
-    .gain-neu { color: rgba(244,247,255,0.25); }
+    .gain-neu { color: rgba(244,247,255,0.5); }
     .streak-val { color: var(--gold-lt); font-weight: 700; }
     .ref-val { color: #C084FC; font-weight: 700; }
 
     .rank-medal { font-size: 1rem; }
     .rank-num { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 0.9rem; color: rgba(244,247,255,0.55); }
 
-    .lb-empty { text-align: center; padding: 2rem; color: rgba(244,247,255,0.4); font-size: 0.9rem; }
+    .lb-empty { text-align: center; padding: 2rem; color: rgba(244,247,255,0.6); font-size: 0.9rem; }
     .lb-load-more { display: block; width: 100%; margin-top: .75rem; padding: .65rem; background: rgba(53,103,192,0.12); color: rgba(244,247,255,0.7); border: 1px solid rgba(53,103,192,0.25); border-radius: 8px; cursor: pointer; font-size: 0.85rem; transition: background .15s, color .15s; }
     .lb-load-more:hover { background: rgba(53,103,192,0.22); color: #F4F7FF; }
 
@@ -417,6 +421,7 @@
   </style>
 </head>
 <body>
+  <a href="#main-content" class="sr-only focus:not-sr-only" style="position:absolute;top:-40px;left:0;background:var(--gold);color:var(--deep);padding:8px 16px;z-index:10000;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-decoration:none;transition:top 0.2s ease;" onfocus="this.style.top='0'" onblur="this.style.top='-40px'">Skip to content</a>
 
   <!-- ══ NAVIGATION ══ -->
   <nav id="navbar" role="navigation" aria-label="Member navigation">
@@ -445,6 +450,7 @@
     </button>
   </nav>
 
+  <div id="main-content">
   <!-- ══ LOGIN VIEW ══ -->
   <div class="auth-wrap" id="loginView">
     <div class="auth-card" id="loginCard">
@@ -576,15 +582,15 @@
 
     <div class="dash-content">
       <!-- Tab Navigation -->
-      <div class="dash-tabs">
-        <button class="dash-tab active" data-tab="stats" onclick="switchTab('stats')">My Stats</button>
-        <button class="dash-tab" data-tab="rankings" onclick="switchTab('rankings')">Rankings</button>
-        <button class="dash-tab" data-tab="training" onclick="switchTab('training')">Training</button>
-        <button class="dash-tab" data-tab="settings" onclick="switchTab('settings')">Settings</button>
+      <div class="dash-tabs" role="tablist">
+        <button class="dash-tab active" data-tab="stats" onclick="switchTab('stats')" role="tab" aria-selected="true">My Stats</button>
+        <button class="dash-tab" data-tab="rankings" onclick="switchTab('rankings')" role="tab" aria-selected="false">Rankings</button>
+        <button class="dash-tab" data-tab="training" onclick="switchTab('training')" role="tab" aria-selected="false">Training</button>
+        <button class="dash-tab" data-tab="settings" onclick="switchTab('settings')" role="tab" aria-selected="false">Settings</button>
       </div>
 
       <!-- Stats Tab -->
-      <div class="tab-panel" id="tab-stats" style="display:block;">
+      <div class="tab-panel" id="tab-stats" role="tabpanel" style="display:block;">
         <div class="stats-card" id="statsCard">
           <div class="stats-top">
             <div>
@@ -610,7 +616,7 @@
       </div>
 
       <!-- Rankings Tab -->
-      <div class="tab-panel" id="tab-rankings">
+      <div class="tab-panel" id="tab-rankings" role="tabpanel">
         <div class="leaderboard-section" id="leaderboard">
           <div class="leaderboard-title">LEADERBOARD</div>
           <div class="leaderboard-line"></div>
@@ -645,7 +651,7 @@
       </div>
 
       <!-- Training Tab -->
-      <div class="tab-panel" id="tab-training">
+      <div class="tab-panel" id="tab-training" role="tabpanel">
         <!-- Nudge banner for unresponded sessions -->
         <div class="training-nudge" id="trainingNudge" style="display:none;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -672,7 +678,7 @@
       </div>
 
       <!-- Settings Tab -->
-      <div class="tab-panel" id="tab-settings">
+      <div class="tab-panel" id="tab-settings" role="tabpanel">
         <div class="stats-card">
           <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--gold-lt);letter-spacing:0.05em;margin:0 0 1.25rem;">EINSTELLUNGEN / SETTINGS</h3>
 
@@ -694,6 +700,7 @@
       </div>
     </div>
   </div>
+  </div><!-- /main-content -->
 
   <!-- ══ SESSION EXPIRED OVERLAY ══ -->
   <div class="session-overlay" id="sessionOverlay">
@@ -722,10 +729,10 @@
     </div>
   </div>
 
-  <script src="/js/member-core.js"></script>
-  <script src="/js/member-auth.js"></script>
-  <script src="/js/member-dashboard.js"></script>
-  <script src="/js/member-training.js"></script>
-  <script src="/js/member-init.js"></script>
+  <script src="/js/member-core.js" defer></script>
+  <script src="/js/member-auth.js" defer></script>
+  <script src="/js/member-dashboard.js" defer></script>
+  <script src="/js/member-training.js" defer></script>
+  <script src="/js/member-init.js" defer></script>
 </body>
 </html>

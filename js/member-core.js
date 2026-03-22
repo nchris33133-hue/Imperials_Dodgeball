@@ -35,21 +35,29 @@ async function api(url, opts = {}) {
   return res;
 }
 
+let refreshPromise = null;
+
 async function silentRefresh() {
-  try {
-    const res = await fetch('/api/auth/refresh', {
-      method: 'POST',
-      credentials: 'include',
-    });
-    if (res.ok) {
-      const data = await res.json();
-      if (data.user) currentUser = data.user;
-      return true;
+  if (refreshPromise) return refreshPromise;
+  refreshPromise = (async () => {
+    try {
+      const res = await fetch('/api/auth/refresh', {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.user) currentUser = data.user;
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
+    } finally {
+      refreshPromise = null;
     }
-    return false;
-  } catch {
-    return false;
-  }
+  })();
+  return refreshPromise;
 }
 
 /* ═══════════════════════════════════════
@@ -82,7 +90,9 @@ function updateNavUser() {
 function switchTab(tab) {
   activeTab = tab;
   document.querySelectorAll('.dash-tab').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.tab === tab);
+    const isActive = btn.dataset.tab === tab;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-selected', isActive);
   });
   document.querySelectorAll('.tab-panel').forEach(panel => {
     panel.style.display = panel.id === 'tab-' + tab ? 'block' : 'none';

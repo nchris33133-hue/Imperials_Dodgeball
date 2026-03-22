@@ -1,7 +1,7 @@
 const { getDb } = require('../../lib/db');
 const { setCors } = require('../../lib/cors');
 const { requireAdmin } = require('../../lib/auth');
-const { isValidUuid, sanitizeHtml } = require('../../lib/validation');
+const { isValidUuid, sanitizeHtml, requireJSON } = require('../../lib/validation');
 
 module.exports = async (req, res) => {
   setCors(req, res, 'GET, PATCH, OPTIONS');
@@ -37,6 +37,7 @@ module.exports = async (req, res) => {
 
   // PATCH: approve or reject a member
   if (req.method === 'PATCH') {
+    if (!requireJSON(req)) return res.status(415).json({ error: 'Content-Type must be application/json', code: 'INVALID_CONTENT_TYPE' });
     const { user_id, action, ranking_player_name } = req.body || {};
     if (!user_id || !action) {
       return res.status(400).json({ error: 'user_id and action are required', code: 'VALIDATION_ERROR' });
@@ -74,6 +75,7 @@ module.exports = async (req, res) => {
           WHERE id = ${user_id}
         `;
       }
+      console.log('[AUDIT]', { action, resourceId: user_id, timestamp: new Date().toISOString() });
       return res.status(200).json({ success: true });
     } catch (err) {
       console.error('Member action failed:', err);

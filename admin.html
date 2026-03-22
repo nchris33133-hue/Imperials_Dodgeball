@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <title>Admin Dashboard — Vienna Imperials</title>
   <meta name="robots" content="noindex" />
 
@@ -100,7 +104,7 @@
     .dash-tab {
       font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.85rem;
       letter-spacing: 0.1em; text-transform: uppercase; padding: 12px 24px;
-      background: transparent; border: none; color: rgba(244,247,255,0.4);
+      background: transparent; border: none; color: rgba(244,247,255,0.6);
       cursor: pointer; position: relative; transition: color 0.2s ease;
     }
     .dash-tab:hover { color: rgba(244,247,255,0.7); }
@@ -291,7 +295,7 @@
     .rank-cell { display: flex; align-items: center; gap: 8px; }
     .rank-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.25rem; letter-spacing: 0.04em; min-width: 22px; }
     .rank-1 { color: #F5C518; } .rank-2 { color: #C0C0C0; } .rank-3 { color: #CD7F32; } .rank-other { color: rgba(244,247,255,0.6); }
-    .rank-change { font-size: 0.78rem; font-weight: 700; color: rgba(244,247,255,0.25); }
+    .rank-change { font-size: 0.78rem; font-weight: 700; color: rgba(244,247,255,0.5); }
     .rank-change.up { color: #22C55E; } .rank-change.down { color: #F87171; } .rank-change.neu { color: rgba(244,247,255,0.2); }
 
     .player-cell { display: flex; align-items: center; gap: 11px; }
@@ -315,7 +319,7 @@
     .stat-card { background: rgba(15,33,80,0.7); border: 1px solid var(--border); border-radius: 10px; padding: 1.1rem 1.3rem; }
     .stat-label { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(244,247,255,0.45); margin-bottom: 4px; }
     .stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 1.75rem; color: var(--cloud); line-height: 1; }
-    .stat-sub { font-size: 0.7rem; color: rgba(244,247,255,0.35); margin-top: 2px; }
+    .stat-sub { font-size: 0.7rem; color: rgba(244,247,255,0.55); margin-top: 2px; }
 
     .controls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
     .filter-tabs { display: flex; gap: 0; }
@@ -463,6 +467,7 @@
   </style>
 </head>
 <body>
+  <a href="#main-content" class="sr-only focus:not-sr-only" style="position:absolute;top:-40px;left:0;background:var(--gold);color:var(--deep);padding:8px 16px;z-index:10000;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-decoration:none;transition:top 0.2s ease;" onfocus="this.style.top='0'" onblur="this.style.top='-40px'">Skip to content</a>
 
   <!-- ══ NAVIGATION ══ -->
   <nav role="navigation" aria-label="Admin navigation">
@@ -477,6 +482,7 @@
     </div>
   </nav>
 
+  <div id="main-content">
   <!-- ══ LOGIN VIEW ══ -->
   <div class="auth-wrap" id="loginView">
     <div class="auth-card" id="adminLoginCard">
@@ -502,14 +508,14 @@
 
     <div class="dash-content">
       <!-- Tab Navigation -->
-      <div class="dash-tabs">
-        <button class="dash-tab active" data-tab="members" onclick="switchAdminDashTab('members', this)">Members</button>
-        <button class="dash-tab" data-tab="training" onclick="switchAdminDashTab('training', this)">Training</button>
-        <button class="dash-tab" data-tab="rankings" onclick="switchAdminDashTab('rankings', this)">Rankings</button>
+      <div class="dash-tabs" role="tablist">
+        <button class="dash-tab active" data-tab="members" onclick="switchAdminDashTab('members', this)" role="tab" aria-selected="true">Members</button>
+        <button class="dash-tab" data-tab="training" onclick="switchAdminDashTab('training', this)" role="tab" aria-selected="false">Training</button>
+        <button class="dash-tab" data-tab="rankings" onclick="switchAdminDashTab('rankings', this)" role="tab" aria-selected="false">Rankings</button>
       </div>
 
       <!-- ── Members Tab ── -->
-      <div class="tab-panel active" id="tab-members">
+      <div class="tab-panel active" id="tab-members" role="tabpanel">
         <div class="section-header">
           <h3 class="section-title">MEMBER APPROVALS</h3>
           <button class="at-btn" onclick="loadPendingMembers()">Refresh</button>
@@ -518,7 +524,7 @@
       </div>
 
       <!-- ── Training Tab ── -->
-      <div class="tab-panel" id="tab-training">
+      <div class="tab-panel" id="tab-training" role="tabpanel">
         <div class="at-header">
           <h3>TRAINING SESSIONS</h3>
           <div class="at-actions">
@@ -541,7 +547,7 @@
       </div>
 
       <!-- ── Rankings Tab ── -->
-      <div class="tab-panel" id="tab-rankings">
+      <div class="tab-panel" id="tab-rankings" role="tabpanel">
         <div class="section-header">
           <h3 class="section-title">RANKINGS</h3>
         </div>
@@ -581,7 +587,7 @@
           <div class="controls-right">
             <div class="search-wrap">
               <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input class="search-input" type="text" placeholder="Search players&hellip;" id="searchInput" aria-label="Search players" oninput="rankVisible=25; renderTable()" />
+              <input class="search-input" type="text" placeholder="Search players&hellip;" id="searchInput" aria-label="Search players" />
             </div>
           </div>
         </div>
@@ -608,6 +614,7 @@
       </div>
     </div>
   </div>
+  </div><!-- /main-content -->
 
   <!-- ══ EDIT / ADD PLAYER MODAL ══ -->
   <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" onclick="backdropClick(event)">
@@ -856,12 +863,12 @@
   </div>
 
   <!-- ══ SCRIPTS ══ -->
-  <script src="/js/admin-auth.js"></script>
-  <script src="/js/rankings-data.js"></script>
-  <script src="/js/rankings-render.js"></script>
-  <script src="/js/rankings-modals.js"></script>
-  <script src="/js/rankings-import.js"></script>
-  <script src="/js/admin-members.js"></script>
-  <script src="/js/admin-training.js"></script>
+  <script src="/js/admin-auth.js" defer></script>
+  <script src="/js/rankings-data.js" defer></script>
+  <script src="/js/rankings-render.js" defer></script>
+  <script src="/js/rankings-modals.js" defer></script>
+  <script src="/js/rankings-import.js" defer></script>
+  <script src="/js/admin-members.js" defer></script>
+  <script src="/js/admin-training.js" defer></script>
 </body>
 </html>

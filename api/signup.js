@@ -1,6 +1,6 @@
 const { getDb } = require('../lib/db');
 const { setCors } = require('../lib/cors');
-const { validateEmail } = require('../lib/validation');
+const { validateEmail, requireJSON } = require('../lib/validation');
 
 function sanitizeField(v) {
   let str = String(v).replace(/"/g, '""');
@@ -35,6 +35,7 @@ module.exports = async (req, res) => {
 
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed', code: 'METHOD_NOT_ALLOWED' });
+  if (!requireJSON(req)) return res.status(415).json({ error: 'Content-Type must be application/json', code: 'INVALID_CONTENT_TYPE' });
 
   const { type = 'join' } = req.body || {};
 

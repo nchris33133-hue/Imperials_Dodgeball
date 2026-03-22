@@ -167,6 +167,7 @@ module.exports = async (req, res) => {
           VALUES (${title}, ${description || null}, ${location || null}, ${session_date}, ${start_time}, ${end_time}, ${max_capacity || null})
           RETURNING id, title, description, location, session_date, start_time, end_time, max_capacity, is_cancelled, recurring_day, created_at, updated_at
         `;
+        console.log('[AUDIT]', { action: 'create_session', resourceId: result[0].id, timestamp: new Date().toISOString() });
         return res.status(201).json({ session: result[0] });
       } catch (err) {
         console.error('Failed to create session:', err);
@@ -197,6 +198,7 @@ module.exports = async (req, res) => {
           RETURNING id, title, description, location, session_date, start_time, end_time, max_capacity, is_cancelled, recurring_day, created_at, updated_at
         `;
         if (result.length === 0) return res.status(404).json({ error: 'Session not found', code: 'NOT_FOUND' });
+        console.log('[AUDIT]', { action: 'update_session', resourceId: result[0].id, timestamp: new Date().toISOString() });
         return res.status(200).json({ session: result[0] });
       } catch (err) {
         console.error('Failed to update session:', err);
@@ -216,6 +218,7 @@ module.exports = async (req, res) => {
           RETURNING id, title, description, location, session_date, start_time, end_time, max_capacity, is_cancelled, recurring_day, created_at, updated_at
         `;
         if (result.length === 0) return res.status(404).json({ error: 'Session not found', code: 'NOT_FOUND' });
+        console.log('[AUDIT]', { action: 'cancel_session', resourceId: result[0].id, timestamp: new Date().toISOString() });
         return res.status(200).json({ session: result[0] });
       } catch (err) {
         console.error('Failed to cancel session:', err);
@@ -271,6 +274,7 @@ module.exports = async (req, res) => {
           RETURNING id, title, description, location, session_date, start_time, end_time, max_capacity, is_cancelled, recurring_day, created_at, updated_at
         `;
 
+        console.log('[AUDIT]', { action: 'generate_sessions', resourceId: sessions.map(s => s.id), timestamp: new Date().toISOString() });
         return res.status(201).json({ sessions, count: sessions.length });
       } catch (err) {
         console.error('Failed to generate sessions:', err);
@@ -290,6 +294,7 @@ module.exports = async (req, res) => {
     try {
       const result = await sql`DELETE FROM training_sessions WHERE id = ${id} RETURNING id`;
       if (result.length === 0) return res.status(404).json({ error: 'Session not found', code: 'NOT_FOUND' });
+      console.log('[AUDIT]', { action: 'delete_session', resourceId: id, timestamp: new Date().toISOString() });
       return res.status(200).json({ success: true });
     } catch (err) {
       console.error('Failed to delete session:', err);

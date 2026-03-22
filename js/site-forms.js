@@ -38,7 +38,9 @@ async function submitContactForm(e) {
     });
     const data = await res.json();
     if (res.ok && data.success) {
-      document.getElementById('contactForm').style.display = 'none';
+      const form = document.getElementById('contactForm');
+      form.reset();
+      form.style.display = 'none';
       const s = document.getElementById('contactSuccess');
       s.textContent = data.message;
       s.style.display = 'block';
@@ -71,7 +73,9 @@ async function submitJoinForm(e) {
     });
     const data = await res.json();
     if (res.ok && data.success) {
-      document.getElementById('joinForm').style.display = 'none';
+      const form = document.getElementById('joinForm');
+      form.reset();
+      form.style.display = 'none';
       const s = document.getElementById('joinSuccess');
       s.textContent = data.message;
       s.style.display = 'block';
