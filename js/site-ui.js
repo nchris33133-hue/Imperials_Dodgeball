@@ -44,7 +44,8 @@ document.querySelectorAll('#hero .reveal').forEach((el, i) => {
 });
 
 // ── Mobile menu toggle
-function toggleMenu() {
+function toggleMenu(e) {
+  if (e) e.stopPropagation();
   document.body.classList.toggle('nav-open');
   const expanded = document.body.classList.contains('nav-open');
   document.querySelector('.nav-toggle').setAttribute('aria-expanded', expanded);
