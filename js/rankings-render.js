@@ -27,7 +27,7 @@ function renderTable() {
 
   const tbody = document.getElementById('tableBody');
   if (!list.length) {
-    tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state">
+    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state">
       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <p style="font-weight:600;">No players found</p>
       <p style="font-size:0.82rem;margin-top:4px;">Adjust filter or search</p>
@@ -76,7 +76,6 @@ function renderTable() {
       <td class="num">${gainHtml}</td>
       <td class="num"><span class="played-val">${p.played}</span></td>
       <td class="num"><span class="streak-val">${p.streak}</span></td>
-      <td class="num"><span class="tier-badge tier-${p.tier}">${tierLabel}</span></td>
       <td class="num"><span class="ref-val">${p.bp > 0 ? '+' + p.bp : p.bp}</span></td>
       <td class="num">${chg}</td>
       ${actionsTd}
