@@ -22,3 +22,6 @@ function declineCookies() {
   document.getElementById('cookieBanner').style.display = 'none';
   document.querySelectorAll('link[href*="fonts.googleapis.com"]').forEach(el => el.remove());
 }
+
+document.getElementById('cookieAcceptBtn')?.addEventListener('click', acceptCookies);
+document.getElementById('cookieDeclineBtn')?.addEventListener('click', declineCookies);

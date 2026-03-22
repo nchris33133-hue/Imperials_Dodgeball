@@ -54,6 +54,9 @@ async function submitContactForm(e) {
   }
 }
 
+document.getElementById('joinForm')?.addEventListener('submit', submitJoinForm);
+document.getElementById('contactForm')?.addEventListener('submit', submitContactForm);
+
 async function submitJoinForm(e) {
   e.preventDefault();
   const nameEl  = document.getElementById('joinName');

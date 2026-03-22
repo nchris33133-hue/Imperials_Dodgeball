@@ -11,3 +11,6 @@ function setFaqLang(lang) {
   Object.assign(document.getElementById('faqBtnDe').style, lang === 'de' ? active : inactive);
   Object.assign(document.getElementById('faqBtnEn').style, lang === 'en' ? active : inactive);
 }
+
+document.getElementById('faqBtnDe')?.addEventListener('click', () => setFaqLang('de'));
+document.getElementById('faqBtnEn')?.addEventListener('click', () => setFaqLang('en'));

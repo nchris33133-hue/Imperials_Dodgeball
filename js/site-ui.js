@@ -49,6 +49,7 @@ function toggleMenu() {
   const expanded = document.body.classList.contains('nav-open');
   document.querySelector('.nav-toggle').setAttribute('aria-expanded', expanded);
 }
+document.getElementById('navToggleBtn')?.addEventListener('click', toggleMenu);
 
 // ── Close mobile menu on outside click
 document.addEventListener('click', (e) => {

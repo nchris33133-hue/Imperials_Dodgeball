@@ -58,10 +58,10 @@ function renderTable() {
     const tierLabel = p.tier.charAt(0).toUpperCase() + p.tier.slice(1);
     const actionsTd = adminActs
       ? `<td><div class="actions-cell">
-          <button class="btn-icon edit" onclick="openModal(${p.id})" title="Edit">
+          <button class="btn-icon edit" data-edit-id="${p.id}" title="Edit">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           </button>
-          <button class="btn-icon del" onclick="askDelete(${p.id},'${esc(p.name)}')" title="Remove">
+          <button class="btn-icon del" data-delete-id="${p.id}" data-delete-name="${esc(p.name)}" title="Remove">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
           </button>
         </div></td>`
@@ -96,8 +96,18 @@ function renderTable() {
 
   document.querySelectorAll('thead th').forEach(th => {
     th.classList.remove('sorted');
-    if (th.getAttribute('onclick') === `setSort('${sortKey}')`) th.classList.add('sorted');
+    if (th.dataset.sort === sortKey) th.classList.add('sorted');
   });
+
+  // Wire up dynamically created admin action buttons
+  if (adminActs) {
+    tbody.querySelectorAll('[data-edit-id]').forEach(btn => {
+      btn.addEventListener('click', () => openModal(Number(btn.dataset.editId)));
+    });
+    tbody.querySelectorAll('[data-delete-id]').forEach(btn => {
+      btn.addEventListener('click', () => askDelete(Number(btn.dataset.deleteId), btn.dataset.deleteName));
+    });
+  }
 }
 
 function render() { renderStats(); renderTable(); }
@@ -111,6 +121,16 @@ function setFilter(f, btn) {
 }
 
 function setSort(key) { sortKey = key; rankVisible = 25; renderTable(); }
+
+// Wire up filter buttons via data attributes
+document.querySelectorAll('.filter-tab[data-filter]').forEach(btn => {
+  btn.addEventListener('click', () => setFilter(btn.dataset.filter, btn));
+});
+
+// Wire up sortable column headers via data attributes
+document.querySelectorAll('th[data-sort]').forEach(th => {
+  th.addEventListener('click', () => setSort(th.dataset.sort));
+});
 
 // Debounced search input
 (function() {

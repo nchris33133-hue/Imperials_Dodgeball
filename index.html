@@ -75,8 +75,8 @@
       <a href="/datenschutz.html" style="color:#D4961A;text-decoration:underline;margin-left:0.5rem;">Datenschutz / Privacy</a>
     </p>
     <div class="cookie-btns" style="display:flex;gap:0.75rem;flex-shrink:0;flex-wrap:wrap;">
-      <button onclick="acceptCookies()" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.08em;text-transform:uppercase;padding:8px 20px;border-radius:4px;background:linear-gradient(135deg,#D4961A,#F0B830);color:#0C1B3A;border:none;cursor:pointer;">Akzeptieren / Accept</button>
-      <button onclick="declineCookies()" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.08em;text-transform:uppercase;padding:8px 20px;border-radius:4px;background:transparent;color:rgba(244,247,255,0.7);border:1px solid rgba(244,247,255,0.2);cursor:pointer;">Ablehnen / Decline</button>
+      <button id="cookieAcceptBtn" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.08em;text-transform:uppercase;padding:8px 20px;border-radius:4px;background:linear-gradient(135deg,#D4961A,#F0B830);color:#0C1B3A;border:none;cursor:pointer;">Akzeptieren / Accept</button>
+      <button id="cookieDeclineBtn" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.08em;text-transform:uppercase;padding:8px 20px;border-radius:4px;background:transparent;color:rgba(244,247,255,0.7);border:1px solid rgba(244,247,255,0.2);cursor:pointer;">Ablehnen / Decline</button>
     </div>
   </div>
 
@@ -99,7 +99,7 @@
       <li><a href="/member">Member Login</a></li>
       <li><a href="#cta" class="nav-cta">Join Now</a></li>
     </ul>
-    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" onclick="toggleMenu()">
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" id="navToggleBtn">
       <span></span><span></span><span></span>
     </button>
     <a href="https://www.askoe.at" target="_blank" rel="noopener" class="nav-asko" aria-label="ASKÖ">
@@ -365,8 +365,8 @@
         <div class="gold-line reveal reveal-delay-1" style="margin:0 auto 1.5rem;"></div>
         <h2 class="section-title reveal reveal-delay-1">Häufige Fragen / <span style="background:linear-gradient(135deg,var(--gold),var(--gold-lt));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Common Questions</span></h2>
         <div style="display:flex;gap:0.75rem;justify-content:center;margin-top:1.5rem;" class="reveal reveal-delay-2">
-          <button onclick="setFaqLang('de')" id="faqBtnDe" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;padding:6px 16px;border-radius:4px;border:1px solid rgba(212,150,26,0.5);background:rgba(212,150,26,0.15);color:var(--gold-lt);cursor:pointer;">Deutsch</button>
-          <button onclick="setFaqLang('en')" id="faqBtnEn" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;padding:6px 16px;border-radius:4px;border:1px solid rgba(244,247,255,0.2);background:transparent;color:rgba(244,247,255,0.6);cursor:pointer;">English</button>
+          <button id="faqBtnDe" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;padding:6px 16px;border-radius:4px;border:1px solid rgba(212,150,26,0.5);background:rgba(212,150,26,0.15);color:var(--gold-lt);cursor:pointer;">Deutsch</button>
+          <button id="faqBtnEn" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;padding:6px 16px;border-radius:4px;border:1px solid rgba(244,247,255,0.2);background:transparent;color:rgba(244,247,255,0.6);cursor:pointer;">English</button>
         </div>
       </div>
       <div id="faqDe" lang="de" class="faq-list reveal">
@@ -568,15 +568,15 @@
       <!-- Controls -->
       <div class="controls">
         <div class="filter-tabs">
-          <button class="filter-tab active" onclick="setFilter('all',this)">
+          <button class="filter-tab active" data-filter="all">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="17" cy="7" r="3"/><circle cx="7" cy="12" r="3"/><circle cx="17" cy="17" r="3"/></svg>
             All
           </button>
-          <button class="filter-tab" onclick="setFilter('male',this)">
+          <button class="filter-tab" data-filter="male">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="14" r="5"/><path d="M21 3l-6 6M21 3h-5M21 3v5"/></svg>
             Male
           </button>
-          <button class="filter-tab" onclick="setFilter('female',this)">
+          <button class="filter-tab" data-filter="female">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="5"/><line x1="12" y1="13" x2="12" y2="21"/><line x1="9" y1="18" x2="15" y2="18"/></svg>
             Female
           </button>
@@ -596,10 +596,10 @@
             <tr>
               <th style="width:80px;">#</th>
               <th>Player</th>
-              <th class="num sortable" onclick="setSort('points')">Points</th>
+              <th class="num sortable" data-sort="points">Points</th>
               <th class="num">Gain</th>
-              <th class="num sortable" onclick="setSort('played')">Played</th>
-              <th class="num sortable" onclick="setSort('streak')">Streak</th>
+              <th class="num sortable" data-sort="played">Played</th>
+              <th class="num sortable" data-sort="streak">Streak</th>
               <th class="num">BP</th>
               <th class="num">Change</th>
             </tr>
@@ -625,7 +625,7 @@
         Join Austria's Premier Foam Dodgeball League today
       </p>
       <div class="reveal reveal-delay-3" style="width:100%;max-width:600px;margin:0 auto;">
-        <form id="joinForm" class="signup-form" onsubmit="submitJoinForm(event)" novalidate>
+        <form id="joinForm" class="signup-form" novalidate>
           <div class="signup-form-grid">
             <div class="signup-field">
               <label for="joinName" class="signup-label">Name *</label>
@@ -652,7 +652,7 @@
           <button type="submit" class="btn-primary signup-submit" id="joinSubmitBtn">Jetzt mitmachen / Join the League</button>
           <div id="joinSuccess" class="signup-success" style="display:none;">✓ Danke! Wir melden uns bald. / Thanks! We'll be in touch soon.</div>
         </form>
-        <form id="contactForm" class="signup-form" onsubmit="submitContactForm(event)" novalidate style="display:none;">
+        <form id="contactForm" class="signup-form" novalidate style="display:none;">
           <div class="signup-form-grid">
             <div class="signup-field">
               <label for="contactName" class="signup-label">Name *</label>
