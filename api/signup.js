@@ -36,11 +36,10 @@ module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed', code: 'METHOD_NOT_ALLOWED' });
 
-  let { name, email, level = '', source = '', type = 'join', email_consent = false } = req.body || {};
+  let { name, email, level = '', source = '' } = req.body || {};
   if (!name || !email) return res.status(400).json({ error: 'Name and email are required', code: 'VALIDATION_ERROR' });
 
-  // Whitelist type and sanitize optional fields
-  if (!['join', 'newsletter'].includes(type)) type = 'join';
+  const type = 'join';
   if (typeof level !== 'string') level = '';
   if (typeof source !== 'string') source = '';
   level = level.slice(0, 100);
@@ -63,7 +62,6 @@ module.exports = async (req, res) => {
   const safeName = sanitizeField(trimmedName);
   const safeLevel = sanitizeField(level);
   const safeSource = sanitizeField(source);
-  const consent = !!email_consent;
 
   try {
     // Ensure the signups table exists (cached after first call)
@@ -89,16 +87,15 @@ module.exports = async (req, res) => {
 
     // Insert signup into database
     await sql`
-      INSERT INTO signups (name, email, type, level, source, email_consent, consent_timestamp)
-      VALUES (${safeName}, ${trimmedEmail}, ${type}, ${safeLevel || null}, ${safeSource || null},
-              ${consent}, ${consent ? new Date().toISOString() : null})
+      INSERT INTO signups (name, email, type, level, source)
+      VALUES (${safeName}, ${trimmedEmail}, ${type}, ${safeLevel || null}, ${safeSource || null})
     `;
 
     // Send confirmation email (non-blocking — failure should not break signup)
     try {
       const { sendEmail } = require('../lib/email');
       const { signupConfirmation } = require('../lib/email-templates');
-      const template = signupConfirmation({ name: trimmedName, type });
+      const template = signupConfirmation({ name: trimmedName });
 
       const result = await sendEmail({
         to: trimmedEmail,
@@ -110,7 +107,7 @@ module.exports = async (req, res) => {
       // Log the email for GDPR audit trail
       await sql`
         INSERT INTO email_log (recipient_email, email_type, subject, status, resend_id)
-        VALUES (${trimmedEmail}, ${type === 'newsletter' ? 'newsletter_confirm' : 'signup_confirm'},
+        VALUES (${trimmedEmail}, 'signup_confirm',
                 ${template.subject}, 'sent', ${result?.data?.id || null})
       `.catch(() => {}); // Don't fail if logging fails
     } catch (emailErr) {
@@ -118,9 +115,7 @@ module.exports = async (req, res) => {
       // Email failure is non-critical — signup still succeeds
     }
 
-    const message = type === 'newsletter'
-      ? 'Thanks for subscribing! / Danke für deine Anmeldung!'
-      : "Thanks for signing up! We'll be in touch. / Danke! Wir melden uns bald.";
+    const message = "Thanks for signing up! We'll be in touch. / Danke! Wir melden uns bald.";
     return res.status(200).json({ success: true, message });
   } catch (err) {
     console.error('Could not save signup:', err);

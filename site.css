@@ -1002,8 +1002,6 @@
       /* Rankings table */
       .stats-bar { flex-wrap: wrap; }
       .stat-item { min-width: 45%; }
-      /* Footer newsletter */
-      #newsletterForm { min-width: 0 !important; max-width: 100% !important; }
     }
 
     /* ── Divider line ── */
