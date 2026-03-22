@@ -3,6 +3,24 @@
    Join form signup
 ═══════════════════════════════════════ */
 
+function switchCtaTab(tab) {
+  const joinForm = document.getElementById('joinForm');
+  const contactForm = document.getElementById('contactForm');
+  const tabJoin = document.getElementById('tabJoin');
+  const tabContact = document.getElementById('tabContact');
+  if (tab === 'contact') {
+    joinForm.style.display = 'none';
+    contactForm.style.display = 'block';
+    tabJoin.classList.remove('active');
+    tabContact.classList.add('active');
+  } else {
+    joinForm.style.display = 'block';
+    contactForm.style.display = 'none';
+    tabJoin.classList.add('active');
+    tabContact.classList.remove('active');
+  }
+}
+
 async function submitContactForm(e) {
   e.preventDefault();
   const name = document.getElementById('contactName')?.value.trim();
