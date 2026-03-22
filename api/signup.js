@@ -28,7 +28,38 @@ async function ensureSignupsTable() {
   `;
 }
 
+async function ensureEmailLogTable() {
+  const sql = getDb();
+  await sql`
+    CREATE TABLE IF NOT EXISTS email_log (
+      id SERIAL PRIMARY KEY,
+      recipient_email VARCHAR(320) NOT NULL,
+      email_type VARCHAR(50) NOT NULL,
+      subject VARCHAR(500),
+      status VARCHAR(20) NOT NULL,
+      resend_id VARCHAR(100),
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+}
+
+async function sendContactEmail({ name, email, message }) {
+  const { sendEmail } = require('../lib/email');
+  const { contactMessage } = require('../lib/email-templates');
+  const template = contactMessage({ name, email, message });
+
+  await sendEmail({
+    to: 'imperialsdodgeball@gmail.com',
+    subject: template.subject,
+    html: template.html,
+    text: template.text,
+    replyTo: email,
+    cc: null
+  });
+}
+
 let _tableReady = null;
+let _emailLogReady = null;
 
 module.exports = async (req, res) => {
   setCors(req, res, 'POST, OPTIONS');
@@ -75,18 +106,7 @@ module.exports = async (req, res) => {
 
       // Send email to club
       try {
-        const { sendEmail } = require('../lib/email');
-        const { contactMessage } = require('../lib/email-templates');
-        const template = contactMessage({ name: trimmedName, email: trimmedEmail, message: trimmedMessage });
-
-        await sendEmail({
-          to: 'imperialsdodgeball@gmail.com',
-          subject: template.subject,
-          html: template.html,
-          text: template.text,
-          replyTo: trimmedEmail,
-          cc: null
-        });
+        await sendContactEmail({ name: trimmedName, email: trimmedEmail, message: trimmedMessage });
       } catch (emailErr) {
         console.error('Failed to send contact email:', emailErr.message);
       }
@@ -111,6 +131,12 @@ module.exports = async (req, res) => {
             INSERT INTO contact_messages (name, email, message)
             VALUES (${sanitizeField(String(name).trim())}, ${trimmedEmail}, ${trimmedMessage})
           `;
+          // Send email (was missing from retry path)
+          try {
+            await sendContactEmail({ name: trimmedName, email: trimmedEmail, message: trimmedMessage });
+          } catch (emailErr) {
+            console.error('Failed to send contact email on retry:', emailErr.message);
+          }
           return res.status(200).json({ success: true, message: 'Message sent! / Nachricht gesendet!' });
         } catch (retryErr) {
           console.error('Contact retry failed:', retryErr);
@@ -189,6 +215,8 @@ module.exports = async (req, res) => {
       });
 
       // Log the email for GDPR audit trail
+      if (!_emailLogReady) _emailLogReady = ensureEmailLogTable();
+      await _emailLogReady;
       await sql`
         INSERT INTO email_log (recipient_email, email_type, subject, status, resend_id)
         VALUES (${trimmedEmail}, 'signup_confirm',
