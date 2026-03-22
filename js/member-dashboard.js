@@ -43,6 +43,9 @@ function renderDashboardData(data) {
     updateNavUser();
     document.getElementById('dashName').textContent = currentUser.display_name;
     document.getElementById('statsName').textContent = currentUser.display_name;
+    // Sync email notification toggle
+    const emailToggle = document.getElementById('emailNotifToggle');
+    if (emailToggle) emailToggle.checked = data.user.email_notifications !== false;
   }
 
   if (data.stats) {
@@ -191,5 +194,28 @@ function renderLeaderboard() {
       const row = tbody.querySelector('.row-self');
       if (row) row.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 100);
+  }
+}
+
+/* ═══════════════════════════════════════
+   EMAIL PREFERENCES
+═══════════════════════════════════════ */
+async function saveEmailPrefs() {
+  const toggle = document.getElementById('emailNotifToggle');
+  const savedEl = document.getElementById('settingsSaved');
+  if (!toggle) return;
+
+  try {
+    const res = await api('/api/member/stats', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email_notifications: toggle.checked })
+    });
+    if (!res.ok) throw new Error('Failed');
+    savedEl.style.display = 'inline';
+    setTimeout(() => { savedEl.style.display = 'none'; }, 2500);
+  } catch (err) {
+    if (err.message === 'SESSION_EXPIRED') return;
+    alert('Could not save preferences. Please try again.');
   }
 }

@@ -4,10 +4,10 @@ const { requireMember } = require('../../lib/auth');
 const { DEFAULT_PLAYERS } = require('../../lib/defaults');
 
 module.exports = async (req, res) => {
-  setCors(req, res, 'GET, OPTIONS');
+  setCors(req, res, 'GET, PATCH, OPTIONS');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed', code: 'METHOD_NOT_ALLOWED' });
+  if (req.method !== 'GET' && req.method !== 'PATCH') return res.status(405).json({ error: 'Method not allowed', code: 'METHOD_NOT_ALLOWED' });
 
   try {
     const payload = requireMember(req, res);
@@ -15,8 +15,18 @@ module.exports = async (req, res) => {
 
     const sql = getDb();
 
+    // PATCH: Update email notification preferences
+    if (req.method === 'PATCH') {
+      const { email_notifications } = req.body || {};
+      if (typeof email_notifications !== 'boolean') {
+        return res.status(400).json({ error: 'email_notifications must be a boolean', code: 'VALIDATION_ERROR' });
+      }
+      await sql`UPDATE users SET email_notifications = ${email_notifications} WHERE id = ${payload.sub}`;
+      return res.status(200).json({ success: true, email_notifications });
+    }
+
     const users = await sql`
-      SELECT id, email, display_name, ranking_player_name, created_at
+      SELECT id, email, display_name, ranking_player_name, email_notifications, created_at
       FROM users WHERE id = ${payload.sub} AND is_active = true
     `;
 
@@ -55,6 +65,7 @@ module.exports = async (req, res) => {
         display_name: user.display_name,
         email: user.email,
         ranking_player_name: user.ranking_player_name,
+        email_notifications: user.email_notifications !== false,
         member_since: user.created_at
       },
       stats,

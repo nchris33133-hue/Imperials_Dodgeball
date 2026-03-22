@@ -93,18 +93,6 @@
       <li><a href="#faq">FAQ</a></li>
       <li><a href="#rankings">Rankings</a></li>
       <li><a href="/member">Member Login</a></li>
-      <li id="adminNavLoginItem">
-        <button onclick="openAdminLoginModal()" class="admin-nav-lock" title="Admin Login">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          Admin
-        </button>
-      </li>
-      <li id="adminNavLoggedItem" style="display:none;">
-        <span style="display:flex;align-items:center;gap:0.6rem;">
-          <span class="admin-nav-badge">&#9679; Admin</span>
-          <button onclick="adminLogout()" class="admin-nav-logout">Log Out</button>
-        </span>
-      </li>
       <li><a href="#cta" class="nav-cta">Join Now</a></li>
     </ul>
     <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" onclick="toggleMenu()">
@@ -570,22 +558,6 @@
         <p class="reveal reveal-delay-2" style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:1rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(244,247,255,0.6);margin-top:0.75rem;">Live standings &middot; updated each session</p>
       </div>
 
-      <!-- Admin toolbar (only shown when logged in) -->
-      <div id="rankingsAdminBar" style="display:none;justify-content:flex-end;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center;">
-        <button class="btn-nav btn-nav-outline" onclick="exportCSV()">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Export CSV
-        </button>
-        <button class="btn-nav btn-nav-outline" onclick="openImport()">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          Import Excel
-        </button>
-        <button class="btn-nav btn-nav-gold" onclick="openModal()">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Add Player
-        </button>
-      </div>
-
       <!-- Stats -->
       <div class="stats-bar" id="statsBar"></div>
 
@@ -625,137 +597,10 @@
               <th class="num sortable" onclick="setSort('played')">Played</th>
               <th class="num sortable" onclick="setSort('streak')">Streak</th>
               <th class="num">REF</th>
-              <th class="admin-col" style="width:76px;"></th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
         </table>
-      </div>
-
-      <!-- Member Approvals Panel -->
-      <div id="memberApprovalsPanel" style="display:none; margin-top:2rem;">
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
-          <h3 style="font-family:'Bebas Neue',sans-serif; font-size:1.5rem; color:#D4961A; letter-spacing:.05em;">MEMBER APPROVALS</h3>
-          <button onclick="loadPendingMembers()" style="background:#1A3D8F; color:#F4F7FF; border:none; padding:.4rem .9rem; border-radius:.375rem; cursor:pointer; font-size:.8rem;">REFRESH</button>
-        </div>
-        <div id="pendingMembersList"></div>
-      </div>
-
-      <!-- Admin Training Dashboard -->
-      <div class="admin-training-panel" id="adminTrainingPanel">
-        <div class="at-header">
-          <h3>TRAINING SESSIONS</h3>
-          <div class="at-actions">
-            <button class="at-btn at-btn-gold" onclick="openCreateSessionModal()">+ Create Session</button>
-            <button class="at-btn" onclick="openRecurringModal()">Generate Recurring</button>
-          </div>
-        </div>
-
-        <div class="at-tabs">
-          <button class="at-tab active" data-tab="sessions" onclick="switchAdminTrainingTab('sessions', this)">Sessions</button>
-          <button class="at-tab" data-tab="matrix" onclick="switchAdminTrainingTab('matrix', this)">Attendance Matrix</button>
-        </div>
-
-        <!-- Sessions list -->
-        <div id="atSessionsView">
-          <div id="atSessionsList"></div>
-        </div>
-
-        <!-- Matrix view -->
-        <div id="atMatrixView" style="display:none;">
-          <div id="atMatrixContent"></div>
-        </div>
-      </div>
-
-      <!-- Create/Edit Session Modal -->
-      <div class="at-modal-backdrop" id="atSessionModal" onclick="if(event.target===this)closeSessionModal()">
-        <div class="at-modal">
-          <h3 id="atModalTitle">CREATE SESSION</h3>
-          <input type="hidden" id="atEditId" />
-          <div class="at-field">
-            <label class="at-label" for="atTitle">Title</label>
-            <input class="at-input" type="text" id="atTitle" placeholder="Thursday Training" />
-          </div>
-          <div class="at-row">
-            <div class="at-field">
-              <label class="at-label" for="atDate">Date</label>
-              <input class="at-input" type="date" id="atDate" />
-            </div>
-            <div class="at-field">
-              <label class="at-label" for="atCapacity">Max Capacity</label>
-              <input class="at-input" type="number" id="atCapacity" placeholder="Optional" min="1" />
-            </div>
-          </div>
-          <div class="at-row">
-            <div class="at-field">
-              <label class="at-label" for="atStart">Start Time</label>
-              <input class="at-input" type="time" id="atStart" value="19:00" />
-            </div>
-            <div class="at-field">
-              <label class="at-label" for="atEnd">End Time</label>
-              <input class="at-input" type="time" id="atEnd" value="21:00" />
-            </div>
-          </div>
-          <div class="at-field">
-            <label class="at-label" for="atLocation">Location</label>
-            <input class="at-input" type="text" id="atLocation" placeholder="Sporthalle Leopoldstadt" />
-          </div>
-          <div class="at-field">
-            <label class="at-label" for="atDesc">Description (optional)</label>
-            <input class="at-input" type="text" id="atDesc" placeholder="Notes for members..." />
-          </div>
-          <div class="at-modal-btns">
-            <button class="at-submit" id="atSubmitBtn" onclick="submitSession()">Create</button>
-            <button class="at-cancel" onclick="closeSessionModal()">Cancel</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Recurring Session Modal -->
-      <div class="at-modal-backdrop" id="atRecurringModal" onclick="if(event.target===this)closeRecurringModal()">
-        <div class="at-modal">
-          <h3>GENERATE RECURRING SESSIONS</h3>
-          <div class="at-field">
-            <label class="at-label" for="atRecTitle">Title (optional)</label>
-            <input class="at-input" type="text" id="atRecTitle" placeholder="Auto-generated from day" />
-          </div>
-          <div class="at-row">
-            <div class="at-field">
-              <label class="at-label" for="atRecDay">Day of Week</label>
-              <select class="at-input" id="atRecDay">
-                <option value="1">Monday</option>
-                <option value="2">Tuesday</option>
-                <option value="3">Wednesday</option>
-                <option value="4" selected>Thursday</option>
-                <option value="5">Friday</option>
-                <option value="6">Saturday</option>
-                <option value="0">Sunday</option>
-              </select>
-            </div>
-            <div class="at-field">
-              <label class="at-label" for="atRecWeeks">Weeks</label>
-              <input class="at-input" type="number" id="atRecWeeks" value="8" min="1" max="52" />
-            </div>
-          </div>
-          <div class="at-row">
-            <div class="at-field">
-              <label class="at-label" for="atRecStart">Start Time</label>
-              <input class="at-input" type="time" id="atRecStart" value="19:00" />
-            </div>
-            <div class="at-field">
-              <label class="at-label" for="atRecEnd">End Time</label>
-              <input class="at-input" type="time" id="atRecEnd" value="21:00" />
-            </div>
-          </div>
-          <div class="at-field">
-            <label class="at-label" for="atRecLocation">Location</label>
-            <input class="at-input" type="text" id="atRecLocation" placeholder="Sporthalle Leopoldstadt" />
-          </div>
-          <div class="at-modal-btns">
-            <button class="at-submit" id="atRecSubmitBtn" onclick="submitRecurring()">Generate</button>
-            <button class="at-cancel" onclick="closeRecurringModal()">Cancel</button>
-          </div>
-        </div>
       </div>
 
     </div>
@@ -831,6 +676,10 @@
         <input type="text" id="nlName" placeholder="Name" class="signup-input" style="padding:8px 12px;font-size:0.85rem;" required autocomplete="name" />
         <label for="nlEmail" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Email</label>
         <input type="email" id="nlEmail" placeholder="Email" class="signup-input" style="padding:8px 12px;font-size:0.85rem;" required autocomplete="email" />
+        <label style="display:flex;align-items:flex-start;gap:0.4rem;margin-top:0.15rem;cursor:pointer;">
+          <input type="checkbox" id="nlConsent" required style="margin-top:2px;flex-shrink:0;" />
+          <span style="font-size:0.68rem;color:rgba(244,247,255,0.45);line-height:1.3;">Ich stimme zu, E-Mails zu erhalten. / I agree to receive emails. <a href="/datenschutz.html" style="color:#D4961A;">Datenschutz</a></span>
+        </label>
         <button type="submit" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.08em;text-transform:uppercase;padding:8px 16px;border-radius:4px;background:linear-gradient(135deg,var(--gold),var(--gold-lt));color:var(--deep);border:none;cursor:pointer;">Abonnieren / Subscribe</button>
         <div id="nlSuccess" style="display:none;font-size:0.8rem;color:var(--gold-lt);font-family:'Barlow Condensed',sans-serif;">✓ Subscribed!</div>
       </form>
@@ -853,171 +702,6 @@
     </div>
   </footer>
 
-  <!-- ══ ADMIN LOGIN MODAL ══ -->
-  <div class="modal-backdrop" id="adminLoginBackdrop" role="dialog" aria-modal="true" onclick="adminLoginBdClick(event)">
-    <div class="modal" id="adminLoginCard" style="max-width:400px;">
-      <button class="modal-close" onclick="closeAdminLoginModal()" style="position:absolute;top:1rem;right:1rem;">&#10005;</button>
-      <div class="login-logo">
-        <img src="logo.webp" alt="Vienna Imperials" width="72" height="72" loading="lazy" />
-        <span class="login-title">Vienna Imperials</span>
-        <p class="login-sub">Admin Access</p>
-      </div>
-      <label class="login-label" for="adminLoginPass">Admin Password</label>
-      <input class="login-input" type="password" id="adminLoginPass" placeholder="Enter password&hellip;" autocomplete="current-password" />
-      <button class="login-btn" onclick="attemptAdminLogin()">Enter Admin Mode</button>
-      <p class="login-error" id="adminLoginError">Incorrect password. Try again.</p>
-    </div>
-  </div>
-
-  <!-- ══ EDIT / ADD PLAYER MODAL ══ -->
-  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" onclick="backdropClick(event)">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <div class="modal-eyebrow" id="modalEyebrow">Add Player</div>
-          <div class="modal-title" id="modalTitle">New Entry</div>
-          <div class="modal-divider"></div>
-        </div>
-        <button class="modal-close" onclick="closeModal()">&#10005;</button>
-      </div>
-      <form id="playerForm" onsubmit="savePlayer(event)">
-        <div class="form-grid">
-          <div class="form-group full">
-            <label class="form-label" for="fName">Full Name</label>
-            <input class="form-input" type="text" id="fName" placeholder="e.g. Sean Aczel" required autocomplete="off" />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="fGender">Gender</label>
-            <select class="form-select" id="fGender">
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="fTier">Tier</label>
-            <select class="form-select" id="fTier">
-              <option value="bronze">Bronze</option>
-              <option value="silver" selected>Silver</option>
-              <option value="gold">Gold</option>
-              <option value="platinum">Platinum</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="fPoints">Points</label>
-            <input class="form-input" type="number" id="fPoints" step="0.5" placeholder="0.0" required />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="fGain">Gain (last session)</label>
-            <input class="form-input" type="number" id="fGain" step="0.5" placeholder="e.g. +2.5" />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="fPlayed">Games Played</label>
-            <input class="form-input" type="number" id="fPlayed" min="0" placeholder="0" />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="fStreak">Streak</label>
-            <input class="form-input" type="number" id="fStreak" min="0" placeholder="0" />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="fRef">REF</label>
-            <input class="form-input" type="number" id="fRef" step="1" placeholder="0" />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="fChange">Rank Change</label>
-            <input class="form-input" type="number" id="fChange" placeholder="0 (neg = down)" />
-          </div>
-          <div class="form-group full" id="fMemberLinkGroup" style="display:none;">
-            <label class="form-label" for="fMemberLink">Link to Member Account</label>
-            <select class="form-select" id="fMemberLink">
-              <option value="">— No member linked —</option>
-            </select>
-            <div style="font-size:.72rem; color:#8899bb; margin-top:.25rem;">Links this player's stats to a member's dashboard</div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
-          <button type="submit" class="btn-save" id="saveBtn">Save Player</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ══ DELETE CONFIRM MODAL ══ -->
-  <div class="modal-backdrop" id="confirmBackdrop" role="dialog" aria-modal="true" onclick="confirmBdClick(event)">
-    <div class="modal confirm-modal">
-      <div class="modal-header">
-        <div>
-          <div class="modal-eyebrow">Danger Zone</div>
-          <div class="modal-title">Remove Player</div>
-          <div class="modal-divider"></div>
-        </div>
-        <button class="modal-close" onclick="closeConfirm()">&#10005;</button>
-      </div>
-      <p class="confirm-body">Remove <strong id="confirmName" style="color:var(--cloud);"></strong> from the rankings? This action cannot be undone.</p>
-      <div class="modal-footer">
-        <button type="button" class="btn-cancel" onclick="closeConfirm()">Cancel</button>
-        <button type="button" class="btn-danger" onclick="confirmDelete()">Yes, Remove</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══ IMPORT MODAL ══ -->
-  <div class="modal-backdrop" id="importBackdrop" role="dialog" aria-modal="true" onclick="importBdClick(event)">
-    <div class="modal import-modal">
-      <div class="modal-header">
-        <div>
-          <div class="modal-eyebrow">Bulk Update</div>
-          <div class="modal-title">Import Rankings</div>
-          <div class="modal-divider"></div>
-        </div>
-        <button class="modal-close" onclick="closeImport()">&#10005;</button>
-      </div>
-      <div class="drop-zone" id="dropZone">
-        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" onchange="handleFileSelect(event)" />
-        <div class="drop-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="12 12 12 18"/><polyline points="9 15 12 18 15 15"/></svg>
-        </div>
-        <div class="drop-title">Drop your file here</div>
-        <div class="drop-sub">or click to browse</div>
-        <div class="drop-formats">
-          <span class="format-badge format-xlsx">.xlsx</span>
-          <span class="format-badge format-xlsx">.xls</span>
-          <span class="format-badge format-csv">.csv</span>
-        </div>
-      </div>
-      <div class="import-hint">
-        <div class="import-hint-title">Expected column headers (row 1)</div>
-        <div class="col-tags">
-          <span class="col-tag required">Name *</span>
-          <span class="col-tag required">Points *</span>
-          <span class="col-tag">Gain</span><span class="col-tag">Played</span>
-          <span class="col-tag">Streak</span><span class="col-tag">REF</span>
-          <span class="col-tag">Gender</span><span class="col-tag">Tier</span><span class="col-tag">Change</span>
-        </div>
-        <p style="font-size:0.72rem;color:rgba(244,247,255,0.5);margin-top:0.6rem;">Headers are case-insensitive. Gender: male/female. Tier: bronze/silver/gold/platinum.</p>
-      </div>
-      <div id="importPreviewSection" class="preview-section" style="display:none;">
-        <div class="preview-title">Preview</div>
-        <div class="preview-scroll" id="previewTable"></div>
-        <p class="import-count" id="importCount"></p>
-        <div class="import-mode-row">
-          <button class="import-mode-btn selected" id="modeReplace" onclick="setImportMode('replace')">
-            <div class="import-mode-label">Replace All</div>
-            <div class="import-mode-sub">Clear existing data, import fresh</div>
-          </button>
-          <button class="import-mode-btn" id="modeMerge" onclick="setImportMode('merge')">
-            <div class="import-mode-label">Merge / Update</div>
-            <div class="import-mode-sub">Update existing by name, add new</div>
-          </button>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn-cancel" onclick="closeImport()">Cancel</button>
-        <button type="button" class="btn-save" id="importConfirmBtn" onclick="confirmImport()" style="display:none;">Import Players</button>
-      </div>
-    </div>
-  </div>
-
   <!-- ══ TOAST ══ -->
   <div class="toast" id="toast">
     <div class="toast-dot success" id="toastDot"></div>
@@ -1028,13 +712,8 @@
   <script src="/js/site-utils.js" defer></script>
   <script src="/js/site-ui.js" defer></script>
   <script src="/js/site-faq.js" defer></script>
-  <script src="/js/admin-auth.js" defer></script>
   <script src="/js/rankings-data.js" defer></script>
   <script src="/js/rankings-render.js" defer></script>
-  <script src="/js/rankings-modals.js" defer></script>
-  <script src="/js/rankings-import.js" defer></script>
-  <script src="/js/admin-members.js" defer></script>
-  <script src="/js/admin-training.js" defer></script>
   <script src="/js/site-forms.js" defer></script>
   <script src="/js/site-cookies.js" defer></script>
   <script src="/js/site-init.js" defer></script>

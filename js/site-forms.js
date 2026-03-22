@@ -11,13 +11,17 @@ async function submitSignupForm(formId, successId, submitBtnId, type) {
   const level  = formId === 'joinForm' ? (document.getElementById('joinLevel')?.value || '') : '';
   const source = formId === 'joinForm' ? (document.getElementById('joinSource')?.value || '') : '';
   if (!name || !email) { toast('Please fill in Name and Email', 'danger'); return; }
+  // Check newsletter consent checkbox
+  const consentEl = type === 'newsletter' ? document.getElementById('nlConsent') : null;
+  const email_consent = consentEl ? consentEl.checked : false;
+  if (type === 'newsletter' && !email_consent) { toast('Bitte Einwilligung bestätigen / Please confirm consent', 'danger'); return; }
   const btn = submitBtnId ? document.getElementById(submitBtnId) : null;
   if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
   try {
     const res = await fetch('/api/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, level, source, type })
+      body: JSON.stringify({ name, email, level, source, type, email_consent })
     });
     const data = await res.json();
     if (res.ok && data.success) {

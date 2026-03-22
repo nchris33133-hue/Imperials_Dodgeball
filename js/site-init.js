@@ -1,7 +1,6 @@
 /* ═══════════════════════════════════════
    SITE INIT — Vienna Imperials
-   Bootstrap: load admin UI state, fetch rankings, render
+   Bootstrap: fetch rankings and render public leaderboard
 ═══════════════════════════════════════ */
 
-updateAdminUI();
 loadPlayersFromAPI().then(render);

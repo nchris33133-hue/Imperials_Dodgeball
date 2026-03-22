@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════
    SITE UTILITIES — Vienna Imperials
    Toast notifications, HTML escaping, global keyboard handlers
+   Used on index.html (public site)
 ═══════════════════════════════════════ */
 
 let toastTimer;
@@ -17,14 +18,3 @@ function toast(msg, type = 'success') {
 function esc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    closeModal();
-    closeConfirm();
-    closeImport();
-    closeAdminLoginModal();
-    closeSessionModal();
-    closeRecurringModal();
-  }
-});

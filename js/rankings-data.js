@@ -40,7 +40,7 @@ let rankVisible = 25;
 
 function save() {
   localStorage.setItem('vi_players', JSON.stringify(players));
-  if (isAdmin()) {
+  if (typeof isAdmin === 'function' && isAdmin()) {
     fetch('/api/rankings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() },

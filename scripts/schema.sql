@@ -1,5 +1,5 @@
 -- Vienna Imperials Member System Schema
--- Run via: node api/data/migrate.js
+-- Run via: node scripts/migrate.js
 
 CREATE TABLE IF NOT EXISTS users (
   id                   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -75,3 +75,34 @@ CREATE TABLE IF NOT EXISTS training_attendance (
 
 CREATE INDEX IF NOT EXISTS idx_attendance_session ON training_attendance(session_id);
 CREATE INDEX IF NOT EXISTS idx_attendance_user ON training_attendance(user_id);
+
+-- Email notification preferences
+ALTER TABLE users ADD COLUMN IF NOT EXISTS email_notifications BOOLEAN DEFAULT TRUE;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS email_consent_at TIMESTAMPTZ;
+
+-- Signup email consent tracking
+CREATE TABLE IF NOT EXISTS signups (
+  id                SERIAL PRIMARY KEY,
+  name              VARCHAR(200),
+  email             VARCHAR(320) NOT NULL,
+  type              VARCHAR(20) DEFAULT 'join',
+  level             VARCHAR(50),
+  source            VARCHAR(200),
+  email_consent     BOOLEAN DEFAULT FALSE,
+  consent_timestamp TIMESTAMPTZ,
+  created_at        TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Email audit log (GDPR compliance)
+CREATE TABLE IF NOT EXISTS email_log (
+  id              SERIAL PRIMARY KEY,
+  recipient_email VARCHAR(320) NOT NULL,
+  email_type      VARCHAR(50) NOT NULL,
+  subject         VARCHAR(500),
+  status          VARCHAR(20) DEFAULT 'sent',
+  resend_id       VARCHAR(100),
+  created_at      TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_email_log_recipient ON email_log(recipient_email);
+CREATE INDEX IF NOT EXISTS idx_email_log_type ON email_log(email_type);
