@@ -653,6 +653,32 @@
     </div>
   </section>
 
+  <!-- ══ CONTACT ══ -->
+  <section id="contact" style="background:#0a1530;padding:4rem 1.5rem;border-top:1px solid rgba(53,103,192,0.15);">
+    <div style="max-width:560px;margin:0 auto;text-align:center;">
+      <h2 style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.8rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin:0 0 0.5rem;">Kontakt / Contact</h2>
+      <p style="font-size:0.95rem;color:rgba(244,247,255,0.55);margin:0 0 2rem;font-family:'Inter',sans-serif;">Fragen? Schreib uns! / Questions? Get in touch!</p>
+      <form id="contactForm" onsubmit="submitContactForm(event)" novalidate class="signup-form" style="text-align:left;">
+        <div class="signup-form-grid">
+          <div class="signup-field">
+            <label for="contactName" class="signup-label">Name</label>
+            <input type="text" id="contactName" name="name" class="signup-input" placeholder="Max Mustermann" required autocomplete="name" />
+          </div>
+          <div class="signup-field">
+            <label for="contactEmail" class="signup-label">Email</label>
+            <input type="email" id="contactEmail" name="email" class="signup-input" placeholder="max@example.com" required autocomplete="email" />
+          </div>
+        </div>
+        <div class="signup-field" style="margin-bottom:1.5rem;">
+          <label for="contactMessage" class="signup-label">Nachricht / Message</label>
+          <textarea id="contactMessage" name="message" class="signup-input" placeholder="Deine Nachricht... / Your message..." required rows="4" style="resize:vertical;min-height:100px;"></textarea>
+        </div>
+        <button type="submit" class="btn-primary signup-submit" id="contactSubmitBtn">Senden / Send</button>
+        <div id="contactSuccess" class="signup-success" style="display:none;">✓ Nachricht gesendet! / Message sent!</div>
+      </form>
+    </div>
+  </section>
+
   </main>
   <!-- ══ FOOTER ══ -->
   <footer role="contentinfo">
@@ -668,7 +694,7 @@
         <li><a href="#about">About</a></li>
         <li><a href="#league">League</a></li>
         <li><a href="#why">Join</a></li>
-        <li><a href="mailto:imperialsdodgeball@gmail.com">Contact</a></li>
+        <li><a href="#contact">Contact</a></li>
       </ul>
       <div class="footer-social">
         <!-- Instagram -->
