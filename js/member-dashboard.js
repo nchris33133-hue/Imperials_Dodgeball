@@ -53,7 +53,7 @@ function renderDashboardData(data) {
     document.getElementById('statPoints').textContent = data.stats.points;
     document.getElementById('statStreak').textContent = data.stats.streak;
     document.getElementById('statPlayed').textContent = data.stats.played;
-    document.getElementById('statRef').textContent = data.stats.ref;
+    document.getElementById('statRef').textContent = data.stats.bp;
 
     const gainEl = document.getElementById('statGain');
     if (data.stats.gain !== null && data.stats.gain !== undefined) {
@@ -172,7 +172,9 @@ function renderLeaderboard() {
       <td><span class="${gainClass}">${gainText}</span></td>
       <td>${p.played}</td>
       <td><span class="streak-val">${p.streak}</span></td>
-      <td><span class="ref-val">${p.ref}</span></td>
+      <td>${tierHtml}</td>
+      <td><span class="ref-val">${p.bp}</span></td>
+      <td>${p.change > 0 ? '<span class="rank-change up">&#9650;' + p.change + '</span>' : p.change < 0 ? '<span class="rank-change down">&#9660;' + Math.abs(p.change) + '</span>' : '<span class="rank-change neu">—</span>'}</td>
     </tr>`;
   }).join('');
 

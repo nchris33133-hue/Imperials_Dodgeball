@@ -37,7 +37,7 @@ async function openModal(id = null) {
     document.getElementById('fGain').value   = p.gain ?? '';
     document.getElementById('fPlayed').value = p.played;
     document.getElementById('fStreak').value = p.streak;
-    document.getElementById('fRef').value    = p.ref;
+    document.getElementById('fRef').value    = p.bp;
     document.getElementById('fChange').value = p.change;
 
     // Show member link dropdown for admins
@@ -76,7 +76,7 @@ async function savePlayer(e) {
     gain:   gainRaw === '' ? null : parseFloat(gainRaw),
     played: parseInt(document.getElementById('fPlayed').value) || 0,
     streak: parseInt(document.getElementById('fStreak').value) || 0,
-    ref:    parseInt(document.getElementById('fRef').value) || 0,
+    bp:     parseInt(document.getElementById('fRef').value) || 0,
     change: parseInt(document.getElementById('fChange').value) || 0,
   };
   if (editId !== null) {

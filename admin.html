@@ -291,8 +291,8 @@
     .rank-cell { display: flex; align-items: center; gap: 8px; }
     .rank-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.25rem; letter-spacing: 0.04em; min-width: 22px; }
     .rank-1 { color: #F5C518; } .rank-2 { color: #C0C0C0; } .rank-3 { color: #CD7F32; } .rank-other { color: rgba(244,247,255,0.6); }
-    .rank-change { display: flex; align-items: center; font-size: 0.68rem; font-weight: 700; color: rgba(244,247,255,0.2); }
-    .rank-change.up { color: #22C55E; } .rank-change.down { color: #F87171; }
+    .rank-change { font-size: 0.78rem; font-weight: 700; color: rgba(244,247,255,0.25); }
+    .rank-change.up { color: #22C55E; } .rank-change.down { color: #F87171; } .rank-change.neu { color: rgba(244,247,255,0.2); }
 
     .player-cell { display: flex; align-items: center; gap: 11px; }
     .player-avatar { width: 34px; height: 34px; border-radius: 50%; background: rgba(26,61,143,0.4); border: 1px solid rgba(53,103,192,0.3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -596,7 +596,9 @@
                 <th class="num">Gain</th>
                 <th class="num sortable" onclick="setSort('played')">Played</th>
                 <th class="num sortable" onclick="setSort('streak')">Streak</th>
-                <th class="num">REF</th>
+                <th class="num">Tier</th>
+                <th class="num">BP</th>
+                <th class="num">Change</th>
                 <th style="width:76px;"></th>
               </tr>
             </thead>
@@ -657,7 +659,7 @@
             <input class="form-input" type="number" id="fStreak" min="0" placeholder="0" />
           </div>
           <div class="form-group">
-            <label class="form-label" for="fRef">REF</label>
+            <label class="form-label" for="fRef">BP</label>
             <input class="form-input" type="number" id="fRef" step="1" placeholder="0" />
           </div>
           <div class="form-group">
@@ -729,7 +731,7 @@
           <span class="col-tag required">Name *</span>
           <span class="col-tag required">Points *</span>
           <span class="col-tag">Gain</span><span class="col-tag">Played</span>
-          <span class="col-tag">Streak</span><span class="col-tag">REF</span>
+          <span class="col-tag">Streak</span><span class="col-tag">BP</span>
           <span class="col-tag">Gender</span><span class="col-tag">Tier</span><span class="col-tag">Change</span>
         </div>
         <p style="font-size:0.72rem;color:rgba(244,247,255,0.5);margin-top:0.6rem;">Headers are case-insensitive. Gender: male/female. Tier: bronze/silver/gold/platinum.</p>

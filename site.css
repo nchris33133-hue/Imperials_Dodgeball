@@ -1099,9 +1099,10 @@
     .rank-2 { color:#C0C0C0; }
     .rank-3 { color:#CD7F32; }
     .rank-other { color:rgba(244,247,255,0.6); }
-    .rank-change { display:flex; align-items:center; font-size:0.68rem; font-weight:700; color:rgba(244,247,255,0.2); }
+    .rank-change { font-size:0.78rem; font-weight:700; color:rgba(244,247,255,0.25); }
     .rank-change.up { color:#22C55E; }
     .rank-change.down { color:#F87171; }
+    .rank-change.neu { color:rgba(244,247,255,0.2); }
 
     /* Player */
     .player-cell { display:flex; align-items:center; gap:11px; }
@@ -1155,7 +1156,7 @@
       thead th { padding: 10px 10px; font-size: 0.65rem; }
       tbody td { padding: 10px 10px; }
       .filter-tab { padding: 6px 10px; font-size: 0.8rem; }
-      .rank-change { display: none; }
+      .rank-change { font-size: 0.68rem; }
     }
 
     @media (prefers-reduced-motion: reduce) {

@@ -27,7 +27,7 @@ function renderTable() {
 
   const tbody = document.getElementById('tableBody');
   if (!list.length) {
-    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state">
+    tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state">
       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <p style="font-weight:600;">No players found</p>
       <p style="font-size:0.82rem;margin-top:4px;">Adjust filter or search</p>
@@ -42,12 +42,14 @@ function renderTable() {
   const adminActs = typeof isAdmin === 'function' && isAdmin();
   tbody.innerHTML = visible.map((p, i) => {
     if (i > 0 && p.points < visible[i - 1].points) rank = i + 1;
+    const isTie = (i > 0 && p.points === visible[i - 1].points) || (i < visible.length - 1 && p.points === visible[i + 1].points);
     const rc  = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : 'rank-other';
+    const rankLabel = isTie ? `T${rank}` : `${rank}`;
     const chg = p.change > 0
       ? `<span class="rank-change up">&#9650;${p.change}</span>`
       : p.change < 0
       ? `<span class="rank-change down">&#9660;${Math.abs(p.change)}</span>`
-      : `<span class="rank-change">&#9650;0</span>`;
+      : `<span class="rank-change neu">—</span>`;
     const gainHtml = p.gain == null
       ? `<span class="gain-neu">—</span>`
       : p.gain > 0 ? `<span class="gain-pos">+${p.gain.toFixed(1)}</span>`
@@ -65,7 +67,7 @@ function renderTable() {
         </div></td>`
       : '';
     return `<tr>
-      <td><div class="rank-cell"><span class="rank-num ${rc}">${rank}</span>${chg}</div></td>
+      <td><div class="rank-cell"><span class="rank-num ${rc}">${rankLabel}</span></div></td>
       <td><div class="player-cell">
         <div class="player-avatar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
         <div><span class="player-name">${esc(p.name)}</span><span class="tier-badge tier-${p.tier}">${tierLabel}</span></div>
@@ -74,7 +76,9 @@ function renderTable() {
       <td class="num">${gainHtml}</td>
       <td class="num"><span class="played-val">${p.played}</span></td>
       <td class="num"><span class="streak-val">${p.streak}</span></td>
-      <td class="num"><span class="ref-val">${p.ref > 0 ? '+' + p.ref : p.ref}</span></td>
+      <td class="num"><span class="tier-badge tier-${p.tier}">${tierLabel}</span></td>
+      <td class="num"><span class="ref-val">${p.bp > 0 ? '+' + p.bp : p.bp}</span></td>
+      <td class="num">${chg}</td>
       ${actionsTd}
     </tr>`;
   }).join('');

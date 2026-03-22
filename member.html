@@ -600,7 +600,7 @@
             <div class="stat-cell"><div class="stat-value" id="statPoints">—</div><div class="stat-label">Points</div></div>
             <div class="stat-cell"><div class="stat-value gold" id="statStreak">—</div><div class="stat-label">Streak</div></div>
             <div class="stat-cell"><div class="stat-value" id="statPlayed">—</div><div class="stat-label">Played</div></div>
-            <div class="stat-cell"><div class="stat-value purple" id="statRef">—</div><div class="stat-label">Ref Games</div></div>
+            <div class="stat-cell"><div class="stat-value purple" id="statRef">—</div><div class="stat-label">Bonus Pts</div></div>
             <div class="stat-cell"><div class="stat-value" id="statGain">—</div><div class="stat-label">Last Gain</div></div>
           </div>
           <div class="stats-empty" id="statsEmpty" style="display:none;">
@@ -632,7 +632,9 @@
                   <th onclick="sortLeaderboard('gain')">Gain</th>
                   <th onclick="sortLeaderboard('played')">Played</th>
                   <th onclick="sortLeaderboard('streak')">Streak</th>
-                  <th onclick="sortLeaderboard('ref')">REF</th>
+                  <th onclick="sortLeaderboard('tier')">Tier</th>
+                  <th onclick="sortLeaderboard('bp')">BP</th>
+                  <th onclick="sortLeaderboard('change')">Change</th>
                 </tr>
               </thead>
               <tbody id="lbBody"></tbody>

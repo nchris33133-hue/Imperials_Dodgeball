@@ -73,7 +73,7 @@ function parseRows(rows) {
       gain: ['gain', 'gain pts', 'last gain'],
       played: ['played', 'games', 'games played', 'gp'],
       streak: ['streak', 'win streak'],
-      ref: ['ref', 'referral', 'referrals'],
+      bp: ['bp', 'bonus points', 'bonus', 'ref', 'referral', 'referrals'],
       gender: ['gender', 'sex'],
       tier: ['tier', 'rank tier', 'level'],
       change: ['change', 'rank change', 'delta']
@@ -93,7 +93,7 @@ function parseRows(rows) {
       gain: g === '' || g === '-' || g === 'null' ? null : parseFloat(g),
       played: parseInt(r[col('played')]) || 0,
       streak: parseInt(r[col('streak')]) || 0,
-      ref: parseInt(r[col('ref')]) || 0,
+      bp: parseInt(r[col('bp')]) || 0,
       gender: (['male', 'female'].includes(String(r[col('gender')] || '').toLowerCase())) ? String(r[col('gender')]).toLowerCase() : 'male',
       tier: (['bronze', 'silver', 'gold', 'platinum'].includes(String(r[col('tier')] || '').toLowerCase())) ? String(r[col('tier')]).toLowerCase() : 'silver',
       change: parseInt(r[col('change')]) || 0
@@ -106,7 +106,7 @@ function renderPreview(data) {
   document.getElementById('importPreviewSection').style.display = 'block';
   document.getElementById('importConfirmBtn').style.display = 'inline-flex';
   document.getElementById('importCount').innerHTML = `<strong>${data.length}</strong> player${data.length !== 1 ? 's' : ''} ready to import`;
-  document.getElementById('previewTable').innerHTML = `<table><thead><tr><th>Name</th><th>Points</th><th>Gain</th><th>Played</th><th>Streak</th><th>REF</th><th>Gender</th><th>Tier</th></tr></thead><tbody>${data.slice(0, 8).map(p => `<tr><td>${esc(p.name)}</td><td>${p.points.toFixed(1)}</td><td>${p.gain == null ? '—' : (p.gain >= 0 ? '+' : '') + p.gain.toFixed(1)}</td><td>${p.played}</td><td>${p.streak}</td><td>${p.ref}</td><td>${p.gender}</td><td>${p.tier}</td></tr>`).join('')}${data.length > 8 ? `<tr><td colspan="8" style="color:rgba(244,247,255,0.3);font-size:0.78rem;padding:6px 12px;">…and ${data.length - 8} more rows</td></tr>` : ''}</tbody></table>`;
+  document.getElementById('previewTable').innerHTML = `<table><thead><tr><th>Name</th><th>Points</th><th>Gain</th><th>Played</th><th>Streak</th><th>BP</th><th>Gender</th><th>Tier</th></tr></thead><tbody>${data.slice(0, 8).map(p => `<tr><td>${esc(p.name)}</td><td>${p.points.toFixed(1)}</td><td>${p.gain == null ? '—' : (p.gain >= 0 ? '+' : '') + p.gain.toFixed(1)}</td><td>${p.played}</td><td>${p.streak}</td><td>${p.bp}</td><td>${p.gender}</td><td>${p.tier}</td></tr>`).join('')}${data.length > 8 ? `<tr><td colspan="8" style="color:rgba(244,247,255,0.3);font-size:0.78rem;padding:6px 12px;">…and ${data.length - 8} more rows</td></tr>` : ''}</tbody></table>`;
 }
 
 function confirmImport() {
@@ -129,9 +129,9 @@ function confirmImport() {
 
 // ── Export CSV
 function exportCSV() {
-  const header = ['Name', 'Points', 'Gain', 'Played', 'Streak', 'REF', 'Gender', 'Tier', 'Change'];
+  const header = ['Name', 'Points', 'Gain', 'Played', 'Streak', 'BP', 'Gender', 'Tier', 'Change'];
   const sorted = [...players].sort((a, b) => b.points - a.points);
-  const rows = sorted.map(p => [p.name, p.points, p.gain ?? '', p.played, p.streak, p.ref, p.gender, p.tier, p.change]);
+  const rows = sorted.map(p => [p.name, p.points, p.gain ?? '', p.played, p.streak, p.bp, p.gender, p.tier, p.change]);
   const csv = [header, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
   const blob = new Blob([csv], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
