@@ -19,7 +19,7 @@ async function loadPendingMembers() {
 
     const { members } = await membersRes.json();
     const rankingsData = await rankingsRes.json();
-    const players = rankingsData.players || [];
+    const players = Array.isArray(rankingsData) ? rankingsData : (rankingsData.players || []);
 
     if (!members || members.length === 0) {
       container.innerHTML = '<p style="color:#8899bb; font-size:.9rem; padding:.5rem 0;">No pending members.</p>';

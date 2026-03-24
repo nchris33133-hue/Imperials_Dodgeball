@@ -19,7 +19,16 @@ function renderStats() {
 function renderTable() {
   const query  = document.getElementById('searchInput').value.toLowerCase().trim();
   const sorted = [...players].sort((a, b) => b[sortKey] - a[sortKey] || b.points - a.points);
-  const list   = sorted.filter(p => {
+
+  // Assign ranks on the full sorted list before filtering
+  let rank = 1;
+  sorted.forEach((p, i) => {
+    if (i > 0 && p[sortKey] < sorted[i - 1][sortKey]) rank = i + 1;
+    p._rank = rank;
+    p._isTie = (i > 0 && p[sortKey] === sorted[i - 1][sortKey]) || (i < sorted.length - 1 && p[sortKey] === sorted[i + 1][sortKey]);
+  });
+
+  const list = sorted.filter(p => {
     const gOk = filter === 'all' || p.gender === filter;
     const sOk = !query || p.name.toLowerCase().includes(query);
     return gOk && sOk;
@@ -38,13 +47,11 @@ function renderTable() {
   const totalCount = list.length;
   const visible = list.slice(0, rankVisible);
 
-  let rank = 1;
   const adminActs = typeof isAdmin === 'function' && isAdmin();
   tbody.innerHTML = visible.map((p, i) => {
-    if (i > 0 && p.points < visible[i - 1].points) rank = i + 1;
-    const isTie = (i > 0 && p.points === visible[i - 1].points) || (i < visible.length - 1 && p.points === visible[i + 1].points);
-    const rc  = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : 'rank-other';
-    const rankLabel = isTie ? `T${rank}` : `${rank}`;
+    const isTie = p._isTie;
+    const rc  = p._rank === 1 ? 'rank-1' : p._rank === 2 ? 'rank-2' : p._rank === 3 ? 'rank-3' : 'rank-other';
+    const rankLabel = isTie ? `T${p._rank}` : `${p._rank}`;
     const chg = p.change > 0
       ? `<span class="rank-change up">&#9650;${p.change}</span>`
       : p.change < 0
