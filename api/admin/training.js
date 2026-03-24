@@ -24,6 +24,11 @@ module.exports = async (req, res) => {
       const range = req.query.range || 'month';
       const interval = range === 'week' ? '7 days' : '30 days';
       try {
+        // Auto-cleanup: delete sessions older than 1 day past their date
+        await sql`
+          DELETE FROM training_sessions
+          WHERE session_date < (NOW() AT TIME ZONE 'Europe/Vienna')::date - INTERVAL '1 day'
+        `;
         const sessions = await sql`
           WITH active_count AS (
             SELECT COUNT(*) AS cnt FROM users WHERE is_active = true AND status = 'approved'

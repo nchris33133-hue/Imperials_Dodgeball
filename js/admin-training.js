@@ -59,15 +59,29 @@ function renderAdminSessions() {
             </div>
           </div>
           <div class="at-session-actions">
-            <button class="at-action-btn" onclick="toggleAdminDetail('${s.id}')">Detail</button>
-            <button class="at-action-btn" onclick="openEditSessionModal('${s.id}')">Edit</button>
-            ${!cancelled ? `<button class="at-action-btn danger" onclick="cancelSession('${s.id}')">Cancel</button>` : ''}
-            <button class="at-action-btn danger" onclick="deleteSession('${s.id}')">Delete</button>
+            <button class="at-action-btn" data-detail="${s.id}">Detail</button>
+            <button class="at-action-btn" data-edit="${s.id}">Edit</button>
+            ${!cancelled ? `<button class="at-action-btn danger" data-cancel="${s.id}">Cancel</button>` : ''}
+            <button class="at-action-btn danger" data-delete="${s.id}">Delete</button>
           </div>
         </div>
         <div class="at-attendee-detail" id="at-detail-${s.id}"></div>
       </div>`;
   }).join('');
+
+  // Wire action buttons via event delegation
+  container.querySelectorAll('[data-detail]').forEach(function(btn) {
+    btn.addEventListener('click', function() { toggleAdminDetail(btn.dataset.detail); });
+  });
+  container.querySelectorAll('[data-edit]').forEach(function(btn) {
+    btn.addEventListener('click', function() { openEditSessionModal(btn.dataset.edit); });
+  });
+  container.querySelectorAll('[data-cancel]').forEach(function(btn) {
+    btn.addEventListener('click', function() { cancelSession(btn.dataset.cancel); });
+  });
+  container.querySelectorAll('[data-delete]').forEach(function(btn) {
+    btn.addEventListener('click', function() { deleteSession(btn.dataset.delete); });
+  });
 }
 
 function fmtTime(t) { if (!t) return ''; const p = t.split(':'); return p[0] + ':' + p[1]; }
