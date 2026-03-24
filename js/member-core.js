@@ -28,7 +28,7 @@ async function api(url, opts = {}) {
     if (refreshed) {
       return api(url, { ...opts, _retried: true });
     }
-    showSessionExpired();
+    if (!opts._suppressExpired) showSessionExpired();
     throw new Error('SESSION_EXPIRED');
   }
 

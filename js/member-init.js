@@ -65,7 +65,7 @@ document.getElementById('savePrefsBtn').addEventListener('click', function() { s
 ═══════════════════════════════════════ */
 (async function init() {
   try {
-    const res = await api('/api/member/stats');
+    const res = await api('/api/member/stats', { _suppressExpired: true });
     if (res.ok) {
       const data = await res.json();
       currentUser = data.user;
