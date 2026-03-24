@@ -467,7 +467,7 @@
   </style>
 </head>
 <body>
-  <a href="#main-content" class="sr-only focus:not-sr-only" style="position:absolute;top:-40px;left:0;background:var(--gold);color:var(--deep);padding:8px 16px;z-index:10000;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-decoration:none;transition:top 0.2s ease;" onfocus="this.style.top='0'" onblur="this.style.top='-40px'">Skip to content</a>
+  <a href="#main-content" class="sr-only focus:not-sr-only" id="skipLink" style="position:absolute;top:-40px;left:0;background:var(--gold);color:var(--deep);padding:8px 16px;z-index:10000;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-decoration:none;transition:top 0.2s ease;">Skip to content</a>
 
   <!-- ══ NAVIGATION ══ -->
   <nav role="navigation" aria-label="Admin navigation">
@@ -478,7 +478,7 @@
     <div class="nav-right" id="navRight" style="display:none;">
       <a href="/" class="nav-back">Back to Site</a>
       <span class="admin-nav-badge">&#9679; Admin</span>
-      <button onclick="adminLogout()" class="admin-nav-logout">Log Out</button>
+      <button id="adminLogoutBtn" class="admin-nav-logout">Log Out</button>
     </div>
   </nav>
 
@@ -493,7 +493,7 @@
       </div>
       <label class="login-label" for="adminLoginPass">Admin Password</label>
       <input class="login-input" type="password" id="adminLoginPass" placeholder="Enter password&hellip;" autocomplete="current-password" />
-      <button class="login-btn" id="loginBtn" onclick="attemptAdminLogin()">Enter Admin Mode</button>
+      <button class="login-btn" id="loginBtn">Enter Admin Mode</button>
       <p class="login-error" id="adminLoginError">Incorrect password. Try again.</p>
     </div>
   </div>
@@ -509,16 +509,16 @@
     <div class="dash-content">
       <!-- Tab Navigation -->
       <div class="dash-tabs" role="tablist">
-        <button class="dash-tab active" data-tab="members" onclick="switchAdminDashTab('members', this)" role="tab" aria-selected="true">Members</button>
-        <button class="dash-tab" data-tab="training" onclick="switchAdminDashTab('training', this)" role="tab" aria-selected="false">Training</button>
-        <button class="dash-tab" data-tab="rankings" onclick="switchAdminDashTab('rankings', this)" role="tab" aria-selected="false">Rankings</button>
+        <button class="dash-tab active" data-tab="members" role="tab" aria-selected="true">Members</button>
+        <button class="dash-tab" data-tab="training" role="tab" aria-selected="false">Training</button>
+        <button class="dash-tab" data-tab="rankings" role="tab" aria-selected="false">Rankings</button>
       </div>
 
       <!-- ── Members Tab ── -->
       <div class="tab-panel active" id="tab-members" role="tabpanel">
         <div class="section-header">
           <h3 class="section-title">MEMBER APPROVALS</h3>
-          <button class="at-btn" onclick="loadPendingMembers()">Refresh</button>
+          <button class="at-btn" id="refreshMembersBtn">Refresh</button>
         </div>
         <div id="pendingMembersList"></div>
       </div>
@@ -528,14 +528,14 @@
         <div class="at-header">
           <h3>TRAINING SESSIONS</h3>
           <div class="at-actions">
-            <button class="at-btn at-btn-gold" onclick="openCreateSessionModal()">+ Create Session</button>
-            <button class="at-btn" onclick="openRecurringModal()">Generate Recurring</button>
+            <button class="at-btn at-btn-gold" id="createSessionBtn">+ Create Session</button>
+            <button class="at-btn" id="openRecurringBtn">Generate Recurring</button>
           </div>
         </div>
 
         <div class="at-tabs">
-          <button class="at-tab active" data-tab="sessions" onclick="switchAdminTrainingTab('sessions', this)">Sessions</button>
-          <button class="at-tab" data-tab="matrix" onclick="switchAdminTrainingTab('matrix', this)">Attendance Matrix</button>
+          <button class="at-tab active" data-tab="sessions">Sessions</button>
+          <button class="at-tab" data-tab="matrix">Attendance Matrix</button>
         </div>
 
         <div id="atSessionsView">
@@ -553,15 +553,15 @@
         </div>
 
         <div class="rankings-toolbar" id="rankingsAdminBar">
-          <button class="btn-nav btn-nav-outline" onclick="exportCSV()">
+          <button class="btn-nav btn-nav-outline" id="exportCsvBtn">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Export CSV
           </button>
-          <button class="btn-nav btn-nav-outline" onclick="openImport()">
+          <button class="btn-nav btn-nav-outline" id="openImportBtn">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
             Import Excel
           </button>
-          <button class="btn-nav btn-nav-gold" onclick="openModal()">
+          <button class="btn-nav btn-nav-gold" id="addPlayerBtn">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Add Player
           </button>
@@ -571,15 +571,15 @@
 
         <div class="controls">
           <div class="filter-tabs">
-            <button class="filter-tab active" onclick="setFilter('all',this)">
+            <button class="filter-tab active" data-filter="all">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="17" cy="7" r="3"/><circle cx="7" cy="12" r="3"/><circle cx="17" cy="17" r="3"/></svg>
               All
             </button>
-            <button class="filter-tab" onclick="setFilter('male',this)">
+            <button class="filter-tab" data-filter="male">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="14" r="5"/><path d="M21 3l-6 6M21 3h-5M21 3v5"/></svg>
               Male
             </button>
-            <button class="filter-tab" onclick="setFilter('female',this)">
+            <button class="filter-tab" data-filter="female">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="5"/><line x1="12" y1="13" x2="12" y2="21"/><line x1="9" y1="18" x2="15" y2="18"/></svg>
               Female
             </button>
@@ -598,10 +598,10 @@
               <tr>
                 <th style="width:80px;">#</th>
                 <th>Player</th>
-                <th class="num sortable" onclick="setSort('points')">Points</th>
+                <th class="num sortable" data-sort="points">Points</th>
                 <th class="num">Gain</th>
-                <th class="num sortable" onclick="setSort('played')">Played</th>
-                <th class="num sortable" onclick="setSort('streak')">Streak</th>
+                <th class="num sortable" data-sort="played">Played</th>
+                <th class="num sortable" data-sort="streak">Streak</th>
                 <th class="num">BP</th>
                 <th class="num">Change</th>
                 <th style="width:76px;"></th>
@@ -616,7 +616,7 @@
   </div><!-- /main-content -->
 
   <!-- ══ EDIT / ADD PLAYER MODAL ══ -->
-  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" onclick="backdropClick(event)">
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true">
     <div class="modal">
       <div class="modal-header">
         <div>
@@ -624,9 +624,9 @@
           <div class="modal-title" id="modalTitle">New Entry</div>
           <div class="modal-divider"></div>
         </div>
-        <button class="modal-close" onclick="closeModal()">&#10005;</button>
+        <button class="modal-close" id="closeModalBtn">&#10005;</button>
       </div>
-      <form id="playerForm" onsubmit="savePlayer(event)">
+      <form id="playerForm">
         <div class="form-grid">
           <div class="form-group full">
             <label class="form-label" for="fName">Full Name</label>
@@ -681,7 +681,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+          <button type="button" class="btn-cancel" id="cancelModalBtn">Cancel</button>
           <button type="submit" class="btn-save" id="saveBtn">Save Player</button>
         </div>
       </form>
@@ -689,7 +689,7 @@
   </div>
 
   <!-- ══ DELETE CONFIRM MODAL ══ -->
-  <div class="modal-backdrop" id="confirmBackdrop" role="dialog" aria-modal="true" onclick="confirmBdClick(event)">
+  <div class="modal-backdrop" id="confirmBackdrop" role="dialog" aria-modal="true">
     <div class="modal confirm-modal">
       <div class="modal-header">
         <div>
@@ -697,18 +697,18 @@
           <div class="modal-title">Remove Player</div>
           <div class="modal-divider"></div>
         </div>
-        <button class="modal-close" onclick="closeConfirm()">&#10005;</button>
+        <button class="modal-close" id="closeConfirmBtn">&#10005;</button>
       </div>
       <p class="confirm-body">Remove <strong id="confirmName" style="color:var(--cloud);"></strong> from the rankings? This action cannot be undone.</p>
       <div class="modal-footer">
-        <button type="button" class="btn-cancel" onclick="closeConfirm()">Cancel</button>
-        <button type="button" class="btn-danger" onclick="confirmDelete()">Yes, Remove</button>
+        <button type="button" class="btn-cancel" id="cancelConfirmBtn">Cancel</button>
+        <button type="button" class="btn-danger" id="confirmDeleteBtn">Yes, Remove</button>
       </div>
     </div>
   </div>
 
   <!-- ══ IMPORT MODAL ══ -->
-  <div class="modal-backdrop" id="importBackdrop" role="dialog" aria-modal="true" onclick="importBdClick(event)">
+  <div class="modal-backdrop" id="importBackdrop" role="dialog" aria-modal="true">
     <div class="modal import-modal">
       <div class="modal-header">
         <div>
@@ -716,10 +716,10 @@
           <div class="modal-title">Import Rankings</div>
           <div class="modal-divider"></div>
         </div>
-        <button class="modal-close" onclick="closeImport()">&#10005;</button>
+        <button class="modal-close" id="closeImportBtn">&#10005;</button>
       </div>
       <div class="drop-zone" id="dropZone">
-        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" onchange="handleFileSelect(event)" />
+        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" />
         <div class="drop-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="12 12 12 18"/><polyline points="9 15 12 18 15 15"/></svg>
         </div>
@@ -747,25 +747,25 @@
         <div class="preview-scroll" id="previewTable"></div>
         <p class="import-count" id="importCount"></p>
         <div class="import-mode-row">
-          <button class="import-mode-btn selected" id="modeReplace" onclick="setImportMode('replace')">
+          <button class="import-mode-btn selected" id="modeReplace" data-mode="replace">
             <div class="import-mode-label">Replace All</div>
             <div class="import-mode-sub">Clear existing data, import fresh</div>
           </button>
-          <button class="import-mode-btn" id="modeMerge" onclick="setImportMode('merge')">
+          <button class="import-mode-btn" id="modeMerge" data-mode="merge">
             <div class="import-mode-label">Merge / Update</div>
             <div class="import-mode-sub">Update existing by name, add new</div>
           </button>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn-cancel" onclick="closeImport()">Cancel</button>
-        <button type="button" class="btn-save" id="importConfirmBtn" onclick="confirmImport()" style="display:none;">Import Players</button>
+        <button type="button" class="btn-cancel" id="cancelImportBtn">Cancel</button>
+        <button type="button" class="btn-save" id="importConfirmBtn" style="display:none;">Import Players</button>
       </div>
     </div>
   </div>
 
   <!-- ══ CREATE/EDIT SESSION MODAL ══ -->
-  <div class="at-modal-backdrop" id="atSessionModal" onclick="if(event.target===this)closeSessionModal()">
+  <div class="at-modal-backdrop" id="atSessionModal">
     <div class="at-modal">
       <h3 id="atModalTitle">CREATE SESSION</h3>
       <input type="hidden" id="atEditId" />
@@ -802,14 +802,14 @@
         <input class="at-input" type="text" id="atDesc" placeholder="Notes for members..." />
       </div>
       <div class="at-modal-btns">
-        <button class="at-submit" id="atSubmitBtn" onclick="submitSession()">Create</button>
-        <button class="at-cancel" onclick="closeSessionModal()">Cancel</button>
+        <button class="at-submit" id="atSubmitBtn">Create</button>
+        <button class="at-cancel" id="cancelSessionBtn">Cancel</button>
       </div>
     </div>
   </div>
 
   <!-- ══ RECURRING SESSION MODAL ══ -->
-  <div class="at-modal-backdrop" id="atRecurringModal" onclick="if(event.target===this)closeRecurringModal()">
+  <div class="at-modal-backdrop" id="atRecurringModal">
     <div class="at-modal">
       <h3>GENERATE RECURRING SESSIONS</h3>
       <div class="at-field">
@@ -849,8 +849,8 @@
         <input class="at-input" type="text" id="atRecLocation" placeholder="Sporthalle Leopoldstadt" />
       </div>
       <div class="at-modal-btns">
-        <button class="at-submit" id="atRecSubmitBtn" onclick="submitRecurring()">Generate</button>
-        <button class="at-cancel" onclick="closeRecurringModal()">Cancel</button>
+        <button class="at-submit" id="atRecSubmitBtn">Generate</button>
+        <button class="at-cancel" id="cancelRecurringBtn">Cancel</button>
       </div>
     </div>
   </div>
@@ -869,5 +869,6 @@
   <script src="/js/rankings-import.js" defer></script>
   <script src="/js/admin-members.js" defer></script>
   <script src="/js/admin-training.js" defer></script>
+  <script src="/js/admin-events.js" defer></script>
 </body>
 </html>

@@ -421,7 +421,7 @@
   </style>
 </head>
 <body>
-  <a href="#main-content" class="sr-only focus:not-sr-only" style="position:absolute;top:-40px;left:0;background:var(--gold);color:var(--deep);padding:8px 16px;z-index:10000;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-decoration:none;transition:top 0.2s ease;" onfocus="this.style.top='0'" onblur="this.style.top='-40px'">Skip to content</a>
+  <a href="#main-content" class="sr-only focus:not-sr-only" id="skipLink" style="position:absolute;top:-40px;left:0;background:var(--gold);color:var(--deep);padding:8px 16px;z-index:10000;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-decoration:none;transition:top 0.2s ease;">Skip to content</a>
 
   <!-- ══ NAVIGATION ══ -->
   <nav id="navbar" role="navigation" aria-label="Member navigation">
@@ -432,20 +432,20 @@
     <ul class="nav-links" id="navLinks">
       <!-- Logged out -->
       <li class="nav-guest"><a href="/">Back to Site</a></li>
-      <li class="nav-guest"><a href="#" class="nav-cta" onclick="showView('login'); return false;">Log In</a></li>
+      <li class="nav-guest"><a href="#" class="nav-cta" id="navLoginBtn">Log In</a></li>
       <!-- Logged in -->
-      <li class="nav-member" style="display:none;"><a href="#" onclick="switchTab('stats'); return false;">My Stats</a></li>
-      <li class="nav-member" style="display:none;"><a href="#" onclick="switchTab('rankings'); return false;">Rankings</a></li>
-      <li class="nav-member" style="display:none;"><a href="#" onclick="switchTab('training'); return false;">Training</a></li>
+      <li class="nav-member" style="display:none;"><a href="#" data-nav-tab="stats">My Stats</a></li>
+      <li class="nav-member" style="display:none;"><a href="#" data-nav-tab="rankings">Rankings</a></li>
+      <li class="nav-member" style="display:none;"><a href="#" data-nav-tab="training">Training</a></li>
       <li class="nav-member" style="display:none;"><a href="/">Back to Site</a></li>
       <li class="nav-member" style="display:none;">
         <span class="member-nav-identity">
           <span class="member-nav-name" id="navMemberName"></span>
-          <button class="member-nav-logout" onclick="handleLogout()" aria-label="Log out of member account">Log Out</button>
+          <button class="member-nav-logout" id="navLogoutBtn" aria-label="Log out of member account">Log Out</button>
         </span>
       </li>
     </ul>
-    <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">
+    <button class="nav-toggle" aria-label="Toggle menu" id="navToggleBtn">
       <span></span><span></span><span></span>
     </button>
   </nav>
@@ -463,10 +463,10 @@
 
       <div class="auth-error-banner" id="loginBanner" role="alert">
         <span id="loginBannerText"></span>
-        <button onclick="this.parentElement.classList.remove('show')" aria-label="Dismiss">&times;</button>
+        <button class="dismiss-banner" aria-label="Dismiss">&times;</button>
       </div>
 
-      <form id="loginForm" novalidate onsubmit="handleLogin(event)">
+      <form id="loginForm" novalidate>
         <div class="field-group">
           <label class="field-label" for="loginEmail">Email</label>
           <input class="field-input" type="email" id="loginEmail" placeholder="you@example.com" required autocomplete="email" />
@@ -476,7 +476,7 @@
           <label class="field-label" for="loginPassword">Password</label>
           <div class="password-wrap">
             <input class="field-input" type="password" id="loginPassword" placeholder="Enter your password..." required autocomplete="current-password" />
-            <button type="button" class="password-toggle" onclick="togglePasswordVisibility(this)" aria-label="Toggle password visibility">
+            <button type="button" class="password-toggle" aria-label="Toggle password visibility">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
           </div>
@@ -489,7 +489,7 @@
         <button type="submit" class="auth-btn" id="loginBtn">Log In</button>
         <div class="field-error" id="loginError" role="alert" style="text-align:center;margin-top:0.75rem;"></div>
       </form>
-      <div class="auth-footer">Don't have an account? <a href="#" onclick="showView('register'); return false;">Register</a></div>
+      <div class="auth-footer">Don't have an account? <a href="#" id="showRegisterLink">Register</a></div>
     </div>
   </div>
 
@@ -521,10 +521,10 @@
 
       <div class="auth-error-banner" id="registerBanner" role="alert">
         <span id="registerBannerText"></span>
-        <button onclick="this.parentElement.classList.remove('show')" aria-label="Dismiss">&times;</button>
+        <button class="dismiss-banner" aria-label="Dismiss">&times;</button>
       </div>
 
-      <form id="registerForm" novalidate onsubmit="handleRegister(event)">
+      <form id="registerForm" novalidate>
         <div class="field-group">
           <label class="field-label" for="regName">Display Name</label>
           <input class="field-input" type="text" id="regName" placeholder="Your display name..." required minlength="2" maxlength="50" autocomplete="name" />
@@ -539,7 +539,7 @@
           <label class="field-label" for="regPassword">Password</label>
           <div class="password-wrap">
             <input class="field-input" type="password" id="regPassword" placeholder="Minimum 8 characters..." required minlength="8" autocomplete="new-password" />
-            <button type="button" class="password-toggle" onclick="togglePasswordVisibility(this)" aria-label="Toggle password visibility">
+            <button type="button" class="password-toggle" aria-label="Toggle password visibility">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
           </div>
@@ -551,7 +551,7 @@
           <label class="field-label" for="regConfirm">Confirm Password</label>
           <div class="password-wrap">
             <input class="field-input" type="password" id="regConfirm" placeholder="Confirm your password..." required autocomplete="new-password" />
-            <button type="button" class="password-toggle" onclick="togglePasswordVisibility(this)" aria-label="Toggle password visibility">
+            <button type="button" class="password-toggle" aria-label="Toggle password visibility">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
           </div>
@@ -559,7 +559,7 @@
         </div>
         <button type="submit" class="auth-btn" id="registerBtn">Create Account</button>
       </form>
-      <div class="auth-footer">Already have an account? <a href="#" onclick="showView('login'); return false;">Log in</a></div>
+      <div class="auth-footer">Already have an account? <a href="#" id="showLoginLink">Log in</a></div>
     </div>
 
     <!-- Success state (hidden by default) -->
@@ -583,10 +583,10 @@
     <div class="dash-content">
       <!-- Tab Navigation -->
       <div class="dash-tabs" role="tablist">
-        <button class="dash-tab active" data-tab="stats" onclick="switchTab('stats')" role="tab" aria-selected="true">My Stats</button>
-        <button class="dash-tab" data-tab="rankings" onclick="switchTab('rankings')" role="tab" aria-selected="false">Rankings</button>
-        <button class="dash-tab" data-tab="training" onclick="switchTab('training')" role="tab" aria-selected="false">Training</button>
-        <button class="dash-tab" data-tab="settings" onclick="switchTab('settings')" role="tab" aria-selected="false">Settings</button>
+        <button class="dash-tab active" data-tab="stats" role="tab" aria-selected="true">My Stats</button>
+        <button class="dash-tab" data-tab="rankings" role="tab" aria-selected="false">Rankings</button>
+        <button class="dash-tab" data-tab="training" role="tab" aria-selected="false">Training</button>
+        <button class="dash-tab" data-tab="settings" role="tab" aria-selected="false">Settings</button>
       </div>
 
       <!-- Stats Tab -->
@@ -622,24 +622,24 @@
           <div class="leaderboard-line"></div>
 
           <div class="lb-controls">
-            <button class="lb-tab active" data-filter="all" onclick="filterLeaderboard('all', this)">All</button>
-            <button class="lb-tab" data-filter="male" onclick="filterLeaderboard('male', this)">Male</button>
-            <button class="lb-tab" data-filter="female" onclick="filterLeaderboard('female', this)">Female</button>
-            <input class="lb-search" type="text" placeholder="Search players..." id="lbSearch" oninput="debouncedRenderLeaderboard()" />
+            <button class="lb-tab active" data-filter="all">All</button>
+            <button class="lb-tab" data-filter="male">Male</button>
+            <button class="lb-tab" data-filter="female">Female</button>
+            <input class="lb-search" type="text" placeholder="Search players..." id="lbSearch" />
           </div>
 
           <div class="lb-table-wrap">
             <table class="lb-table" role="table">
               <thead>
                 <tr>
-                  <th onclick="sortLeaderboard('rank')">#</th>
-                  <th onclick="sortLeaderboard('name')">Player</th>
-                  <th onclick="sortLeaderboard('points')">Points</th>
-                  <th onclick="sortLeaderboard('gain')">Gain</th>
-                  <th onclick="sortLeaderboard('played')">Played</th>
-                  <th onclick="sortLeaderboard('streak')">Streak</th>
-                  <th onclick="sortLeaderboard('bp')">BP</th>
-                  <th onclick="sortLeaderboard('change')">Change</th>
+                  <th data-sort="rank">#</th>
+                  <th data-sort="name">Player</th>
+                  <th data-sort="points">Points</th>
+                  <th data-sort="gain">Gain</th>
+                  <th data-sort="played">Played</th>
+                  <th data-sort="streak">Streak</th>
+                  <th data-sort="bp">BP</th>
+                  <th data-sort="change">Change</th>
                 </tr>
               </thead>
               <tbody id="lbBody"></tbody>
@@ -693,7 +693,7 @@
             </label>
           </div>
 
-          <button onclick="saveEmailPrefs()" style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:0.88rem;letter-spacing:0.1em;text-transform:uppercase;padding:10px 24px;border-radius:6px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--gold-lt));color:var(--deep);transition:transform 0.15s ease,box-shadow 0.15s ease;box-shadow:0 3px 16px rgba(212,150,26,0.3);">Speichern / Save</button>
+          <button id="savePrefsBtn" style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:0.88rem;letter-spacing:0.1em;text-transform:uppercase;padding:10px 24px;border-radius:6px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--gold-lt));color:var(--deep);transition:transform 0.15s ease,box-shadow 0.15s ease;box-shadow:0 3px 16px rgba(212,150,26,0.3);">Speichern / Save</button>
           <span id="settingsSaved" style="display:none;font-size:0.82rem;color:#4ADE80;font-weight:600;margin-left:12px;">Gespeichert / Saved</span>
         </div>
       </div>
@@ -710,7 +710,7 @@
       <span class="auth-title">SESSION EXPIRED</span>
       <div class="auth-sub">Please log in again to continue.</div>
       <div class="auth-divider"></div>
-      <form onsubmit="handleReAuth(event)" novalidate>
+      <form id="reAuthForm" novalidate>
         <div class="field-group">
           <label class="field-label" for="reAuthEmail">Email</label>
           <input class="field-input" type="email" id="reAuthEmail" placeholder="Enter your email..." autocomplete="email" />
@@ -723,7 +723,7 @@
         <button type="submit" class="auth-btn" id="reAuthBtn">Log Back In</button>
       </form>
       <div class="auth-footer" style="margin-top:1rem;">
-        <a href="#" onclick="handleFullLogout(); return false;">Use a different account</a>
+        <a href="#" id="fullLogoutLink">Use a different account</a>
       </div>
     </div>
   </div>
