@@ -111,7 +111,7 @@ module.exports = async (req, res) => {
         console.error('Failed to send contact email:', emailErr.message);
       }
 
-      return res.status(200).json({ success: true, message: 'Message sent! / Nachricht gesendet!' });
+      return res.status(200).json({ success: true, message: 'Danke! Wir werden uns bei dir melden. / Thanks! We will be in contact.' });
     } catch (err) {
       // Auto-create table on first use
       if (err.message?.includes('contact_messages')) {
@@ -137,7 +137,7 @@ module.exports = async (req, res) => {
           } catch (emailErr) {
             console.error('Failed to send contact email on retry:', emailErr.message);
           }
-          return res.status(200).json({ success: true, message: 'Message sent! / Nachricht gesendet!' });
+          return res.status(200).json({ success: true, message: 'Danke! Wir werden uns bei dir melden. / Thanks! We will be in contact.' });
         } catch (retryErr) {
           console.error('Contact retry failed:', retryErr);
         }
