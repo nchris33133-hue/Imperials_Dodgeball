@@ -43,21 +43,6 @@ async function ensureEmailLogTable() {
   `;
 }
 
-async function sendContactEmail({ name, email, message }) {
-  const { sendEmail } = require('../lib/email');
-  const { contactMessage } = require('../lib/email-templates');
-  const template = contactMessage({ name, email, message });
-
-  await sendEmail({
-    to: 'imperialsdodgeball@gmail.com',
-    subject: template.subject,
-    html: template.html,
-    text: template.text,
-    replyTo: email,
-    cc: null
-  });
-}
-
 let _tableReady = null;
 let _emailLogReady = null;
 
@@ -68,84 +53,6 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed', code: 'METHOD_NOT_ALLOWED' });
   if (!requireJSON(req)) return res.status(415).json({ error: 'Content-Type must be application/json', code: 'INVALID_CONTENT_TYPE' });
 
-  const { type = 'join' } = req.body || {};
-
-  // ── Contact message flow ──
-  if (type === 'contact') {
-    let { name, email, message } = req.body || {};
-    if (!name || !email || !message) return res.status(400).json({ error: 'Name, email, and message are required', code: 'VALIDATION_ERROR' });
-
-    const trimmedEmail = String(email).trim().toLowerCase();
-    const emailError = validateEmail(trimmedEmail);
-    if (emailError) return res.status(400).json({ error: emailError, code: 'VALIDATION_ERROR' });
-
-    const trimmedName = String(name).trim();
-    if (trimmedName.length < 1 || trimmedName.length > 100) return res.status(400).json({ error: 'Invalid name', code: 'VALIDATION_ERROR' });
-
-    const trimmedMessage = String(message).trim();
-    if (trimmedMessage.length < 10 || trimmedMessage.length > 2000) return res.status(400).json({ error: 'Message must be between 10 and 2000 characters', code: 'VALIDATION_ERROR' });
-
-    try {
-      const sql = getDb();
-
-      // Rate limit: max 3 contact messages per email per hour
-      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-      const rateLimitRows = await sql`
-        SELECT COUNT(*)::int AS cnt FROM contact_messages
-        WHERE email = ${trimmedEmail} AND created_at > ${oneHourAgo}
-      `;
-      if (rateLimitRows[0]?.cnt >= 3) {
-        return res.status(429).json({ error: 'Too many messages. Please try again later.', code: 'RATE_LIMITED' });
-      }
-
-      // Save to DB
-      await sql`
-        INSERT INTO contact_messages (name, email, message)
-        VALUES (${sanitizeField(trimmedName)}, ${trimmedEmail}, ${trimmedMessage})
-      `;
-
-      // Send email to club
-      try {
-        await sendContactEmail({ name: trimmedName, email: trimmedEmail, message: trimmedMessage });
-      } catch (emailErr) {
-        console.error('Failed to send contact email:', emailErr.message);
-      }
-
-      return res.status(200).json({ success: true, message: 'Danke! Wir werden uns bei dir melden. / Thanks! We will be in contact.' });
-    } catch (err) {
-      // Auto-create table on first use
-      if (err.message?.includes('contact_messages')) {
-        try {
-          const sql = getDb();
-          await sql`
-            CREATE TABLE IF NOT EXISTS contact_messages (
-              id SERIAL PRIMARY KEY,
-              name VARCHAR(200) NOT NULL,
-              email VARCHAR(320) NOT NULL,
-              message TEXT NOT NULL,
-              created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-            )
-          `;
-          // Retry the insert
-          await sql`
-            INSERT INTO contact_messages (name, email, message)
-            VALUES (${sanitizeField(String(name).trim())}, ${trimmedEmail}, ${trimmedMessage})
-          `;
-          // Send email (was missing from retry path)
-          try {
-            await sendContactEmail({ name: trimmedName, email: trimmedEmail, message: trimmedMessage });
-          } catch (emailErr) {
-            console.error('Failed to send contact email on retry:', emailErr.message);
-          }
-          return res.status(200).json({ success: true, message: 'Danke! Wir werden uns bei dir melden. / Thanks! We will be in contact.' });
-        } catch (retryErr) {
-          console.error('Contact retry failed:', retryErr);
-        }
-      }
-      console.error('Contact form error:', err);
-      return res.status(500).json({ error: 'Could not send message', code: 'SERVER_ERROR' });
-    }
-  }
 
   // ── Join signup flow ──
   let { name, email, level = '', source = '' } = req.body || {};
