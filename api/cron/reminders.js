@@ -66,7 +66,7 @@ module.exports = async (req, res) => {
             html: template.html,
             text: template.text,
             headers: {
-              'List-Unsubscribe': '<https://imperialsdodgeball.com/member#settings>'
+              'List-Unsubscribe': '<https://www.imperialsdodgeball.com/member#settings>'
             }
           });
 
