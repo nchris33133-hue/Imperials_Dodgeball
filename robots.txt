@@ -22,4 +22,16 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
+User-agent: Bytespider
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
 Sitemap: https://www.imperialsdodgeball.com/sitemap.xml

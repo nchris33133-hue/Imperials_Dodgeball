@@ -1,16 +1,20 @@
 # Vienna Imperials
-> Austria's first and premier foam dodgeball club, based in Vienna.
+> Austria's first and premier foam dodgeball club, based in Vienna. Dodgeball Wien — Völkerball neu gedacht.
 
 ## About
-The Vienna Imperials are Vienna's leading foam dodgeball club (Dodgeball Wien). Known internationally as dodgeball and in German-speaking countries as Völkerball, we play the modern foam variant under official World Dodgeball Federation rules. We run weekly social leagues, competitive seasons, and tournaments.
+The Vienna Imperials are Vienna's leading foam dodgeball club (Dodgeball Wien). Known internationally as dodgeball and in German-speaking countries as Völkerball, we play the modern foam variant under official World Dodgeball Federation rules. We run weekly social leagues, competitive seasons, and tournaments in Vienna, Austria.
 
 ## Key Pages
-- Homepage: https://www.imperialsdodgeball.com/
-- Legal Notice: https://www.imperialsdodgeball.com/impressum.html
-- Privacy Policy: https://www.imperialsdodgeball.com/datenschutz.html
+- [Homepage](https://www.imperialsdodgeball.com/): Dodgeball Wien — Vereinsinfo, Angebot, FAQ, Rangliste und Anmeldung
+- [Legal Notice](https://www.imperialsdodgeball.com/impressum.html): Impressum und Pflichtangaben
+- [Privacy Policy](https://www.imperialsdodgeball.com/datenschutz.html): Datenschutzerklärung (DSGVO)
+- [Member Area](https://www.imperialsdodgeball.com/member): Mitgliederbereich mit Statistiken und Training-RSVP
 
 ## Contact
 - Email: imperialsdodgeball@gmail.com
 - Instagram: https://www.instagram.com/imperialsdodgeball/
 - Location: Sporthalle Stella-Klein-Löw-Weg, Vienna, Austria
 - Training: Every Thursday, 18:00–21:00
+
+## Keywords
+Dodgeball Wien, Völkerball Wien, Dodgeball Verein Wien, foam dodgeball Austria, Vienna Imperials
