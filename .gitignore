@@ -18,9 +18,11 @@ website.code-workspace
 Screenshot 2026-03-13 171002.png
 website
 
-# Large source images
-Imperials-*.webp
+# Large source images (originals)
 Imperials Website*.webp
+IMG_0*.webp
+Imperials-[0-9]*.webp
+Imperials-Website*.webp
 *.xlsx
 temp screen.png
 mobile.png
